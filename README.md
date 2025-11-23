@@ -1,22 +1,23 @@
-# Digital Registrar
-A pipeline for processing pathology reports using large language models (LLMs) to extract structured information and convert it into JSON format.
-## Description
-Digital Registrar is designed to automate the extraction of critical cancer data from pathology reports. It leverages the `dspy` library to orchestrate LLM calls and structure the output according to College of American Pathologists (CAP) protocols.
-## Features
-- **Multi-Cancer Support**: Capable of processing reports for 10 major cancer types:
-  1. Lung
-  2. Breast
-  3. Colorectal
-  4. Prostate
-  5. Stomach
-  6. Liver and Intrahepatic Bile Duct
-  7. Thyroid
-  8. Cervix Uteri
-  9. Urinary Bladder
-  10. Esophagus
-- **CAP Protocol Compliance**: Uses CAP protocols (AJCC 8th Edition) for accurate data structuring.
-  - *Note: Restricted to 2023-2024 IRB data, hence AJCC 8th Ed.*
-- **Structured Output**: Converts unstructured text reports into structured JSON data.
+# The Digital Registrar: A model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports
+
+[](https://opensource.org/licenses/Apache-2.0)
+[](https://www.python.org/)
+[](https://dspy.ai/)
+[](https://doi.org/10.5281/zenodo.17689362)
+
+## Overview
+
+**The Digital Registrar** is an open-source, locally deployable AI framework designed to automate the extraction of structured cancer registry data from unstructured surgical pathology reports.
+
+This repository contains the source code, extraction logic (DSPy signatures), and benchmarking scripts associated with the manuscript: **"The Digital Registrar: A model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports"** (Submitted to *npj Digital Medicine*).
+
+### Key Features
+
+  * **Privacy-First:** Designed to run entirely on-premises using local LLMs (via Ollama), ensuring no PHI leaves the hospital firewall.
+  * **Resource-Efficient:** Optimized for single-GPU medical workstations (NVIDIA RTX A6000, 48GB VRAM), resolving the "implementation trilemma" of deployment.
+  * **Model Agnostic:** Built on [DSPy](https://github.com/stanfordnlp/dspy), allowing the underlying LLM to be swapped without rewriting extraction logic.
+  * **Comprehensive:** Extracts 193+ CAP-aligned fields across 10 distinct cancer types, including complex nested data for margins and lymph nodes.
+
 ## Directory Structure
 - `models/`: Organ-specific cancer models and common utilities.
 - `util/`: Utility scripts for logging and data processing.
@@ -50,6 +51,45 @@ The `experiment.py` script allows you to run the pipeline on a folder of text fi
 python experiment.py --input "path/to/your/dataset"
 ```
 If no input folder is specified, it will default to the hardcoded paths in the script (for backward compatibility or testing).
+
+-----
+
+##  Model Zoo & Performance
+
+The following models were benchmarked in the study. We recommend **gpt-oss:20b** for the optimal balance of accuracy and latency on single-GPU setups.
+
+| Model | Architecture | Total Params | Active Params | Rec. VRAM |
+| :--- | :--- | :--- | :--- | :--- |
+| **gpt-oss:20b** | **Sparse MoE** | **20B** | **\~2B** | **40GB** |
+| Qwen3-30B-A3B | Sparse MoE | 30B | \~2.4B | 60GB\* |
+| gemma3:27b | Dense | 27B | 27B | 48GB |
+
+*\*Note: Qwen3-30B exceeds the 48GB VRAM limit of standard A6000 cards, leading to memory offloading and higher latency.*
+
+-----
+
+## Citation
+
+If you use this code or the dataset in your research, please cite our preprint:
+
+> **Chou, N.-H., Chang, H., Chen, H.-K., et al.** (2025). "The Digital Registrar: A model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports." *medRxiv*. DOI: [10.1101/2025.10.21.25338475](https://www.google.com/search?q=https://doi.org/10.1101/2025.10.21.25338475)
+
+### BibTeX
+
+```bibtex
+@article{Chou2025,
+  author = {Chou, Nan-Hua and Chang, Han and Chen, Hung-Kai and Lin, Chen-Yuan and Liu, Ying-Lung and Tseng, Po-Yen and Hsu, Li-Chu and Chu, Yen-Wei and Chang, Kai-Po},
+  title = {The Digital Registrar: A model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports},
+  journal = {medRxiv},
+  year = {2025},
+  doi = {10.1101/2025.10.21.25338475},
+  url = {https://www.medrxiv.org/content/early/2025/10/24/2025.10.21.25338475},
+  publisher = {Cold Spring Harbor Laboratory Press}
+}
+```
+
+-----
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ## Authors
