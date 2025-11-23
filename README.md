@@ -72,14 +72,14 @@ The following models were benchmarked in the study. We recommend **gpt-oss:20b**
 
 If you use this code or the dataset in your research, please cite our preprint:
 
-> **Chou, N.-H., Chang, H., Chen, H.-K., et al.** (2025). "The Digital Registrar: A model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports." *medRxiv*. DOI: [10.1101/2025.10.21.25338475](https://www.google.com/search?q=https://doi.org/10.1101/2025.10.21.25338475)
+> **Chou, N.-H., Chang, H., Chen, H.-K., et al.** (2025). "A Multicancer AI Framework for Comprehensive Cancer Surveillance from Pathology Reports" *medRxiv*. DOI: [10.1101/2025.10.21.25338475](https://www.google.com/search?q=https://doi.org/10.1101/2025.10.21.25338475)
 
 ### BibTeX
 
 ```bibtex
 @article{Chou2025,
   author = {Chou, Nan-Hua and Chang, Han and Chen, Hung-Kai and Lin, Chen-Yuan and Liu, Ying-Lung and Tseng, Po-Yen and Hsu, Li-Chu and Chu, Yen-Wei and Chang, Kai-Po},
-  title = {The Digital Registrar: A model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports},
+  title = {A Multicancer AI Framework for Comprehensive Cancer Surveillance from Pathology Reports},
   journal = {medRxiv},
   year = {2025},
   doi = {10.1101/2025.10.21.25338475},
