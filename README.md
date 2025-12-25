@@ -72,22 +72,23 @@ The following models were benchmarked in the study. We recommend **gpt-oss:20b**
 
 If you use this code or the dataset in your research, please cite our preprint:
 
-> **Chow, N.-H., Chang, H., Chen, H.-K., et al.** (2025). "A Multicancer AI Framework for Comprehensive Cancer Surveillance from Pathology Reports" *medRxiv*. DOI: [10.1101/2025.10.21.25338475](https://www.google.com/search?q=https://doi.org/10.1101/2025.10.21.25338475)
+> **Chow, N.-H., Chang, H., Chen, H.-K., et al.** (2025). "Comprehensive Structured Abstraction of Pathology Reports Is Now Feasible Using Local Large Language Models" *medRxiv*. DOI: [10.1101/2025.10.21.25338475](https://doi.org/10.1101/2025.10.21.25338475)
 
 ### BibTeX
 
 ```bibtex
 @article {Chow2025.10.21.25338475,
 	author = {Chow, Nan-Haw and Chang, Han and Chen, Hung-Kai and Lin, Chen-Yuan and Liu, Ying-Lung and Tseng, Po-Yen and Shiu, Li-Ju and Chu, Yen-Wei and Chung, Pau-Choo and Chang, Kai-Po},
-	title = {A Multicancer AI Framework for Comprehensive Cancer Surveillance from Pathology Reports},
+	title = {Comprehensive Structured Abstraction of Pathology Reports Is Now Feasible Using Local Large Language Models},
 	elocation-id = {2025.10.21.25338475},
 	year = {2025},
 	doi = {10.1101/2025.10.21.25338475},
 	publisher = {Cold Spring Harbor Laboratory Press},
-	URL = {https://www.medrxiv.org/content/early/2025/11/23/2025.10.21.25338475},
-	eprint = {https://www.medrxiv.org/content/early/2025/11/23/2025.10.21.25338475.full.pdf},
+	URL = {https://www.medrxiv.org/content/early/2025/12/17/2025.10.21.25338475},
+	eprint = {https://www.medrxiv.org/content/early/2025/12/17/2025.10.21.25338475.full.pdf},
 	journal = {medRxiv}
 }
+
 ```
 
 -----
