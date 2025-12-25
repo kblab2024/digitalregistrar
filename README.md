@@ -99,4 +99,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Kai-Po Chang** - [GitHub](https://github.com/kblab2024)
 - **Hung-Kai Chen** - [GitHub](https://github.com/Walther-Chen)
 - **Po-Yen Tseng** - [GitHub](https://github.com/ThomasTsengCMU)
-All at **Med NLP Lab, China Medical University**
+All at **KBLAB, China Medical University**
