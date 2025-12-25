@@ -9,7 +9,7 @@
 
 **The Digital Registrar** is an open-source, locally deployable AI framework designed to automate the extraction of structured cancer registry data from unstructured surgical pathology reports.
 
-This repository contains the source code, extraction logic (DSPy signatures), and benchmarking scripts associated with the manuscript: **"A Multicancer AI Framework for Comprehensive Cancer Surveillance from Pathology Reports"** (Submitted to *npj Digital Medicine*).
+This repository contains the source code, extraction logic (DSPy signatures), and benchmarking scripts associated with the manuscript: **"Comprehensive Structured Abstraction of Pathology Reports Is Now Feasible Using Local Large Language Models"** (Submitted to *Scientific Reports*).
 
 ### Key Features
 
