@@ -1,0 +1,544 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Thyroid Cancer Registry Data",
+  "description": "Combined JSON Schema for all thyroid cancer extraction signatures.",
+  "type": "object",
+  "properties": {
+    "ThyroidCancerNonnested": {
+      "title": "ThyroidCancerNonnested",
+      "type": "object",
+      "properties": {
+        "predisposing_condition": {
+          "anyOf": [
+            {
+              "enum": [
+                "radiation",
+                "family_history"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify any predisposing condition mentioned in the report, such as \"Hashimoto thyroiditis\" or \"radiation exposure\". If none mentioned, return None",
+          "title": "Predisposing Condition"
+        },
+        "procedure": {
+          "anyOf": [
+            {
+              "enum": [
+                "partial_excision",
+                "right_lobectomy",
+                "left_lobectomy",
+                "total_thyroidectomy",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify which surgery procedure was used. e.g. partial thyroidectomy",
+          "title": "Procedure"
+        },
+        "tumor_focality": {
+          "anyOf": [
+            {
+              "enum": [
+                "unifocal",
+                "multifocal",
+                "not_specified"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify whether the tumor is unifocal or multifocal. If not specified, return not_specified",
+          "title": "Tumor Focality"
+        },
+        "tumor_site": {
+          "anyOf": [
+            {
+              "enum": [
+                "right_lobe",
+                "left_lobe",
+                "isthmus",
+                "both_lobe",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the primary site of cancer. e.g. right lobe of thyroid",
+          "title": "Tumor Site"
+        },
+        "histology": {
+          "anyOf": [
+            {
+              "enum": [
+                "papillary_thyroid_carcinoma",
+                "follicular_thyroid_carcinoma",
+                "medullary_thyroid_carcinoma",
+                "anaplastic_thyroid_carcinoma",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the histological type of the cancer. e.g. papillary thyroid carcinoma",
+          "title": "Histology"
+        },
+        "tumor_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+          "title": "Tumor Size"
+        },
+        "mitotic_activity": {
+          "anyOf": [
+            {
+              "enum": [
+                "less_than_3",
+                "3_to_5",
+                "more_than_5"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the mitotic activity of the tumor, in mitoses per 10 high power fields. if not specified, return null",
+          "title": "Mitotic Activity"
+        },
+        "extrathyroid_extension": {
+          "anyOf": [
+            {
+              "enum": [
+                "microscopic_strap_muscle",
+                "macroscopic_strap_muscle_t3b",
+                "subcutaneous_trachea_esophagus_rln_t4a",
+                "prevertebral_carotid_mediastinal_t4b"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify if clinically extrathyroid extension is present, only four categories are allowed, if none specified, return None",
+          "title": "Extrathyroid Extension"
+        },
+        "tumor_necrosis": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not tumor necrosis is present",
+          "title": "Tumor Necrosis"
+        },
+        "lymphovascular_invasion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not lymphovascular invasion is present",
+          "title": "Lymphovascular Invasion"
+        },
+        "perineural_invasion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not perineural invasion is present",
+          "title": "Perineural Invasion"
+        },
+        "distant_metastasis": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not distant metastasis is present",
+          "title": "Distant Metastasis"
+        },
+        "treatment_effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+          "title": "Treatment Effect"
+        }
+      }
+    },
+    "ThyroidCancerStaging": {
+      "title": "ThyroidCancerStaging",
+      "type": "object",
+      "properties": {
+        "tnm_descriptor": {
+          "anyOf": [
+            {
+              "enum": [
+                "y",
+                "r",
+                "m"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+          "title": "Tnm Descriptor"
+        },
+        "pt_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "tx",
+                "t1a",
+                "t1b",
+                "t2",
+                "t3a",
+                "t3b",
+                "t4a",
+                "t4b"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pt category of the tumor",
+          "title": "Pt Category"
+        },
+        "pn_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "nx",
+                "n0",
+                "n1a",
+                "n1b"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pn category of the tumor",
+          "title": "Pn Category"
+        },
+        "pm_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "mx",
+                "m0",
+                "m1"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+          "title": "Pm Category"
+        },
+        "overall_stage": {
+          "anyOf": [
+            {
+              "enum": [
+                "i",
+                "ii",
+                "iii",
+                "iva",
+                "ivb",
+                "ivc"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the overall stage of the tumor",
+          "title": "Overall Stage"
+        },
+        "ajcc_version": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the ajcc version of the pathological staging",
+          "title": "Ajcc Version"
+        }
+      }
+    },
+    "ThyroidCancerMargins": {
+      "title": "ThyroidCancerMargins",
+      "type": "object",
+      "properties": {
+        "margins": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ThyroidMargin"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the possible involved margins and its distance from cancer. If not present, just output null for every margin",
+          "title": "Margins"
+        }
+      }
+    },
+    "ThyroidCancerLN": {
+      "title": "ThyroidCancerLN",
+      "type": "object",
+      "properties": {
+        "regional_lymph_node": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ThyroidLN"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the involved regional lymph node. If not present, just output null for every lymph node",
+          "title": "Regional Lymph Node"
+        },
+        "extranodal_extension": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+          "title": "Extranodal Extension"
+        },
+        "maximal_ln_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+          "title": "Maximal Ln Size"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ThyroidMargin": {
+      "properties": {
+        "margin_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "outmost",
+                "anterior_outmost",
+                "posterior_outmost",
+                "isthmus",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for surgical margins in thyroid cancer. If not included in these standard margins, should be classified as others.",
+          "title": "Margin Category"
+        },
+        "margin_involved": {
+          "title": "Margin Involved",
+          "type": "boolean"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If margin is involved, return 0. If margin is uninvolved/free, try your best to find the distance at both microscopic and macroscopic(gross) description, and specify the distance from tumor to margin in mm, rounded to integer. If the margin is uninvolved/free and, after your best effort, the distance is still not specified, return null",
+          "title": "Distance"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Description"
+        }
+      },
+      "required": [
+        "margin_involved",
+        "description"
+      ],
+      "title": "ThyroidMargin",
+      "type": "object"
+    },
+    "ThyroidLN": {
+      "properties": {
+        "lymph_node_side": {
+          "anyOf": [
+            {
+              "enum": [
+                "right",
+                "left",
+                "midline"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node side in thyroid cancer. If not included in these standard sides, should be classified as None.",
+          "title": "Lymph Node Side"
+        },
+        "lymph_node_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "level_vi_central",
+                "level_i",
+                "level_ii",
+                "level_iii",
+                "level_iv",
+                "level_v",
+                "level_vii",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node categories in thyroid cancer. If not included in these standard lymph node 'station' number, should be classified as others.",
+          "title": "Lymph Node Category"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node station here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "ThyroidLN",
+      "type": "object"
+    }
+  }
+}

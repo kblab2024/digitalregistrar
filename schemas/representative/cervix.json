@@ -1,0 +1,527 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cervix Cancer Registry Data",
+  "description": "Combined JSON Schema for all cervix cancer extraction signatures.",
+  "type": "object",
+  "properties": {
+    "CervixCancerNonnested": {
+      "title": "CervixCancerNonnested",
+      "type": "object",
+      "properties": {
+        "procedure": {
+          "anyOf": [
+            {
+              "enum": [
+                "radical_hysterectomy",
+                "total_hysterectomy_bso",
+                "simple_hysterectomy",
+                "extenteration",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify which surgery procedure was used. e.g. radical_hysterectomy",
+          "title": "Procedure"
+        },
+        "surgical_technique": {
+          "anyOf": [
+            {
+              "enum": [
+                "open",
+                "laparoscopic",
+                "vaginal",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify how the surgery was taken. e.g. laparoscopic",
+          "title": "Surgical Technique"
+        },
+        "cancer_primary_site": {
+          "anyOf": [
+            {
+              "enum": [
+                "12_3_clock",
+                "3_6_clock",
+                "6_9_clock",
+                "9_12_clock"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the primary site of cancer. e.g. sigmoid colon",
+          "title": "Cancer Primary Site"
+        },
+        "histology": {
+          "anyOf": [
+            {
+              "enum": [
+                "squamous_cell_carcinoma_hpv_associated",
+                "squamous_cell_carcinoma_hpv_dependaent",
+                "squamous_cell_carcinoma_nos",
+                "adenocarcinoma_hpv_associated",
+                "adenocarcinoma_hpv_independent",
+                "adenocarcinoma_nos",
+                "adenosquamous_carcinoma",
+                "neuroendocrine_carcinoma",
+                "glassy_cell_carcinoma",
+                "small_cell_carcinoma",
+                "large_cell_carcinoma",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the histological type of the cancer. e.g. squamous cell carcinoma",
+          "title": "Histology"
+        },
+        "grade": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the grade of the cancer, well->1, moderate->2, poor/undiff->3",
+          "title": "Grade"
+        },
+        "tumor_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the size of the tumor in mm, rounded to integer",
+          "title": "Tumor Size"
+        },
+        "depth_of_invasion_number": {
+          "anyOf": [
+            {
+              "enum": [
+                "less_than_3",
+                "3_to_5",
+                "greater_than_5"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the depth of invasion of the tumor in mm, and choose from these three categories: less_than_3, 3_to_5, greater_than_5",
+          "title": "Depth Of Invasion Number"
+        },
+        "depth_of_invasion_three_tier": {
+          "anyOf": [
+            {
+              "enum": [
+                "inner_third",
+                "middle_third",
+                "outer_third"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the depth of invasion of the tumor in three-tier system: inner_third, middle_third, outer_third",
+          "title": "Depth Of Invasion Three Tier"
+        },
+        "distant_metastasis": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not distant metastasis is present",
+          "title": "Distant Metastasis"
+        },
+        "treatment_effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+          "title": "Treatment Effect"
+        }
+      }
+    },
+    "CervixCancerStaging": {
+      "title": "CervixCancerStaging",
+      "type": "object",
+      "properties": {
+        "tnm_descriptor": {
+          "anyOf": [
+            {
+              "enum": [
+                "y",
+                "r",
+                "m"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+          "title": "Tnm Descriptor"
+        },
+        "pt_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "tx",
+                "t1a1",
+                "t1a2",
+                "t1b1",
+                "t1b2",
+                "t1b3",
+                "t2a1",
+                "t2a2",
+                "t2b",
+                "t3a",
+                "t3b",
+                "t4"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pt category of the tumor",
+          "title": "Pt Category"
+        },
+        "pn_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "nx",
+                "n0",
+                "n1mi",
+                "n1a",
+                "n2mi",
+                "n2a"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pn category of the tumor",
+          "title": "Pn Category"
+        },
+        "pm_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "mx",
+                "m0",
+                "m1"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+          "title": "Pm Category"
+        },
+        "stage_group": {
+          "anyOf": [
+            {
+              "enum": [
+                "0",
+                "ia1",
+                "ia2",
+                "ib1",
+                "ib2",
+                "ib3",
+                "iia1",
+                "iia2",
+                "iib",
+                "iiia",
+                "iiib",
+                "iiic1",
+                "iiic2",
+                "iva",
+                "ivb"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the FIGO stage group of the tumor",
+          "title": "Stage Group"
+        },
+        "ajcc_version": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the ajcc version of the pathological staging",
+          "title": "Ajcc Version"
+        }
+      }
+    },
+    "CervixCancerMargins": {
+      "title": "CervixCancerMargins",
+      "type": "object",
+      "properties": {
+        "margins": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/CervixMargin"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the possible involved margins and its distance from cancer. If not present, just output null for every margin",
+          "title": "Margins"
+        }
+      }
+    },
+    "CervixCancerLN": {
+      "title": "CervixCancerLN",
+      "type": "object",
+      "properties": {
+        "regional_lymph_node": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/CervixLN"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the involved regional lymph node. If not present, just output null for every lymph node",
+          "title": "Regional Lymph Node"
+        },
+        "extranodal_extension": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+          "title": "Extranodal Extension"
+        },
+        "maximal_ln_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+          "title": "Maximal Ln Size"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "CervixMargin": {
+      "properties": {
+        "margin_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "ectocervical",
+                "endocervical",
+                "radial_circumferential",
+                "vaginal_cuff",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for surgical margins in cervical cancer. If not included in these standard margins, should be classified as others.",
+          "title": "Margin Category"
+        },
+        "margin_involved": {
+          "title": "Margin Involved",
+          "type": "boolean"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If margin is involved, return 0. If margin is uninvolved/free, try your best to find the distance at both microscopic and macroscopic(gross) description, and specify the distance from tumor to margin in mm, rounded to integer. If the margin is uninvolved/free and, after your best effort, the distance is still not specified, return null",
+          "title": "Distance"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Description"
+        }
+      },
+      "required": [
+        "margin_involved",
+        "description"
+      ],
+      "title": "CervixMargin",
+      "type": "object"
+    },
+    "CervixLN": {
+      "properties": {
+        "lymph_node_side": {
+          "anyOf": [
+            {
+              "enum": [
+                "right",
+                "left",
+                "midline"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node side in cervical cancer. If not included in these standard sides, should be classified as None.",
+          "title": "Lymph Node Side"
+        },
+        "lymph_node_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "pelvic",
+                "para_aortic",
+                "internal_iliac",
+                "obturator",
+                "external_iliac",
+                "common_iliac",
+                "parametrial",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node categories in cervical cancer. If not included in these standard lymph node 'station' number, should be classified as others.",
+          "title": "Lymph Node Category"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node station here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "CervixLN",
+      "type": "object"
+    }
+  }
+}

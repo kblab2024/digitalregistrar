@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Common Cancer Registry Data",
+  "description": "Combined JSON Schema for all common cancer extraction signatures.",
+  "type": "object",
+  "properties": {
+    "IsCancer": {
+      "title": "IsCancer",
+      "type": "object",
+      "properties": {
+        "cancer_excision_report": {
+          "description": "identify whether or not this report belongs to PRIMARY cancer excision eligible for registry for cancer excision. If no viable tumor is present after excision, you should not register this case. If only carcinoma in situ or high-grade dysplasia, you should not register this case.",
+          "title": "Cancer Excision Report",
+          "type": "boolean"
+        },
+        "cancer_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "stomach",
+                "colorectal",
+                "breast",
+                "esophagus",
+                "lung",
+                "prostate",
+                "thyroid",
+                "pancreas",
+                "cervix",
+                "liver",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify which organ the primary cancer arises from. Currently only ten are implemented, if it IS a cancer excision report, but primary site not included in these standard organs, should be classified as others.",
+          "title": "Cancer Category"
+        },
+        "cancer_category_others_description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "if is cancer_excision report AND cancer_category is others, please specify the organ here. if not, return null.",
+          "title": "Cancer Category Others Description"
+        }
+      },
+      "required": [
+        "cancer_excision_report"
+      ]
+    }
+  }
+}

@@ -1,0 +1,517 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Esophagus Cancer Registry Data",
+  "description": "Combined JSON Schema for all esophagus cancer extraction signatures.",
+  "type": "object",
+  "properties": {
+    "EsophagusCancerNonnested": {
+      "title": "EsophagusCancerNonnested",
+      "type": "object",
+      "properties": {
+        "procedure": {
+          "anyOf": [
+            {
+              "enum": [
+                "endoscopic_resection",
+                "esophagectomy",
+                "esophagogastrectomy",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify which surgery procedure was used. e.g. polypectomy",
+          "title": "Procedure"
+        },
+        "surgical_technique": {
+          "anyOf": [
+            {
+              "enum": [
+                "open",
+                "thoracoscopic",
+                "robotic",
+                "hybrid",
+                "endoscopic",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify how the surgery was taken. e.g. thoracoscopic",
+          "title": "Surgical Technique"
+        },
+        "cancer_primary_site": {
+          "anyOf": [
+            {
+              "enum": [
+                "upper_third",
+                "middle_third",
+                "lower_third",
+                "gastroesophageal_junction"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the primary site of cancer. e.g. upper_third",
+          "title": "Cancer Primary Site"
+        },
+        "histology": {
+          "anyOf": [
+            {
+              "enum": [
+                "squamous_cell_carcinoma",
+                "adenocarcinoma",
+                "adenoid_cystic_carcinoma",
+                "mucoepidermoid_carcinoma",
+                "basaloid_squamous_cell_carcinoma",
+                "small_cell_carcinoma",
+                "large_cell_carcinoma",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the histological type of the cancer. e.g. squamous cell carcinoma",
+          "title": "Histology"
+        },
+        "grade": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the grade of the cancer, well->1, moderate->2, poor->3",
+          "title": "Grade"
+        },
+        "tumor_extent": {
+          "anyOf": [
+            {
+              "enum": [
+                "mucosa",
+                "submucosa",
+                "muscularis_propria",
+                "adventitia",
+                "adjacent_structures"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify how deep the tumor invades. e.g. muscularis_propria",
+          "title": "Tumor Extent"
+        },
+        "lymphovascular_invasion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not lymphovascular invasion is present",
+          "title": "Lymphovascular Invasion"
+        },
+        "perineural_invasion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not perineural invasion is present",
+          "title": "Perineural Invasion"
+        },
+        "distant_metastasis": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not distant metastasis is present",
+          "title": "Distant Metastasis"
+        },
+        "treatment_effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+          "title": "Treatment Effect"
+        }
+      }
+    },
+    "EsophagusCancerStaging": {
+      "title": "EsophagusCancerStaging",
+      "type": "object",
+      "properties": {
+        "tnm_descriptor": {
+          "anyOf": [
+            {
+              "enum": [
+                "y",
+                "r",
+                "m"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+          "title": "Tnm Descriptor"
+        },
+        "pt_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "tx",
+                "t1a",
+                "t1b",
+                "t2",
+                "t3",
+                "t4a",
+                "t4b"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pt category of the tumor",
+          "title": "Pt Category"
+        },
+        "pn_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "nx",
+                "n0",
+                "n1",
+                "n2",
+                "n3"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pn category of the tumor",
+          "title": "Pn Category"
+        },
+        "pm_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "mx",
+                "m0",
+                "m1"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+          "title": "Pm Category"
+        },
+        "stage_group": {
+          "anyOf": [
+            {
+              "enum": [
+                "0",
+                "i",
+                "ia",
+                "ib",
+                "ic",
+                "iia",
+                "iib",
+                "iiia",
+                "iiib",
+                "iva",
+                "ivb"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the stage group of the tumor",
+          "title": "Stage Group"
+        },
+        "ajcc_version": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the ajcc version of the pathological staging",
+          "title": "Ajcc Version"
+        }
+      }
+    },
+    "EsophagusCancerMargins": {
+      "title": "EsophagusCancerMargins",
+      "type": "object",
+      "properties": {
+        "margins": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/EsophagusMargin"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the possible involved margins and its distance from cancer. If not present, just output null for every margin",
+          "title": "Margins"
+        }
+      }
+    },
+    "EsophagusCancerLN": {
+      "title": "EsophagusCancerLN",
+      "type": "object",
+      "properties": {
+        "regional_lymph_node": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/EsophagusLN"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the involved regional lymph node. If not present, just output null for every lymph node",
+          "title": "Regional Lymph Node"
+        },
+        "extranodal_extension": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+          "title": "Extranodal Extension"
+        },
+        "maximal_ln_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+          "title": "Maximal Ln Size"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "EsophagusMargin": {
+      "properties": {
+        "margin_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "proximal",
+                "distal",
+                "radial",
+                "lateral",
+                "deep",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for surgical margins in esophageal cancer. If not included in these standard margins, should be classified as others.",
+          "title": "Margin Category"
+        },
+        "margin_involved": {
+          "title": "Margin Involved",
+          "type": "boolean"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If margin is involved, return 0. If margin is uninvolved/free, try your best to find the distance at both microscopic and macroscopic(gross) description, and specify the distance from tumor to margin in mm, rounded to integer. If the margin is uninvolved/free and, after your best effort, the distance is still not specified, return null",
+          "title": "Distance"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Description"
+        }
+      },
+      "required": [
+        "margin_involved",
+        "description"
+      ],
+      "title": "EsophagusMargin",
+      "type": "object"
+    },
+    "EsophagusLN": {
+      "properties": {
+        "lymph_node_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "regional_esophageal",
+                "regional_gastric",
+                "thoracic_1",
+                "thoracic_1r",
+                "thoracic_1l",
+                "thoracic_4",
+                "thoracic_4r",
+                "thoracic_4l",
+                "thoracic_7",
+                "thoracic_8u",
+                "thoracic_8m",
+                "thoracic_8l",
+                "thoracic_8",
+                "thoracic_9",
+                "thoracic_9r",
+                "thoracic_9l",
+                "thoracic_10",
+                "thoracic_10r",
+                "thoracic_10l",
+                "abdomen_106",
+                "abdomen_1",
+                "abdomen_2",
+                "abdomen_3",
+                "abdomen_4",
+                "abdomen_5",
+                "abdomen_6",
+                "abdomen_7",
+                "abdomen_8",
+                "abdomen_9",
+                "abdomen_10",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node categories (i.e. stations or groups) in esophageal cancer. Default to thoracic if not mentioned. If not included in these standard lymph node 'station' number, should be classified as others.",
+          "title": "Lymph Node Category"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node station/group here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "EsophagusLN",
+      "type": "object"
+    }
+  }
+}

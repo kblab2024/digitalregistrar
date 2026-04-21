@@ -1,0 +1,817 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Breast Cancer Registry Data",
+  "description": "Combined JSON Schema for all breast cancer extraction signatures.",
+  "type": "object",
+  "properties": {
+    "BreastCancerNonnested": {
+      "title": "BreastCancerNonnested",
+      "type": "object",
+      "properties": {
+        "procedure": {
+          "anyOf": [
+            {
+              "enum": [
+                "partial_mastectomy",
+                "simple_mastectomy",
+                "breast_conserving_surgery",
+                "modified_radical_mastectomy",
+                "total_mastectomy",
+                "wide_excision",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify which surgery procedure was used. e.g. partial mastectomy",
+          "title": "Procedure"
+        },
+        "cancer_quadrant": {
+          "anyOf": [
+            {
+              "enum": [
+                "upper_outer_quadrant",
+                "upper_inner_quadrant",
+                "lower_outer_quadrant",
+                "lower_inner_quadrant",
+                "nipple",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the primary site of cancer. e.g. upper outer quadrant. please consider what side is the breast excision specimen when you determine the quadrant",
+          "title": "Cancer Quadrant"
+        },
+        "cancer_clock": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the clock position of the cancer if mentioned. e.g. 3",
+          "title": "Cancer Clock"
+        },
+        "cancer_laterality": {
+          "anyOf": [
+            {
+              "enum": [
+                "right",
+                "left",
+                "bilateral"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the side of the cancer. e.g. right",
+          "title": "Cancer Laterality"
+        },
+        "histology": {
+          "anyOf": [
+            {
+              "enum": [
+                "invasive_carcinoma_no_special_type",
+                "invasive_lobular_carcinoma",
+                "mixed_ductal_and_lobular_carcinoma",
+                "tubular_adenocarcinoma",
+                "mucinous_adenocarcinoma",
+                "encapsulated_papillary_carcinoma",
+                "solid_papillary_carcinoma",
+                "inflammatory_carcinoma",
+                "other_special_types"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the histological type of the cancer. e.g. invasive carcinoma of no special type. If the histological type is not included in the above list, please code as other_special_types and specify the histological type in the description field.",
+          "title": "Histology"
+        },
+        "tumor_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+          "title": "Tumor Size"
+        },
+        "lymphovascular_invasion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not lymphovascular invasion is present",
+          "title": "Lymphovascular Invasion"
+        },
+        "perineural_invasion": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not perineural invasion is present",
+          "title": "Perineural Invasion"
+        },
+        "distant_metastasis": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not distant metastasis is present",
+          "title": "Distant Metastasis"
+        },
+        "treatment_effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+          "title": "Treatment Effect"
+        }
+      }
+    },
+    "DCIS": {
+      "title": "DCIS",
+      "type": "object",
+      "properties": {
+        "dcis_present": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not ductal carcinoma in situ is present",
+          "title": "Dcis Present"
+        },
+        "dcis_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "if ductal carcinoma in situ is present, identify the size of the largest DCIS in mm, rounded",
+          "title": "Dcis Size"
+        },
+        "dcis_comedo_necrosis": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "if ductal carcinoma in situ is present, check whether or not comedo necrosis is present",
+          "title": "Dcis Comedo Necrosis"
+        },
+        "dcis_grade": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "if ductal carcinoma in situ is present, identify the grade of DCIS, low grade (grade 1), intermediate grade (grade 2), high grade (grade 3)",
+          "title": "Dcis Grade"
+        }
+      }
+    },
+    "BreastCancerGrading": {
+      "title": "BreastCancerGrading",
+      "type": "object",
+      "properties": {
+        "nuclear_grade": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the nuclear grade of the tumor",
+          "title": "Nuclear Grade"
+        },
+        "tubule_formation": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the tubule formation score of the tumor",
+          "title": "Tubule Formation"
+        },
+        "mitotic_rate": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the mitotic rate score of the tumor",
+          "title": "Mitotic Rate"
+        },
+        "total_score": {
+          "anyOf": [
+            {
+              "enum": [
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the total score of the tumor",
+          "title": "Total Score"
+        },
+        "grade": {
+          "anyOf": [
+            {
+              "enum": [
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the grade of the tumor",
+          "title": "Grade"
+        }
+      }
+    },
+    "BreastCancerStaging": {
+      "title": "BreastCancerStaging",
+      "type": "object",
+      "properties": {
+        "tnm_descriptor": {
+          "anyOf": [
+            {
+              "enum": [
+                "y",
+                "r",
+                "m"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+          "title": "Tnm Descriptor"
+        },
+        "pt_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "tx",
+                "tis",
+                "t1mi",
+                "t1a",
+                "t1b",
+                "t1c",
+                "t2",
+                "t3",
+                "t4a",
+                "t4b",
+                "t4c"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pt category of the tumor",
+          "title": "Pt Category"
+        },
+        "pn_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "nx",
+                "n0",
+                "n1mi",
+                "n1a",
+                "n1b",
+                "n1c",
+                "n2a",
+                "n2b",
+                "n3a",
+                "n3b",
+                "n3c"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pn category of the tumor",
+          "title": "Pn Category"
+        },
+        "pm_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "mx",
+                "m0",
+                "m1"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+          "title": "Pm Category"
+        },
+        "pathologic_stage_group": {
+          "anyOf": [
+            {
+              "enum": [
+                "0",
+                "ia",
+                "ib",
+                "iia",
+                "iib",
+                "iiia",
+                "iiib",
+                "iiic",
+                "iv"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the pathologic stage group of the tumor, return none if only anatomical stage group is given, dont guess",
+          "title": "Pathologic Stage Group"
+        },
+        "anatomic_stage_group": {
+          "anyOf": [
+            {
+              "enum": [
+                "0",
+                "ia",
+                "ib",
+                "iia",
+                "iib",
+                "iiia",
+                "iiib",
+                "iiic",
+                "iv"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the anatomic stage group of the tumor",
+          "title": "Anatomic Stage Group"
+        },
+        "ajcc_version": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "identify the ajcc version of the pathological staging",
+          "title": "Ajcc Version"
+        }
+      }
+    },
+    "BreastCancerMargins": {
+      "title": "BreastCancerMargins",
+      "type": "object",
+      "properties": {
+        "margins": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/BreastMargin"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the possible involved margins and its distance from cancer. If not present, just output null for every margin",
+          "title": "Margins"
+        }
+      }
+    },
+    "BreastCancerLN": {
+      "title": "BreastCancerLN",
+      "type": "object",
+      "properties": {
+        "regional_lymph_node": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/BreastLN"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the involved regional lymph node. If not present, just output null for every lymph node",
+          "title": "Regional Lymph Node"
+        },
+        "extranodal_extension": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+          "title": "Extranodal Extension"
+        },
+        "maximal_ln_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+          "title": "Maximal Ln Size"
+        }
+      }
+    },
+    "BreastCancerBiomarkers": {
+      "title": "BreastCancerBiomarkers",
+      "type": "object",
+      "properties": {
+        "biomarkers": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/BreastBiomarker"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "return all of the examined immunoreceptors using immunohistochemistry techniques, like er, pr, her2, ki67, etc. If not present, just output null for every biomarker",
+          "title": "Biomarkers"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "BreastMargin": {
+      "properties": {
+        "margin_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "12_3_clock",
+                "3_6_clock",
+                "6_9_clock",
+                "9_12_clock",
+                "12_clock",
+                "3_clock",
+                "6_clock",
+                "9_clock",
+                "superficial",
+                "base"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for surgical margins in breast cancer. If not included in these standard margins, should be classified as others.",
+          "title": "Margin Category"
+        },
+        "margin_involved": {
+          "title": "Margin Involved",
+          "type": "boolean"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If margin is involved, return 0. If margin is uninvolved/free, try your best to find the distance at both microscopic and macroscopic(gross) description, and specify the distance from tumor to margin in mm, rounded to integer. If the margin is uninvolved/free and, after your best effort, the distance is still not specified, return null",
+          "title": "Distance"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Description"
+        }
+      },
+      "required": [
+        "margin_involved",
+        "description"
+      ],
+      "title": "BreastMargin",
+      "type": "object"
+    },
+    "BreastLN": {
+      "properties": {
+        "lymph_node_side": {
+          "anyOf": [
+            {
+              "enum": [
+                "right",
+                "left",
+                "midline"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node side in breast cancer. If not included in these standard sides, should be classified as None.",
+          "title": "Lymph Node Side"
+        },
+        "lymph_node_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "sentinel",
+                "nonsentinel",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node categories (i.e. stations) in breast cancer. If not included in these standard lymph node 'station' number, should be classified as others.",
+          "title": "Lymph Node Category"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node station here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "BreastLN",
+      "type": "object"
+    },
+    "BreastBiomarker": {
+      "properties": {
+        "biomarker_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "er",
+                "pr",
+                "her2",
+                "ki67",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for biomarker categories in breast cancer. If not included in these standard categories, should be classified as others.",
+          "title": "Biomarker Category"
+        },
+        "expression": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify whether or not the biomarker is expressed here. For Her-2 please refer to the score field, and don't fill in this field.",
+          "title": "Expression"
+        },
+        "percentage": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the percentage of tumor cells showing positive expression of the biomarker, rounded to integer. if not specified, return null",
+          "title": "Percentage"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "enum": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the Her-2 expression score, negative: score 0 or 1, equivocal: score 2, positive: score 3 of the biomarker here, if applicable.",
+          "title": "Score"
+        },
+        "biomarker_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the biomarker here.",
+          "title": "Biomarker Name"
+        }
+      },
+      "title": "BreastBiomarker",
+      "type": "object"
+    }
+  }
+}
