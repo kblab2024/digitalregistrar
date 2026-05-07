@@ -1,0 +1,98 @@
+{
+  "_meta": {
+    "filename": "fake1_1.txt",
+    "annotated_at": "2026-04-23T10:00:00"
+  },
+  "cancer_excision_report": true,
+  "cancer_category": "breast",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_mastectomy",
+    "cancer_quadrant": "upper_outer_quadrant",
+    "cancer_clock": 3,
+    "cancer_laterality": "right",
+    "histology": "invasive_carcinoma_no_special_type",
+    "tumor_size": 17,
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "nuclear_grade": 2,
+    "tubule_formation": 2,
+    "mitotic_rate": 1,
+    "total_score": 5,
+    "grade": 2,
+    "dcis_present": true,
+    "dcis_size": 3,
+    "dcis_comedo_necrosis": false,
+    "dcis_grade": 2,
+    "tnm_descriptor": null,
+    "pt_category": "t1c",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "pathologic_stage_group": "ia",
+    "anatomic_stage_group": "ia",
+    "ajcc_version": 8,
+    "extranodal_extension": false,
+    "maximal_ln_size": null,
+    "margins": [
+      {
+        "margin_category": "12_3_clock",
+        "margin_involved": false,
+        "distance": 8,
+        "description": "negative"
+      },
+      {
+        "margin_category": "3_6_clock",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "negative"
+      },
+      {
+        "margin_category": "base",
+        "margin_involved": false,
+        "distance": 12,
+        "description": "negative"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_side": "right",
+        "lymph_node_category": "sentinel",
+        "involved": 0,
+        "examined": 3,
+        "station_name": "SLN"
+      }
+    ],
+    "biomarkers": [
+      {
+        "biomarker_category": "er",
+        "expression": true,
+        "percentage": 95,
+        "score": null,
+        "biomarker_name": "estrogen receptor"
+      },
+      {
+        "biomarker_category": "pr",
+        "expression": true,
+        "percentage": 80,
+        "score": null,
+        "biomarker_name": "progesterone receptor"
+      },
+      {
+        "biomarker_category": "her2",
+        "expression": null,
+        "percentage": null,
+        "score": 1,
+        "biomarker_name": "HER2/neu"
+      },
+      {
+        "biomarker_category": "ki67",
+        "expression": null,
+        "percentage": 15,
+        "score": null,
+        "biomarker_name": "Ki-67"
+      }
+    ]
+  }
+}

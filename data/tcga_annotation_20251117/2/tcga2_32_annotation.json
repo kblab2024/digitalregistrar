@@ -1,0 +1,64 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "anterior_resection",
+    "surgical_technique": "open",
+    "cancer_primary_site": "sigmoid_colon",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "pericolorectal_tissue",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "extracellular_mucin": null,
+    "signet_ring": null,
+    "tumor_budding": null,
+    "type_of_polyp": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n1a",
+    "pm_category": "mx",
+    "stage_group": "iiib",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 35,
+        "description": null
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": 25,
+        "description": null
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 1,
+        "examined": 47,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "others",
+        "involved": 0,
+        "examined": 1,
+        "station_name": "apical"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

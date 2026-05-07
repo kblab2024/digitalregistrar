@@ -1,0 +1,47 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "left_lobe",
+    "histology": "hepatocellular_carcinoma_fibrolamellar",
+    "grade": 3,
+    "tumor_size": 135,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": "r",
+    "pt_category": "t1a",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "overall_stage": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 20,
+        "description": "Negative for carcinoma"
+      },
+      {
+        "margin_category": "hepatic_vein",
+        "margin_involved": false,
+        "distance": 27,
+        "description": "Negative for carcinoma"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "lesser curvature lymph node"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

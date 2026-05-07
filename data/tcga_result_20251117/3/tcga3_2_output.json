@@ -1,0 +1,153 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "thyroid",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "predisposing_condition": null,
+    "procedure": "partial_excision",
+    "tumor_focality": "multifocal",
+    "tumor_site": "both_lobe",
+    "histology": "papillary_thyroid_carcinoma",
+    "tumor_size": 21,
+    "mitotic_activity": null,
+    "extrathyroid_extension": "microscopic_strap_muscle",
+    "tumor_necrosis": null,
+    "lymphovascular_invasion": null,
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t3b",
+    "pn_category": "n1b",
+    "pm_category": "m0",
+    "overall_stage": "iva",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "NEW MEDIAL TRACHEAL MARGIN"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "SUPERIOR SOFT TISSUE"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "NEW MARGIN"
+      },
+      {
+        "margin_category": "anterior_outmost",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "NEW SUPERIOR MARGIN, CHECK AT INK"
+      },
+      {
+        "margin_category": "posterior_outmost",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "POSTERIOR SUPERIOR MARGIN, CHECK AT INK"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "TOTAL LARYNGECTOMY"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "LEFT INFERIOR CONSTRICTOR MARGIN"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "LEFT PHARYNGEAL MARGIN"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "RIGHT TRACHEAL MARGIN"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "LEFT TRACHEAL MARGIN"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "INFERIOR CONSTRICTOR MUSCLE"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "REMNANT OF RIGHT STRAP MUSCLE"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "level_ii",
+        "involved": 0,
+        "examined": 19,
+        "station_name": null
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "level_ii",
+        "involved": 0,
+        "examined": 5,
+        "station_name": null
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "level_iii",
+        "involved": 3,
+        "examined": 13,
+        "station_name": null
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "level_iv",
+        "involved": 1,
+        "examined": 5,
+        "station_name": null
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "level_v",
+        "involved": 0,
+        "examined": 3,
+        "station_name": null
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "others",
+        "involved": 1,
+        "examined": 1,
+        "station_name": null
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "others",
+        "involved": 1,
+        "examined": 2,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": true,
+    "maximal_ln_size": 21
+  }
+}

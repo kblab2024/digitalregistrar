@@ -1,0 +1,95 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "gastroesophageal_junction",
+    "histology": "adenocarcinoma",
+    "grade": 3,
+    "tumor_extent": "muscularis_propria",
+    "lymphovascular_invasion": true,
+    "perineural_invasion": true,
+    "distant_metastasis": null,
+    "treatment_effect": "Unknown.",
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n2",
+    "pm_category": "mx",
+    "stage_group": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 25,
+        "description": "uninvolved by invasive carcinoma, no evidence of specialized metaplasia"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 42,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "deep",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "thoracic_4",
+        "involved": 0,
+        "examined": 16,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "others",
+        "involved": 0,
+        "examined": 2,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "thoracic_1",
+        "involved": 1,
+        "examined": 11,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "thoracic_7",
+        "involved": 0,
+        "examined": 4,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "others",
+        "involved": 0,
+        "examined": 1,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 3,
+        "examined": 9,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "regional_gastric",
+        "involved": 0,
+        "examined": 6,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": false,
+    "maximal_ln_size": 45
+  }
+}

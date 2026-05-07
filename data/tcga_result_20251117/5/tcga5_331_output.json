@@ -1,0 +1,47 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "lobectomy",
+    "tumor_site": "others",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 1,
+    "tumor_size": 140,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": "ii",
+    "ajcc_version": 7,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 3,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "bile_duct",
+        "margin_involved": false,
+        "distance": null,
+        "description": "cannot be assessed"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "Perigastric"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

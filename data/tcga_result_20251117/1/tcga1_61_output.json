@@ -1,0 +1,89 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "breast",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "simple_mastectomy",
+    "cancer_quadrant": "upper_outer_quadrant",
+    "cancer_clock": 9,
+    "cancer_laterality": "right",
+    "histology": "invasive_carcinoma_no_special_type",
+    "tumor_size": 7,
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "dcis_present": true,
+    "dcis_size": 60,
+    "dcis_comedo_necrosis": null,
+    "dcis_grade": 2,
+    "nuclear_grade": 2,
+    "tubule_formation": 3,
+    "mitotic_rate": 2,
+    "total_score": 7,
+    "grade": 2,
+    "tnm_descriptor": "r",
+    "pt_category": "t1b",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "pathologic_stage_group": "ia",
+    "anatomic_stage_group": "ia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": null,
+        "margin_involved": false,
+        "distance": null,
+        "description": "free"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_side": "right",
+        "lymph_node_category": "sentinel",
+        "involved": 1,
+        "examined": 1,
+        "station_name": "sentinel node"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": 0,
+    "biomarkers": [
+      {
+        "biomarker_category": "er",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": null
+      },
+      {
+        "biomarker_category": "pr",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": null
+      },
+      {
+        "biomarker_category": "her2",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": null
+      },
+      {
+        "biomarker_category": "ki67",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": null
+      },
+      {
+        "biomarker_category": "others",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": null
+      }
+    ]
+  }
+}

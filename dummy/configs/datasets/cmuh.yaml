@@ -1,0 +1,26 @@
+name: cmuh
+reports_dir: data/cmuh/reports
+annotations_dir: data/cmuh/annotations
+preannotation_dir: data/cmuh/preannotation
+manifest_path: data/cmuh/dataset_manifest.yaml
+organs:
+  - n: 1
+    name: pancreas
+  - n: 2
+    name: breast
+  - n: 3
+    name: cervix
+  - n: 4
+    name: colorectal
+  - n: 5
+    name: esophagus
+  - n: 6
+    name: liver
+  - n: 7
+    name: lung
+  - n: 8
+    name: prostate
+  - n: 9
+    name: stomach
+  - n: 10
+    name: thyroid

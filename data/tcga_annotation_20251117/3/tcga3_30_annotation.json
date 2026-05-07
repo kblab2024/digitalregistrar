@@ -1,0 +1,77 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagogastrectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "gastroesophageal_junction",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_extent": "muscularis_propria",
+    "lymphovascular_invasion": true,
+    "perineural_invasion": null,
+    "distant_metastasis": false,
+    "treatment_effect": "No prior treatment.",
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n1",
+    "pm_category": "mx",
+    "stage_group": "iiia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "Involved by invasive carcinoma"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 12,
+        "description": "Uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": 3,
+        "description": "Uninvolved by invasive carcinoma"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional_gastric",
+        "involved": 2,
+        "examined": 9,
+        "station_name": "left gastric"
+      },
+      {
+        "lymph_node_category": "others",
+        "involved": 0,
+        "examined": 1,
+        "station_name": "left cervical"
+      },
+      {
+        "lymph_node_category": "others",
+        "involved": 0,
+        "examined": 2,
+        "station_name": "left paratracheal"
+      },
+      {
+        "lymph_node_category": "others",
+        "involved": 0,
+        "examined": 4,
+        "station_name": "paracardial"
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 0,
+        "examined": 1,
+        "station_name": "paraesophagus"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": 13
+  }
+}

@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Digital Registrar — Research"
+abstract: >-
+  Research stack for The Digital Registrar — a model-agnostic, resource-efficient
+  AI framework for comprehensive cancer surveillance from pathology reports.
+  Bundles the DSPy extraction pipeline, a doctor-facing annotation UI, a
+  reproducible benchmark against GPT-4 / ClinicalBERT / rule-based extraction,
+  and an ablation study of modular vs monolithic signatures.
+authors:
+  - family-names: "Chen"
+    given-names: "Hong-Kai (Walther)"
+    affiliation: "Med NLP Lab, China Medical University"
+  - family-names: "Tzeng"
+    given-names: "Po-Yen"
+    affiliation: "Med NLP Lab, China Medical University"
+  - family-names: "Chang"
+    given-names: "Kai-Po"
+    affiliation: "Med NLP Lab, China Medical University"
+version: "0.1.0"
+date-released: "2026-04-22"
+license: MIT
+repository-code: "https://github.com/kblab2024/digital-registrar-research"
+keywords:
+  - cancer registry
+  - pathology
+  - NLP
+  - DSPy
+  - clinical

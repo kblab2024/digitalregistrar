@@ -1,0 +1,46 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "lobectomy",
+    "tumor_site": "left_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 3,
+    "tumor_size": 90,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tumor_extent": [
+      "portal_vein"
+    ],
+    "vascular_invasion": [
+      "large_portal_vein",
+      "small_vessel"
+    ],
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "overall_stage": "iiib",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "parenchymal margin"
+      },
+      {
+        "margin_category": "portal_vein",
+        "margin_involved": false,
+        "distance": null,
+        "description": "portal vein resection margin"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

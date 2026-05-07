@@ -1,0 +1,82 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "breast",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "modified_radical_mastectomy",
+    "cancer_quadrant": "upper_outer_quadrant",
+    "cancer_clock": null,
+    "cancer_laterality": "left",
+    "histology": "invasive_carcinoma_no_special_type",
+    "tumor_size": 40,
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "dcis_present": false,
+    "dcis_size": null,
+    "dcis_comedo_necrosis": null,
+    "dcis_grade": null,
+    "nuclear_grade": 3,
+    "tubule_formation": 3,
+    "mitotic_rate": 3,
+    "total_score": 9,
+    "grade": 3,
+    "tnm_descriptor": "r",
+    "pt_category": "t2",
+    "pn_category": "n1a",
+    "pm_category": "mx",
+    "pathologic_stage_group": "iib",
+    "anatomic_stage_group": "iib",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "base",
+        "margin_involved": false,
+        "distance": 1,
+        "description": "tumor 1 mm from deep margin"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "nonsentinel",
+        "involved": 1,
+        "examined": 39,
+        "station_name": "Level 2"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": [
+      {
+        "biomarker_category": "er",
+        "expression": true,
+        "percentage": 95,
+        "score": null,
+        "biomarker_name": "estrogen receptor"
+      },
+      {
+        "biomarker_category": "pr",
+        "expression": false,
+        "percentage": 0,
+        "score": null,
+        "biomarker_name": "progesterone receptor"
+      },
+      {
+        "biomarker_category": "her2",
+        "expression": null,
+        "percentage": 0,
+        "score": 1,
+        "biomarker_name": "human epidermal growth factor receptor 2"
+      },
+      {
+        "biomarker_category": "ki67",
+        "expression": null,
+        "percentage": 95,
+        "score": null,
+        "biomarker_name": "ki67 proliferation index"
+      }
+    ]
+  }
+}

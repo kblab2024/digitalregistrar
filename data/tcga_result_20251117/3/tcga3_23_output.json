@@ -1,0 +1,46 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagectomy",
+    "surgical_technique": null,
+    "cancer_primary_site": "gastroesophageal_junction",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_extent": "submucosa",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t1b",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "stage_group": "ib",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "negative for tumor"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "negative for tumor"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": null,
+        "description": "negative for tumor"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

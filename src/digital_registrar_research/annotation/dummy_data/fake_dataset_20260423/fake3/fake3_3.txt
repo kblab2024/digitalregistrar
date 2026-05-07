@@ -1,0 +1,26 @@
+# SYNTHETIC — for GUI testing only. Not a real patient record.
+
+Surgical Pathology Report
+Specimen: Stomach, partial gastrectomy
+Clinical History: Gastric mass on endoscopy.
+
+Gross Description:
+The specimen is a partial gastrectomy performed openly. An
+ulcerated tumor is present in the body, measuring approximately
+14 mm in greatest dimension.
+
+Microscopic Description:
+Tubular adenocarcinoma, grade 2, tumor extends to the
+submucosa. Lymphovascular invasion: not identified. Perineural
+invasion: not identified.
+
+Margins: 
+  proximal: 20 mm clear
+  distal: 18 mm clear
+
+Regional Lymph Nodes: 
+  regional: 0/14 involved
+
+Diagnosis:
+Adenocarcinoma of the stomach (body).
+pTt1b pNn0 pMm0, stage group i.

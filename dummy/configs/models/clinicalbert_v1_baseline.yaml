@@ -1,0 +1,3 @@
+name: clinicalbert_v1_baseline
+family: clinicalbert
+checkpoint: models/clinicalbert/v1_baseline/checkpoint.pt

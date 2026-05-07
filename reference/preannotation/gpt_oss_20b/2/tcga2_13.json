@@ -1,0 +1,58 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "right_hemicolectomy",
+    "surgical_technique": null,
+    "cancer_primary_site": "ascending_colon",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "visceral_peritoneum_surface",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "extracellular_mucin": null,
+    "signet_ring": null,
+    "tumor_budding": null,
+    "type_of_polyp": null,
+    "distant_metastasis": true,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t4a",
+    "pn_category": "n0",
+    "pm_category": "m1a",
+    "stage_group": "iva",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 70,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": 4,
+        "description": "Negative for tumor"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 0,
+        "examined": 25,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

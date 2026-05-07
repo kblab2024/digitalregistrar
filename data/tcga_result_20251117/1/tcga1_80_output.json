@@ -1,0 +1,94 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "breast",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "simple_mastectomy",
+    "cancer_quadrant": "lower_outer_quadrant",
+    "cancer_clock": 6,
+    "cancer_laterality": "left",
+    "histology": "invasive_carcinoma_no_special_type",
+    "tumor_size": 22,
+    "lymphovascular_invasion": true,
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "dcis_present": true,
+    "dcis_size": null,
+    "dcis_comedo_necrosis": null,
+    "dcis_grade": 2,
+    "nuclear_grade": 2,
+    "tubule_formation": 2,
+    "mitotic_rate": 2,
+    "total_score": 6,
+    "grade": 2,
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n1a",
+    "pm_category": "m0",
+    "pathologic_stage_group": "iia",
+    "anatomic_stage_group": "iia",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "3_clock",
+        "margin_involved": false,
+        "distance": 7,
+        "description": "distance 7 mm from tumor to margin"
+      },
+      {
+        "margin_category": "6_clock",
+        "margin_involved": false,
+        "distance": 6,
+        "description": "distance 6 mm from tumor to margin"
+      },
+      {
+        "margin_category": "superficial",
+        "margin_involved": false,
+        "distance": null,
+        "description": "superficial margin free"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "sentinel",
+        "involved": 2,
+        "examined": 2,
+        "station_name": "station 1"
+      }
+    ],
+    "extranodal_extension": false,
+    "maximal_ln_size": 3,
+    "biomarkers": [
+      {
+        "biomarker_category": "er",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "estrogen receptor"
+      },
+      {
+        "biomarker_category": "pr",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "progesterone receptor"
+      },
+      {
+        "biomarker_category": "her2",
+        "expression": null,
+        "percentage": null,
+        "score": 1,
+        "biomarker_name": "human epidermal growth factor receptor 2"
+      },
+      {
+        "biomarker_category": "ki67",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "ki67 proliferation index"
+      }
+    ]
+  }
+}

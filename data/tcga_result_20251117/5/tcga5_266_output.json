@@ -1,0 +1,60 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "others",
+    "histology": "hepatocellular_carcinoma_clear_cell",
+    "grade": 3,
+    "tumor_size": 150,
+    "tumor_focality": "multifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tumor_extent": null,
+    "vascular_invasion": [
+      "small_vessel"
+    ],
+    "tnm_descriptor": "r",
+    "pt_category": "t3",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "overall_stage": null,
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "Tumor present at the hepatic edge (original resection) and at the re‑excision posterior margin of the caudate lobe"
+      },
+      {
+        "margin_category": "hepatic_vein",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Vascular margins negative for tumor"
+      },
+      {
+        "margin_category": "portal_vein",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Vascular margins negative for tumor"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "Group 8"
+      },
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "Group 12"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

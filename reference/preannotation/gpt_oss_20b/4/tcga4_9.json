@@ -1,0 +1,79 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "stomach",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "others",
+    "surgical_technique": "open",
+    "cancer_primary_site": "cardia",
+    "histology": "tubular_adenocarcinoma",
+    "grade": 3,
+    "tumor_extent": "muscularis_propria",
+    "extracellular_mucin": null,
+    "signet_ring": null,
+    "lymphovascular_invasion": null,
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n2",
+    "pm_category": "m0",
+    "stage_group": "iiib",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 11,
+        "description": "Margin to excision line uncertain at places (spec. A). The other excision lines free of neoplastic lesions."
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 4,
+        "description": "Margin to excision line uncertain at places (spec. A). The other excision lines free of neoplastic lesions."
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      },
+      {
+        "margin_category": "lateral",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      },
+      {
+        "margin_category": "deep",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "6",
+        "involved": 1,
+        "examined": 1,
+        "station_name": "VI"
+      },
+      {
+        "lymph_node_category": "9",
+        "involved": 1,
+        "examined": 1,
+        "station_name": "IX"
+      }
+    ],
+    "extranodal_extension": true,
+    "maximal_ln_size": null
+  }
+}

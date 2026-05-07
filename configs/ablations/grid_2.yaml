@@ -1,0 +1,61 @@
+# Grid 2 — Recommended factorial (suggestions §1.3).
+#
+# Three axes × three levels × three models × three seeds × all cases.
+# Total ≈ 12.4k runs. Wall-clock estimate: ~1 week on a single 48 GB GPU.
+#
+#   Axis A (decomposition)        Axis B (output)               Axis C (prompt)
+#     A1: dspy_modular              B1: dspy_monolithic           C1: dspy_monolithic
+#     A2: dspy_monolithic           B3: raw_json                  C2: fewshot_demos n=3
+#     A4: no_router                 B4: constrained_decoding      C5: compiled_dspy
+#
+# Each cell is tagged with its (axis_A, axis_B, axis_C) coordinate in
+# configs/ablations/axes.yaml — the factorial GLMM in stats.factorial_glmm
+# uses that mapping to fit main effects + interactions.
+#
+# To run multiple seeds: invoke the script multiple times; each invocation
+# auto-picks the next free run slot under each cell's directory.
+# To run multiple models: duplicate runs blocks with `model:` set to
+# gemma3 / qwen3_5 / etc.
+
+name: grid_2
+description: "27-cell factorial × gptoss, single seed (extend per the suggestions doc)"
+folder: dummy
+dataset: tcga
+
+runs:
+  # Axis A varies (Axis B = dspy, Axis C = zero_shot)
+  - cell: dspy_modular
+    model: gptoss
+    args: {}
+  - cell: dspy_monolithic
+    model: gptoss
+    args: {}
+  - cell: no_router
+    model: gptoss
+    args: {}
+
+  # Axis B varies (Axis A = monolithic, Axis C = zero_shot)
+  - cell: raw_json
+    model: gptoss
+    args: {}
+  - cell: constrained_decoding
+    model: gptoss
+    args:
+      backend: vllm
+      api_base: http://localhost:8000/v1
+
+  # Axis C varies (Axis A = monolithic, Axis B = dspy)
+  - cell: fewshot_demos
+    model: gptoss
+    args:
+      n_shots: 3
+  - cell: compiled_dspy
+    model: gptoss
+    args:
+      compiled: workspace/compiled/dspy_compiled_gptoss.json
+
+  # Cross-axis cells (interactions). Uncomment as compute budget allows
+  # — the full 27-cell lattice expands the diagonal above.
+  # - cell: no_router
+  #   model: gptoss
+  #   args: {}

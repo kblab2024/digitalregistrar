@@ -1,0 +1,58 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "right_hemicolectomy",
+    "surgical_technique": null,
+    "cancer_primary_site": "hepatic_flexure",
+    "histology": "mucinous_adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "muscularis_propria",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "extracellular_mucin": true,
+    "signet_ring": false,
+    "tumor_budding": null,
+    "type_of_polyp": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "stage_group": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Not involved"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Not involved"
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": 1,
+        "description": "Not involved"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 0,
+        "examined": 18,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

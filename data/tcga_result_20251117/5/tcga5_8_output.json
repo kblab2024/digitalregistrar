@@ -1,0 +1,49 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "segmentectomy",
+    "tumor_site": "others",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 3,
+    "tumor_size": 34,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": true,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tumor_extent": [
+      "gallbladder"
+    ],
+    "vascular_invasion": null,
+    "tnm_descriptor": null,
+    "pt_category": "t1b",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "overall_stage": "ia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 11,
+        "description": "Hepatic parenchymal margin free of malignancy"
+      },
+      {
+        "margin_category": "bile_duct",
+        "margin_involved": false,
+        "distance": null,
+        "description": "cannot be assessed"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "periportal adenopathy"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

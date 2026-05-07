@@ -1,0 +1,70 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "extended_right_hemicolectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "transverse_colon",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "pericolorectal_tissue",
+    "lymphovascular_invasion": null,
+    "perineural_invasion": null,
+    "extracellular_mucin": null,
+    "signet_ring": null,
+    "tumor_budding": null,
+    "type_of_polyp": null,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t4b",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "stage_group": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Negative"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 240,
+        "description": "Negative"
+      },
+      {
+        "margin_category": "mesenteric_pedicle",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Not specified"
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": 1,
+        "description": "Tumor <1 mm from outer surface"
+      },
+      {
+        "margin_category": "outmost_of_adhered_tissue",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Not specified"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 0,
+        "examined": 24,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

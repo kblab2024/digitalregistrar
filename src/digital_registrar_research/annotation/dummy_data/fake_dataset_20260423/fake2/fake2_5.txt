@@ -1,0 +1,31 @@
+# SYNTHETIC — for GUI testing only. Not a real patient record.
+
+Surgical Pathology Report
+Specimen: Colon, right hemicolectomy
+Clinical History: Obstructing mass, right colon.
+
+Gross Description:
+The specimen consists of a segment of colon, laparoscopicly resected.
+An ulcerating tumor is identified in the ascending colon, measuring
+approximately 18 mm. Margins are inked.
+
+Microscopic Description:
+Adenocarcinoma, grade 2, invading through muscularis propria.
+Lymphovascular invasion: present. Perineural invasion: not identified.
+Tumor budding count: 8.
+
+Margins: 
+  proximal: 40 mm clear
+  distal: 35 mm clear
+
+Regional Lymph Nodes: 
+  regional: 1/18 involved
+
+Immunohistochemistry (MMR panel):
+MLH1: retained
+MSH2: retained
+MSH6: retained
+
+Diagnosis:
+Adenocarcinoma of the ascending colon, see synoptic report.
+pTt3 pNn1a pMm0, stage group iiia.

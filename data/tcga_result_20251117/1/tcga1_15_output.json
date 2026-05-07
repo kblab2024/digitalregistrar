@@ -1,0 +1,74 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "breast",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "breast_conserving_surgery",
+    "cancer_quadrant": null,
+    "cancer_clock": null,
+    "cancer_laterality": "right",
+    "histology": "invasive_carcinoma_no_special_type",
+    "tumor_size": 20,
+    "lymphovascular_invasion": null,
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "dcis_present": true,
+    "dcis_size": null,
+    "dcis_comedo_necrosis": null,
+    "dcis_grade": 1,
+    "nuclear_grade": null,
+    "tubule_formation": null,
+    "mitotic_rate": null,
+    "total_score": null,
+    "grade": null,
+    "tnm_descriptor": null,
+    "pt_category": "t1c",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "pathologic_stage_group": "ia",
+    "anatomic_stage_group": "ia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": null,
+        "margin_involved": false,
+        "distance": 2,
+        "description": "superior-deep margin"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": [
+      {
+        "biomarker_category": "er",
+        "expression": true,
+        "percentage": 40,
+        "score": null,
+        "biomarker_name": "estrogen receptor"
+      },
+      {
+        "biomarker_category": "pr",
+        "expression": true,
+        "percentage": 80,
+        "score": null,
+        "biomarker_name": "progesterone receptor"
+      },
+      {
+        "biomarker_category": "her2",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "human epidermal growth factor receptor 2"
+      },
+      {
+        "biomarker_category": "ki67",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "ki67 proliferation index"
+      }
+    ]
+  }
+}

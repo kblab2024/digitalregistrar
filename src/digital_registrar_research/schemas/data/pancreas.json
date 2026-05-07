@@ -1,0 +1,455 @@
+{
+  "$defs": {
+    "PancreasLN": {
+      "properties": {
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "lymph_node_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "regional_pancreatic",
+                "regional_gastric",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "11",
+                "12",
+                "13",
+                "14",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node categories in pancreas cancer. If not included in these standard lymph node 'station' number, should be classified as others.",
+          "title": "Lymph Node Category"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node station/group here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "PancreasLN",
+      "type": "object"
+    },
+    "PancreasMargin": {
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Description"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If margin is involved, return 0. If margin is uninvolved/free, try your best to find the distance at both microscopic and macroscopic(gross) description, and specify the distance from tumor to margin in mm, rounded to integer. If the margin is uninvolved/free and, after your best effort, the distance is still not specified, return null",
+          "title": "Distance"
+        },
+        "margin_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "distal_pancreatic",
+                "proximal_pancreatic",
+                "pancreatic_neck",
+                "uncinate",
+                "bile_duct",
+                "proximal_gastric",
+                "proximal_duodenal",
+                "distal_intestinal",
+                "outmost",
+                "anterior_outmost",
+                "posterior_outmost",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for surgical margins in pancreas cancer. If not included in these standard margins, should be classified as others.",
+          "title": "Margin Category"
+        },
+        "margin_involved": {
+          "title": "Margin Involved",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "margin_involved",
+        "description"
+      ],
+      "title": "PancreasMargin",
+      "type": "object"
+    }
+  },
+  "description": "Canonical extracted case record for pancreas cancer. Built dynamically from the DSPy signatures listed in models.modellist.organmodels['pancreas'].",
+  "properties": {
+    "ajcc_version": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the ajcc version of the pathological staging",
+      "title": "Ajcc Version"
+    },
+    "distant_metastasis": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not distant metastasis is present",
+      "title": "Distant Metastasis"
+    },
+    "extranodal_extension": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not extranodal extension is present",
+      "title": "Extranodal Extension"
+    },
+    "histology": {
+      "anyOf": [
+        {
+          "enum": [
+            "ductal_adenocarcinoma_nos",
+            "ipmn_with_carcinoma",
+            "itpn_with_carcinoma",
+            "acinar_cell_carcinoma",
+            "solid_pseudopapillary_neoplasm",
+            "undifferentiated_carcinoma",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the histological type of the cancer. e.g. invasive carcinoma of no special type",
+      "title": "Histology"
+    },
+    "lymphovascular_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not lymphovascular invasion is present",
+      "title": "Lymphovascular Invasion"
+    },
+    "margins": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/PancreasMargin"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"proximal_duodenal\", \"margin_involved\": true, \"distance\": null}, {\"margin_category\": \"anterior_outmost\", \"margin_involved\": false, \"distance\": 10}, {\"margin_category\": \"radial\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "title": "Margins"
+    },
+    "maximal_ln_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check the maximal size of node metastatic tumor in mm, rounded to integer. if not, return None",
+      "title": "Maximal Ln Size"
+    },
+    "overall_stage": {
+      "anyOf": [
+        {
+          "enum": [
+            "ia",
+            "ib",
+            "iia",
+            "iib",
+            "iii",
+            "iv"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the overall stage of the tumor",
+      "title": "Overall Stage"
+    },
+    "perineural_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not perineural invasion is present",
+      "title": "Perineural Invasion"
+    },
+    "pm_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "mx",
+            "m1"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "title": "Pm Category"
+    },
+    "pn_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "nx",
+            "n0",
+            "n1",
+            "n2"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pn category of the tumor",
+      "title": "Pn Category"
+    },
+    "procedure": {
+      "anyOf": [
+        {
+          "enum": [
+            "partial_pancreatectomy",
+            "ssppd",
+            "pppd",
+            "whipple_procedure",
+            "distal_pancreatectomy",
+            "total_pancreatectomy",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify which surgery procedure was used. e.g. partial pancreatectomy, pylorus-preserving pancreaticoduodenectomy(PPPD), Subtotal stomach-preserving pancreaticoduodenectomy (SSPPD), Whipple procedure, etc.",
+      "title": "Procedure"
+    },
+    "pt_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "tx",
+            "tis",
+            "t1a",
+            "t1b",
+            "t1c",
+            "t2",
+            "t3",
+            "t4"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pt category of the tumor",
+      "title": "Pt Category"
+    },
+    "regional_lymph_node": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/PancreasLN"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the involved regional lymph node. example:[{\"lymph_node_category\": \"1\", \"involved\": 2, \"examined\": 5, \"station_name\": \"station 1\"}, {\"lymph_node_category\": \"2\", \"involved\": 0, \"examined\": 3, \"station_name\": \"station 2\"}, ...]. If not present, just output null for every lymph node",
+      "title": "Regional Lymph Node"
+    },
+    "tnm_descriptor": {
+      "anyOf": [
+        {
+          "enum": [
+            "y",
+            "r",
+            "m"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "title": "Tnm Descriptor"
+    },
+    "treatment_effect": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "title": "Treatment Effect"
+    },
+    "tumor_extension": {
+      "anyOf": [
+        {
+          "enum": [
+            "within_pancreas",
+            "peripancreatic_soft_tissue",
+            "adjacent_organs_structures",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the extent of tumor extension. e.g. within pancreas",
+      "title": "Tumor Extension"
+    },
+    "tumor_site": {
+      "anyOf": [
+        {
+          "enum": [
+            "head",
+            "neck",
+            "body",
+            "tail",
+            "uncinate_process",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the primary site of cancer. e.g. head of pancreas",
+      "title": "Tumor Site"
+    },
+    "tumor_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+      "title": "Tumor Size"
+    }
+  },
+  "title": "PancreasCancerCase",
+  "type": "object"
+}

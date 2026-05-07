@@ -1,0 +1,51 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 3,
+    "tumor_size": 153,
+    "tumor_focality": "multifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tumor_extent": [
+      "portal_vein"
+    ],
+    "vascular_invasion": [
+      "large_portal_vein"
+    ],
+    "tnm_descriptor": "r",
+    "pt_category": "t3",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "overall_stage": "iiia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 1,
+        "description": "Tumor extends to within 0.1 cm of the surgical resection margin."
+      },
+      {
+        "margin_category": "hepatic_vein",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Tumor thrombus present within the vein but vessel margin is negative."
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 6,
+        "station_name": "peri-choledochal"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

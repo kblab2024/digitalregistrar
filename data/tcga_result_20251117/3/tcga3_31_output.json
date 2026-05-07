@@ -1,0 +1,59 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagogastrectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "gastroesophageal_junction",
+    "histology": "adenocarcinoma",
+    "grade": 3,
+    "tumor_extent": "submucosa",
+    "lymphovascular_invasion": true,
+    "perineural_invasion": null,
+    "distant_metastasis": false,
+    "treatment_effect": "No prior treatment.",
+    "tnm_descriptor": null,
+    "pt_category": "t1b",
+    "pn_category": "n1",
+    "pm_category": "mx",
+    "stage_group": "iia",
+    "ajcc_version": 7,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 95,
+        "description": "negative for carcinoma"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 50,
+        "description": "negative for carcinoma"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "negative for carcinoma"
+      },
+      {
+        "margin_category": "deep",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "negative for carcinoma"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "others",
+        "involved": 1,
+        "examined": 48,
+        "station_name": "perigastric"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

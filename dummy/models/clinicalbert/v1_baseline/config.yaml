@@ -1,0 +1,3 @@
+model_id: clinicalbert_v1_baseline
+base_model: emilyalsentzer/Bio_ClinicalBERT
+trained_on: generic_discharge

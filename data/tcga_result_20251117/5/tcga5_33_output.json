@@ -1,0 +1,57 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 2,
+    "tumor_size": 120,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tumor_extent": [
+      "hepatic_vein",
+      "diaphragm"
+    ],
+    "vascular_invasion": [
+      "large_hepatic_vein",
+      "small_vessel"
+    ],
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "overall_stage": "iiia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 3,
+        "description": null
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "right inferior mediastinum"
+      },
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "right portal"
+      },
+      {
+        "involved": 0,
+        "examined": 1,
+        "station_name": "left portal"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

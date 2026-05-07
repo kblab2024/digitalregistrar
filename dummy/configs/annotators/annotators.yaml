@@ -1,0 +1,17 @@
+annotators:
+  - id: nhc
+    display: NHC
+    modes:
+      - with_preann
+      - without_preann
+    enabled: true
+  - id: kpc
+    display: KPC
+    modes:
+      - with_preann
+      - without_preann
+    enabled: true
+modes:
+  with_preann: "Annotator sees gpt-oss:20b pre-annotation first"
+  without_preann: Annotator starts from blank template
+preannotation_model: gpt_oss_20b

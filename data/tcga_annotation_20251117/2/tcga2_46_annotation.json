@@ -1,0 +1,58 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "subtotal_colectomy",
+    "surgical_technique": null,
+    "cancer_primary_site": "hepatic_flexure",
+    "histology": "mucinous_adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "pericolorectal_tissue",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "extracellular_mucin": true,
+    "signet_ring": null,
+    "tumor_budding": null,
+    "type_of_polyp": "tubular_adenoma",
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t4b",
+    "pn_category": "n1b",
+    "pm_category": "mx",
+    "stage_group": "iiic",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Negative"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Negative"
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": 1,
+        "description": "Negative"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "mesenteric",
+        "involved": 2,
+        "examined": 30,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

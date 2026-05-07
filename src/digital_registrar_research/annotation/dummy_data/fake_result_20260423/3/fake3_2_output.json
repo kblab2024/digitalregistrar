@@ -1,0 +1,49 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "stomach",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_gastrectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "body",
+    "histology": "tubular_adenocarcinoma",
+    "grade": 2,
+    "tumor_extent": "submucosa",
+    "extracellular_mucin": false,
+    "signet_ring": false,
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": "no known presurgical therapy",
+    "tnm_descriptor": null,
+    "pt_category": "t1b",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "stage_group": "i",
+    "ajcc_version": 8,
+    "extranodal_extension": false,
+    "maximal_ln_size": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 20,
+        "description": null
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 18,
+        "description": "negative"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 0,
+        "examined": 13,
+        "station_name": "perigastric"
+      }
+    ]
+  }
+}

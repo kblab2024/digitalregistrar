@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+*.egg
+.installed.cfg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+digital-registrar-research.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project — runtime artifacts, never checked in
+results/**/*.csv
+results/**/*.json
+results/**/*.pt
+results/**/*.ckpt
+!results/**/.gitkeep
+workspace/
+ckpts/
+
+# Dummy experiment root — configs/models/README tracked; data/results are generated,
+# only the named folder skeleton is kept (via .gitkeep)
+/dummy/data/**
+/dummy/results/**
+!/dummy/data/**/
+!/dummy/results/**/
+!/dummy/data/**/.gitkeep
+!/dummy/results/**/.gitkeep
+
+# Live annotator workspace — real patient data, never pushed
+/workspace/
+
+# Obfustrated workspace — synthetic-from-real, schema-conformant copy for
+# debugging eval/ablation/inference paths without exposing PHI. Generated
+# on demand by `python scripts/obfuscate_workspace.py`. Many MB of synthetic
+# data; never commit. Note: NOT added to any Claude-ignore mechanism — Claude
+# needs read access for the debugging workflow this is built for.
+/workspace_obfustrated/
+
+# Reference test data — symlink staging tree built on demand by
+# `--folder reference` (see scripts/_config_loader._ensure_reference_staged).
+/reference/_staged/
+
+# Windows-bundle build artifacts — packaging/ scripts are tracked, outputs are not
+/packaging/_downloads/
+/packaging/build/
+/packaging/dist/
+
+# Annotation tool — per-deployment annotator list (rebuilt from DEFAULTS)
+src/digital_registrar_research/annotation/annotators.json
+
+# Local configs — machine-specific, never pushed
+configs/local/*
+!configs/local/.gitkeep
+
+# API keys / secrets
+.env
+.env.local
+*.pem
+/secrets/
+
+# Jupyter
+.ipynb_checkpoints/

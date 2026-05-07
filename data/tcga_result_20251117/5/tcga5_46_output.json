@@ -1,0 +1,55 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 3,
+    "tumor_size": 110,
+    "tumor_focality": "multifocal",
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tumor_extent": [
+      "visceral_peritoneum"
+    ],
+    "vascular_invasion": [],
+    "tnm_descriptor": null,
+    "pt_category": "t4",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": "iva",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": 8,
+        "description": "retroperitoneal soft tissue margin"
+      },
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 17,
+        "description": "hepatic resection margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "colonic and vascular en face margins"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "involved": 0,
+        "examined": 11,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

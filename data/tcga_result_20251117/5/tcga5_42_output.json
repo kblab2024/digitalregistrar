@@ -1,0 +1,59 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 2,
+    "tumor_size": 36,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": false,
+    "distant_metastasis": null,
+    "treatment_effect": "Tumor appears > 95% viable",
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": "r",
+    "pt_category": "t1b",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": "ii",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "segment IV margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": 13,
+        "description": "segment VI margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": 12,
+        "description": "segment 6 margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "segment 4 margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "final margin"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

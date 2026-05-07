@@ -1,0 +1,40 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "lower_third",
+    "histology": "squamous_cell_carcinoma",
+    "grade": 2,
+    "tumor_extent": "muscularis_propria",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "stage_group": "iia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 45,
+        "description": "clear margins"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 15,
+        "description": "clear margins"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

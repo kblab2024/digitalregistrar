@@ -1,0 +1,19 @@
+# Normalize line endings on commit; checkout in OS-native form
+* text=auto
+
+# Always-LF text formats (avoid CRLF in shipped configs / scripts)
+*.py    text eol=lf
+*.toml  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.cff   text eol=lf
+*.sh    text eol=lf
+
+# Binary assets (none currently, but future-proof)
+*.png   binary
+*.jpg   binary
+*.pdf   binary
+*.ckpt  binary
+*.pt    binary

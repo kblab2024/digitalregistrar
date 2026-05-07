@@ -1,0 +1,571 @@
+{
+  "$defs": {
+    "ProstateLN": {
+      "properties": {
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "lymph_node_category": {
+          "anyOf": [
+            {
+              "enum": [
+                "hypogastric",
+                "obturator",
+                "external_iliac",
+                "internal_iliac",
+                "common_iliac",
+                "iliac_nos",
+                "pelvic_nos",
+                "others"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node categories (i.e. stations) in prostate cancer. If not included in these standard lymph node 'station' number, should be classified as others.",
+          "title": "Lymph Node Category"
+        },
+        "lymph_node_side": {
+          "anyOf": [
+            {
+              "enum": [
+                "right",
+                "left",
+                "midline"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for lymph node side in cervical cancer. If not included in these standard sides, should be classified as None.",
+          "title": "Lymph Node Side"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node group/station here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "ProstateLN",
+      "type": "object"
+    }
+  },
+  "description": "Canonical extracted case record for prostate cancer. Built dynamically from the DSPy signatures listed in models.modellist.organmodels['prostate'].",
+  "properties": {
+    "ajcc_version": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the ajcc version of the pathological staging",
+      "title": "Ajcc Version"
+    },
+    "bladder_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not bladder invasion is present",
+      "title": "Bladder Invasion"
+    },
+    "cribriform_pattern_presence": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not cribriform pattern is present. only in gleason score 7 or 8",
+      "title": "Cribriform Pattern Presence"
+    },
+    "distant_metastasis": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not distant metastasis is present",
+      "title": "Distant Metastasis"
+    },
+    "extranodal_extension": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+      "title": "Extranodal Extension"
+    },
+    "extraprostatic_extension": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not extraprostatic extension is present",
+      "title": "Extraprostatic Extension"
+    },
+    "gleason_4_percentage": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the percentage of gleason pattern 4. e.g. 20 means 20%",
+      "title": "Gleason 4 Percentage"
+    },
+    "gleason_5_percentage": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the percentage of gleason pattern 5. e.g. 0 means 0%",
+      "title": "Gleason 5 Percentage"
+    },
+    "grade": {
+      "anyOf": [
+        {
+          "enum": [
+            "group_1_3_3",
+            "group_2_3_4",
+            "group_3_4_3",
+            "group_4_4_4",
+            "group_5_4_5",
+            "group_5_5_4",
+            "group_5_5_5"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the gleason group of the cancer. e.g. group_2_3_4 means gleason score 7 (3+4)",
+      "title": "Grade"
+    },
+    "histology": {
+      "anyOf": [
+        {
+          "enum": [
+            "acinar_adenocarcinoma",
+            "intraductal_carcinoma",
+            "ductal_adenocarcinoma",
+            "mixed_acinar_ductal",
+            "neuroendocrine_carcinoma_small_cell",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the histological type of the cancer. e.g. acinar adenocarcinoma",
+      "title": "Histology"
+    },
+    "intraductal_carcinoma_presence": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not intraductal carcinoma is present",
+      "title": "Intraductal Carcinoma Presence"
+    },
+    "involved_margin_list": {
+      "anyOf": [
+        {
+          "items": {
+            "enum": [
+              "right_apical",
+              "left_apical",
+              "right_bladder_neck",
+              "left_bladder_neck",
+              "right_anterior",
+              "left_anterior",
+              "right_lateral",
+              "left_lateral",
+              "right_posterolateral",
+              "left_posterolateral",
+              "right_posterior",
+              "left_posterior"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "list of involved margins",
+      "title": "Involved Margin List"
+    },
+    "lymphovascular_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not lymphovascular invasion is present",
+      "title": "Lymphovascular Invasion"
+    },
+    "margin_length": {
+      "anyOf": [
+        {
+          "enum": [
+            "limited",
+            "non_limited"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "if margin is positive, check whether the length of positive margin is limited (<3mm) or non-limited (>=3mm)",
+      "title": "Margin Length"
+    },
+    "margin_positivity": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not any margin is positive",
+      "title": "Margin Positivity"
+    },
+    "maximal_ln_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+      "title": "Maximal Ln Size"
+    },
+    "perineural_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not perineural invasion is present",
+      "title": "Perineural Invasion"
+    },
+    "pm_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "mx",
+            "m0",
+            "m1a",
+            "m1b",
+            "m1c"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "title": "Pm Category"
+    },
+    "pn_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "nx",
+            "n0",
+            "n1"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pn category of the tumor",
+      "title": "Pn Category"
+    },
+    "procedure": {
+      "anyOf": [
+        {
+          "enum": [
+            "radical_prostatectomy",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify which surgery procedure was used. e.g. radical prostatectomy",
+      "title": "Procedure"
+    },
+    "prostate_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the size of the prostate in mm, largest dimension. e.g. 45 means 45mm",
+      "title": "Prostate Size"
+    },
+    "prostate_weight": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the weight of the prostate in grams. e.g. 50",
+      "title": "Prostate Weight"
+    },
+    "pt_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "tx",
+            "t2",
+            "t3a",
+            "t3b",
+            "t4"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pt category of the tumor",
+      "title": "Pt Category"
+    },
+    "regional_lymph_node": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ProstateLN"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the involved regional lymph node. example:[{\"lymph_node_side\": \"right, \"lymph_node_category\": \"internal_iliac\", \"involved\": 2, \"examined\": 5}, ...]. If not present, just output null for every lymph node",
+      "title": "Regional Lymph Node"
+    },
+    "seminal_vesicle_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not seminal vesicle invasion is present",
+      "title": "Seminal Vesicle Invasion"
+    },
+    "stage_group": {
+      "anyOf": [
+        {
+          "enum": [
+            "0",
+            "i",
+            "iia",
+            "iib",
+            "iic",
+            "iiia",
+            "iiib",
+            "iiic",
+            "iva",
+            "ivb"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the stage group of the tumor",
+      "title": "Stage Group"
+    },
+    "surgical_technique": {
+      "anyOf": [
+        {
+          "enum": [
+            "open",
+            "robotic",
+            "hybrid",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify how the surgery was taken. e.g. robotic",
+      "title": "Surgical Technique"
+    },
+    "tnm_descriptor": {
+      "anyOf": [
+        {
+          "enum": [
+            "y",
+            "r",
+            "m"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "title": "Tnm Descriptor"
+    },
+    "treatment_effect": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "title": "Treatment Effect"
+    },
+    "tumor_percentage": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the percentage of tumor in the prostate in both lobes. e.g. 30 means 30%",
+      "title": "Tumor Percentage"
+    },
+    "tumor_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the size of the tumor in mm, largest dimension. e.g. 15 means 15mm",
+      "title": "Tumor Size"
+    }
+  },
+  "title": "ProstateCancerCase",
+  "type": "object"
+}

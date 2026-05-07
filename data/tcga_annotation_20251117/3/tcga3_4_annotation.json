@@ -1,0 +1,77 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagogastrectomy",
+    "surgical_technique": null,
+    "cancer_primary_site": "middle_third",
+    "histology": "squamous_cell_carcinoma",
+    "grade": 1,
+    "tumor_extent": "mucosa",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tnm_descriptor": "m",
+    "pt_category": "t1b",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "stage_group": "i",
+    "ajcc_version": 7,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 15,
+        "description": "negative for malignancy"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "negative for malignancy"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "negative for malignancy"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional_gastric",
+        "involved": 0,
+        "examined": 1,
+        "station_name": "Perigastric"
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 0,
+        "examined": 2,
+        "station_name": "para-esophageal near pericardium"
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 0,
+        "examined": 1,
+        "station_name": "para-esophageal"
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 0,
+        "examined": 1,
+        "station_name": "para-esophageal near left main bronchus"
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 0,
+        "examined": 12,
+        "station_name": "gastroesophageal fat"
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

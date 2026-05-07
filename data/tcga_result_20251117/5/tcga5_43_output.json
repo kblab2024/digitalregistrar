@@ -1,0 +1,63 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "segmentectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 2,
+    "tumor_size": 88,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": "Approximately 10% necrosis.",
+    "tumor_extent": [
+      "portal_vein"
+    ],
+    "vascular_invasion": [
+      "small_vessel"
+    ],
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "portal_vein",
+        "margin_involved": true,
+        "distance": null,
+        "description": "en face portal triad margin"
+      },
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": true,
+        "distance": null,
+        "description": "blue inked surgical margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": "definitive lateral margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": null,
+        "description": "medial margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": null,
+        "description": "anterior margin"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

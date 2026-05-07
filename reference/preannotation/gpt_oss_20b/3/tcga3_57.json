@@ -1,0 +1,71 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "gastroesophageal_junction",
+    "histology": "squamous_cell_carcinoma",
+    "grade": 2,
+    "tumor_extent": "adventitia",
+    "lymphovascular_invasion": true,
+    "perineural_invasion": true,
+    "distant_metastasis": false,
+    "treatment_effect": "No prior treatment.",
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n2",
+    "pm_category": "m0",
+    "stage_group": "iiib",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "deep",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "abdomen_1",
+        "involved": 1,
+        "examined": 1,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "regional_gastric",
+        "involved": 1,
+        "examined": 2,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "regional_esophageal",
+        "involved": 2,
+        "examined": 21,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": 15
+  }
+}

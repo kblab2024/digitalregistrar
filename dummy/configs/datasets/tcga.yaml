@@ -1,0 +1,16 @@
+name: tcga
+reports_dir: data/tcga/reports
+annotations_dir: data/tcga/annotations
+preannotation_dir: data/tcga/preannotation
+manifest_path: data/tcga/dataset_manifest.yaml
+organs:
+  - n: 1
+    name: breast
+  - n: 2
+    name: colorectal
+  - n: 3
+    name: esophagus
+  - n: 4
+    name: stomach
+  - n: 5
+    name: liver

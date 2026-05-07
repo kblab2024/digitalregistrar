@@ -1,0 +1,76 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "segmental_colectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "descending_colon",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "pericolorectal_tissue",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": null,
+    "extracellular_mucin": null,
+    "signet_ring": null,
+    "tumor_budding": null,
+    "type_of_polyp": null,
+    "distant_metastasis": true,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n0",
+    "pm_category": "m1a",
+    "stage_group": "ivb",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 57,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 57,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "mesenteric_pedicle",
+        "margin_involved": false,
+        "distance": 20,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "outmost_of_adhered_tissue",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": null,
+        "description": null
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 0,
+        "examined": 21,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

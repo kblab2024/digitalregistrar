@@ -1,0 +1,35 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "left_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 1,
+    "tumor_size": 53,
+    "tumor_focality": "multifocal",
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": "r",
+    "pt_category": "t2",
+    "pn_category": "nx",
+    "pm_category": "m0",
+    "overall_stage": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 5,
+        "description": "Parenchymal margin uninvolved by invasive carcinoma"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

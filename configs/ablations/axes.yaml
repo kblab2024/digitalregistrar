@@ -1,0 +1,85 @@
+# Cell → axis mapping used by the ablation stats module
+# (src/digital_registrar_research/ablations/eval/stats.py).
+#
+# Multiple-comparisons families are formed per (axis, endpoint_tier).
+# Within a primary-tier family, p-values get Holm-Bonferroni correction
+# (FWER); within a secondary-tier family, BH-FDR.
+#
+# The optional `levels:` block tags each cell with its (A, B, C) factor
+# level for the Grid-2 factorial GLMM in stats.factorial_glmm. Cells
+# without a `levels` entry contribute only to the per-axis Holm/BH
+# correction, not to the factorial fit.
+
+axes:
+  A:  # Pipeline decomposition
+    - dspy_modular
+    - dspy_monolithic
+    - no_router
+    - per_section
+  B:  # Output structuring discipline
+    - dspy_monolithic
+    - str_outputs
+    - constrained_decoding
+    - free_text_regex
+    - raw_json
+  C:  # Prompting strategy
+    - dspy_monolithic
+    - fewshot_demos
+    - chain_of_thought
+    - compiled_dspy
+    - minimal_prompt
+  F:  # Schema specificity
+    - raw_json
+    - union_schema
+    - flat_schema
+
+# Factorial level labels per cell (Grid-2 only). Each cell can have at most
+# one (axis_A, axis_B, axis_C) coordinate. Cells outside the 3x3x3 cube
+# are ignored by the factorial fit.
+#
+# Grid 2 lattice (per reviewer-response-suggestions §1.3):
+#   axis_A ∈ {modular, monolithic, no_router}
+#   axis_B ∈ {dspy, raw_json, constrained}
+#   axis_C ∈ {zero_shot, fewshot_3, compiled}
+levels:
+  dspy_modular:
+    axis_A: modular
+    axis_B: dspy
+    axis_C: zero_shot
+  dspy_monolithic:
+    axis_A: monolithic
+    axis_B: dspy
+    axis_C: zero_shot
+  no_router:
+    axis_A: no_router
+    axis_B: dspy
+    axis_C: zero_shot
+  raw_json:
+    axis_A: monolithic
+    axis_B: raw_json
+    axis_C: zero_shot
+  constrained_decoding:
+    axis_A: monolithic
+    axis_B: constrained
+    axis_C: zero_shot
+  fewshot_demos:
+    axis_A: monolithic
+    axis_B: dspy
+    axis_C: fewshot_3
+  compiled_dspy:
+    axis_A: monolithic
+    axis_B: dspy
+    axis_C: compiled
+
+# Cells INTENTIONALLY OUTSIDE the (A, B, C) factorial cube — listed
+# here so `factorial_glmm` skips them on purpose (not by accident).
+# They contribute only to per-axis Holm/BH correction in their primary
+# axis (B for str/free/constrained variants, C for CoT/minimal, F for
+# schema-specificity).
+factorial_skip:
+  str_outputs:      "axis_B level 'str' is outside the {dspy, raw_json, constrained} cube"
+  free_text_regex:  "degenerate B-axis baseline; B-level 'free_text' outside the cube"
+  chain_of_thought: "axis_C level 'cot' is outside the {zero_shot, fewshot_3, compiled} cube"
+  minimal_prompt:   "degenerate C-axis baseline; C-level 'minimal' outside the cube"
+  union_schema:     "F-axis only (schema specificity)"
+  flat_schema:      "F-axis only (schema specificity)"

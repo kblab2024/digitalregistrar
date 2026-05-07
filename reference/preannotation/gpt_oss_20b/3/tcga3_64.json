@@ -1,0 +1,65 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "middle_third",
+    "histology": "squamous_cell_carcinoma",
+    "grade": 1,
+    "tumor_extent": "submucosa",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t1b",
+    "pn_category": "n1",
+    "pm_category": "m0",
+    "stage_group": "iiia",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Free surgical margin, distance not specified"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 41,
+        "description": "Free surgical margin, 4.1 cm from tumor"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Free surgical margin, distance not specified"
+      },
+      {
+        "margin_category": "lateral",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Free surgical margin, distance not specified"
+      },
+      {
+        "margin_category": "deep",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Free surgical margin, distance not specified"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": null,
+        "involved": 1,
+        "examined": 10,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": false,
+    "maximal_ln_size": 8
+  }
+}

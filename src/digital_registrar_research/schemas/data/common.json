@@ -1,0 +1,54 @@
+{
+  "description": "Top-level routing decision — mirrors `is_cancer` output fields.",
+  "properties": {
+    "cancer_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "stomach",
+            "colorectal",
+            "breast",
+            "esophagus",
+            "lung",
+            "prostate",
+            "thyroid",
+            "pancreas",
+            "cervix",
+            "liver",
+            "others"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Which organ the primary cancer arises from. Ten standard organs are implemented; anything outside the list is 'others'.",
+      "title": "Cancer Category"
+    },
+    "cancer_category_others_description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Free-text organ name when cancer_category == 'others'.",
+      "title": "Cancer Category Others Description"
+    },
+    "cancer_excision_report": {
+      "description": "Whether this report documents a PRIMARY cancer excision eligible for registry. False for carcinoma in situ / high-grade dysplasia only, or if no viable tumor remains after excision.",
+      "title": "Cancer Excision Report",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "cancer_excision_report"
+  ],
+  "title": "IsCancerCase",
+  "type": "object"
+}

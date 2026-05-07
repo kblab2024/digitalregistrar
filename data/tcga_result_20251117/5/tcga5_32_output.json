@@ -1,0 +1,51 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_hepatectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 3,
+    "tumor_size": 116,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tumor_extent": [
+      "others"
+    ],
+    "vascular_invasion": [
+      "small_vessel"
+    ],
+    "tnm_descriptor": "r",
+    "pt_category": "t3",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "overall_stage": "iiib",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "Tumor abuts the superficial capsular margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "Tumor extends through the inferior capsular margin"
+      },
+      {
+        "margin_category": "others",
+        "margin_involved": false,
+        "distance": 22,
+        "description": "Tumor is within 2.2 cm of the previously inked black surgical margin"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

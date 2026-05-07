@@ -1,0 +1,40 @@
+@echo off
+setlocal
+cd /d "%~dp0"
+
+rem --- Skip Streamlit's one-time "please enter your email" prompt on first launch.
+if not exist "%USERPROFILE%\.streamlit\credentials.toml" (
+    if not exist "%USERPROFILE%\.streamlit" mkdir "%USERPROFILE%\.streamlit"
+    (
+        echo [general]
+        echo email = ""
+    ) > "%USERPROFILE%\.streamlit\credentials.toml"
+)
+
+set "REGISTRAR_ANNOTATE_BASE_DIR=%~dp0workspace"
+set "REGISTRAR_ANNOTATE_LOCK_ANNOTATORS=1"
+set "PYTHONPATH=%~dp0app"
+set "PYTHONDONTWRITEBYTECODE=1"
+set "STREAMLIT_BROWSER_GATHER_USAGE_STATS=false"
+
+echo ================================================================
+echo   Digital Registrar - Annotator (workspace, locked to NHC)
+echo ================================================================
+echo   Data root : workspace\
+echo   Annotator : NHC (locked)
+echo   URL       : http://localhost:8501
+echo.
+echo   Keep this window open while annotating.
+echo   Close this window or press Ctrl+C to stop the server.
+echo ================================================================
+echo.
+
+"%~dp0python\python.exe" -m streamlit run ^
+    "%~dp0app\digital_registrar_research\annotation\app_canonical.py" ^
+    --server.address=localhost ^
+    --server.port=8501
+
+echo.
+echo Streamlit has stopped.
+pause
+endlocal

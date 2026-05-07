@@ -1,0 +1,72 @@
+[project]
+name = "digital-registrar-research"
+version = "0.1.0"
+description = "The Digital Registrar — research stack: pipeline, annotation, benchmarks, ablations"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Hong-Kai (Walther) Chen" },
+  { name = "Po-Yen Tzeng" },
+  { name = "Kai-Po Chang" },
+]
+keywords = ["cancer", "pathology", "registry", "nlp", "dspy", "clinical"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+  "dspy>=2.6",
+  "pydantic>=2",
+  "numpy",
+  "pandas",
+]
+
+[project.optional-dependencies]
+annotation  = ["streamlit>=1.35"]
+benchmarks  = ["scikit-learn", "torch", "transformers", "openai", "regex", "matplotlib", "seaborn", "scipy", "statsmodels"]
+ablations   = ["jsonschema", "openai", "scipy", "statsmodels", "pyyaml"]
+dev         = ["pytest>=8", "ruff", "mypy", "scipy", "statsmodels", "jsonschema", "pyyaml"]
+all         = ["digital-registrar-research[annotation,benchmarks,ablations,dev]"]
+
+[project.scripts]
+registrar-pipeline  = "digital_registrar_research.experiment:main"
+registrar-annotate  = "digital_registrar_research.annotation.app:main_cli"
+registrar-annotate-workspace = "digital_registrar_research.annotation.app_canonical:main_cli_workspace"
+registrar-annotate-dummy     = "digital_registrar_research.annotation.app_canonical:main_cli_dummy"
+registrar-benchmark = "digital_registrar_research.benchmarks.eval.run_all:main"
+registrar-ablate    = "digital_registrar_research.ablations.eval.run_ablations:main"
+registrar-schemas   = "digital_registrar_research.schemas.generate:main"
+
+[project.urls]
+Homepage = "https://github.com/kblab2024/digital-registrar-research"
+"Slim release" = "https://github.com/kblab2024/digitalregistrar"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"digital_registrar_research.schemas" = ["data/*.json"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

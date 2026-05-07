@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "filename": "fake2_1.txt",
+    "annotated_at": "2026-04-23T10:00:00"
+  },
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "right_hemicolectomy",
+    "surgical_technique": "laparoscopic",
+    "cancer_primary_site": "ascending_colon",
+    "histology": "adenocarcinoma",
+    "grade": 2,
+    "tumor_invasion": "muscularis_propria",
+    "lymphovascular_invasion": true,
+    "perineural_invasion": false,
+    "extracellular_mucin": false,
+    "signet_ring": false,
+    "tumor_budding": 4,
+    "type_of_polyp": null,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t3",
+    "pn_category": "n1a",
+    "pm_category": "m0",
+    "stage_group": "iiia",
+    "ajcc_version": 8,
+    "extranodal_extension": false,
+    "maximal_ln_size": 5,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 40,
+        "description": "negative"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 35,
+        "description": "negative"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 1,
+        "examined": 18,
+        "station_name": "pericolonic"
+      }
+    ],
+    "biomarkers": [
+      {
+        "biomarker_category": "mlh1",
+        "expression": true,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "MLH1"
+      },
+      {
+        "biomarker_category": "msh2",
+        "expression": true,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "MSH2"
+      },
+      {
+        "biomarker_category": "msh6",
+        "expression": true,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "MSH6"
+      }
+    ]
+  }
+}

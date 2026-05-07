@@ -1,0 +1,45 @@
+# Grid 1 — minimum-viable lesion study (suggestions doc §1.3).
+#
+# Single backbone (gptoss = ollama_chat/gpt-oss:20b), five conditions:
+#   full → −Decomposition → −ReportJsonize → −DSPy (raw JSON) → −Schema (free text)
+#
+# Wall-time estimate: ~2-3 days on a single 48 GB GPU (Ollama).
+#
+# To run multiple seeds: pass `--run runNN` per invocation; the runners
+# auto-pick the next free slot otherwise. Decoding seed is set in
+# `configs/dspy_ollama_<alias>.yaml` (override via `--master-seed` in
+# the multirun driver).
+
+name: grid_1
+description: "Minimum-viable lesion study × gptoss, single seed"
+folder: dummy            # 'dummy' | 'workspace' | absolute path
+dataset: tcga            # 'cmuh' | 'tcga'
+
+runs:
+  # Condition 1: FULL pipeline (modular DSPy + ReportJsonize + Literal enums)
+  # Cell A copies pipeline outputs from
+  # {folder}/results/predictions/{dataset}/llm/{model_slug}/runNN/...
+  - cell: dspy_modular
+    model: gptoss
+    args: {}              # uses most recent completed pipeline run; pin via source_run
+
+  # Condition 2: monolithic DSPy (drops the modular per-section chain)
+  - cell: dspy_monolithic
+    model: gptoss
+    args: {}
+
+  # Condition 3: monolithic DSPy without ReportJsonize
+  - cell: dspy_monolithic
+    model: gptoss
+    args:
+      skip_jsonize: true
+
+  # Condition 4: no DSPy at all — raw JSON-mode against local Ollama
+  - cell: raw_json
+    model: gptoss
+    args: {}              # api_base auto-set to http://localhost:11434/v1
+
+  # Condition 5: −Schema (free-text + regex post-extractor)
+  - cell: free_text_regex
+    model: gptoss
+    args: {}

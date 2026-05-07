@@ -1,0 +1,3 @@
+name: rule_based
+family: rule_based
+module: digital_registrar_research.benchmarks.baselines.rules

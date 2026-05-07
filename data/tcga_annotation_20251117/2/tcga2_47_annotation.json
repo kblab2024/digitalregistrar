@@ -1,0 +1,58 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "colorectal",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "extended_right_hemicolectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "hepatic_flexure",
+    "histology": "adenocarcinoma",
+    "grade": 3,
+    "tumor_invasion": "pericolorectal_tissue",
+    "lymphovascular_invasion": true,
+    "perineural_invasion": true,
+    "extracellular_mucin": null,
+    "signet_ring": null,
+    "tumor_budding": null,
+    "type_of_polyp": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t4a",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "stage_group": "iib",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Negative for tumor"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 80,
+        "description": "Negative for tumor; tumor 8 cm from distal margin"
+      },
+      {
+        "margin_category": "radial_or_circumferencial",
+        "margin_involved": false,
+        "distance": 1,
+        "description": "Tumor extends to within less than 1 mm of the radial margin"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional",
+        "involved": 0,
+        "examined": 25,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null,
+    "biomarkers": null
+  }
+}

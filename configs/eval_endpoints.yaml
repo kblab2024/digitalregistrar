@@ -1,0 +1,76 @@
+# Endpoint pre-registration for evaluation reporting.
+#
+# Multiple-comparisons correction is applied separately within each
+# tier. "primary" endpoints get strict family-wise control (Holm-
+# Bonferroni); "secondary" endpoints get FDR control (Benjamini-
+# Hochberg). Add a field here BEFORE running its evaluation to
+# pre-register; otherwise the writeup must mark it as exploratory.
+#
+# Format:
+#   primary:   list of field names (paper makes specific claims about these)
+#   secondary: list of field names (exploratory; reported with FDR control)
+#
+# Fields not listed are treated as exploratory by default.
+
+primary:
+  # Top-level routing decision and primary cancer category — these
+  # gate every downstream field.
+  - cancer_excision_report
+  - cancer_category
+  # TNM staging — the paper's headline staging accuracy.
+  - pt_category
+  - pn_category
+  - pm_category
+  # Tumor size and grade — the most clinically actionable scalar fields.
+  - tumor_size
+  - grade
+  # Lymphovascular and perineural invasion — boolean clinically critical.
+  - lymphovascular_invasion
+  - perineural_invasion
+  # Breast biomarkers — featured in Results §Biomarker extraction.
+  - biomarker_er
+  - biomarker_pr
+  - biomarker_her2
+
+secondary:
+  # Histology and procedure — important but with high cardinality.
+  - histology
+  - procedure
+  - surgical_technique
+  # Stage groups (anatomic, pathologic, AJCC).
+  - tnm_descriptor
+  - stage_group
+  - overall_stage
+  - pathologic_stage_group
+  - anatomic_stage_group
+  - ajcc_version
+  # Sub-grade scores.
+  - nuclear_grade
+  - tubule_formation
+  - mitotic_rate
+  - total_score
+  - dcis_grade
+  - dcis_present
+  - dcis_size
+  - dcis_comedo_necrosis
+  # Tumor topology.
+  - cancer_primary_site
+  - cancer_clock
+  - cancer_laterality
+  - cancer_quadrant
+  - tumor_focality
+  - tumor_site
+  - tumor_extent
+  - sideness
+  # Metastasis flags.
+  - distant_metastasis
+  - distant_metastases_present
+  - regional_lymph_nodes_involved
+  - extranodal_extension
+  - maximal_ln_size
+  - treatment_effect
+  # Nested-list fields scored as bipartite F1 — listed here for completeness;
+  # they go through the nested subcommand pipeline.
+  - regional_lymph_node
+  - margins
+  - biomarkers

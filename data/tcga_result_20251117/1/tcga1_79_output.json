@@ -1,0 +1,101 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "breast",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "simple_mastectomy",
+    "cancer_quadrant": "lower_outer_quadrant",
+    "cancer_clock": 6,
+    "cancer_laterality": "left",
+    "histology": "invasive_carcinoma_no_special_type",
+    "tumor_size": 40,
+    "lymphovascular_invasion": true,
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "dcis_present": true,
+    "dcis_size": null,
+    "dcis_comedo_necrosis": true,
+    "dcis_grade": 3,
+    "nuclear_grade": 3,
+    "tubule_formation": 3,
+    "mitotic_rate": 2,
+    "total_score": 8,
+    "grade": 3,
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n1a",
+    "pm_category": "m0",
+    "pathologic_stage_group": "iiia",
+    "anatomic_stage_group": "iiia",
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "superficial",
+        "margin_involved": false,
+        "distance": 2,
+        "description": "Superficial margin uninvolved; invasive tumor 2 mm from nearest inked superficial margin."
+      },
+      {
+        "margin_category": "base",
+        "margin_involved": false,
+        "distance": 8,
+        "description": "Deep (base) margin uninvolved; invasive tumor 8 mm from deep margin."
+      },
+      {
+        "margin_category": null,
+        "margin_involved": false,
+        "distance": null,
+        "description": "Additional anterior margin of inferior portion uninvolved; distance not specified."
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "sentinel",
+        "involved": 1,
+        "examined": 2,
+        "station_name": "Sentinel lymph node #1"
+      },
+      {
+        "lymph_node_side": "left",
+        "lymph_node_category": "nonsentinel",
+        "involved": 1,
+        "examined": 6,
+        "station_name": "Left axilla"
+      }
+    ],
+    "extranodal_extension": false,
+    "maximal_ln_size": null,
+    "biomarkers": [
+      {
+        "biomarker_category": "er",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "estrogen receptor"
+      },
+      {
+        "biomarker_category": "pr",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "progesterone receptor"
+      },
+      {
+        "biomarker_category": "her2",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "human epidermal growth factor receptor 2"
+      },
+      {
+        "biomarker_category": "ki67",
+        "expression": null,
+        "percentage": null,
+        "score": null,
+        "biomarker_name": "ki67 proliferation index"
+      }
+    ]
+  }
+}

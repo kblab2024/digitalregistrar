@@ -1,0 +1,10 @@
+{
+  "_meta": {
+    "filename": "fake1_5.txt",
+    "annotated_at": "2026-04-23T10:00:00"
+  },
+  "cancer_excision_report": false,
+  "cancer_category": null,
+  "cancer_category_others_description": null,
+  "cancer_data": null
+}

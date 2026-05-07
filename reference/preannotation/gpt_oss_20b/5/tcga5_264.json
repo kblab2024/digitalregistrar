@@ -1,0 +1,35 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "lobectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": 1,
+    "tumor_size": 80,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": null,
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": "r",
+    "pt_category": "t3",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": null,
+    "ajcc_version": 8,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "Parenchymal margin uninvolved"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

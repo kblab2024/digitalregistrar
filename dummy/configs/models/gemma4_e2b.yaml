@@ -1,0 +1,13 @@
+name: gemma4_e2b
+family: llm
+backend: ollama
+runs:
+  k: 3
+  seeds:
+    - 42
+    - 43
+    - 44
+decoding:
+  temperature: 0.7
+  top_p: 1.0
+  max_tokens: 2048

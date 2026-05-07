@@ -1,0 +1,34 @@
+# SYNTHETIC — for GUI testing only. Not a real patient record.
+
+Surgical Pathology Report
+Specimen: Right breast, partial mastectomy
+Clinical History: Palpable mass upper outer quadrant, right breast.
+
+Gross Description:
+The specimen is oriented with a suture at 12 o'clock. On sectioning, a firm
+tan tumor measuring 18 mm is identified in the upper outer quadrant
+at the 3 o'clock position. Margins are inked and submitted in entirety.
+
+Microscopic Description:
+Invasive carcinoma, invasive carcinoma no special type, is present. The tumor measures
+18 mm. Nuclear grade 2, tubule formation score
+2, mitotic rate 1. Total Nottingham score
+5, final grade 2.
+
+Margins: 
+  12 3 clock: 8 mm clear
+  3 6 clock: 5 mm clear
+  base: 12 mm clear
+
+Regional Lymph Nodes: 
+  sentinel: 0/3 involved
+
+Biomarkers (IHC):
+ER: 95% positive
+PR: 80% positive
+HER2: score 1
+
+Diagnosis:
+Invasive carcinoma of the right breast, see synoptic report above.
+pTt1c pNn0 pMm0, stage group ia.
+AJCC 8th edition.

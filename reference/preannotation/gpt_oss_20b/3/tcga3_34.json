@@ -1,0 +1,54 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "stomach",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "partial_gastrectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "cardia",
+    "histology": "poorly_cohesive_carcinoma",
+    "grade": 1,
+    "tumor_extent": "muscularis_propria",
+    "extracellular_mucin": true,
+    "signet_ring": true,
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": false,
+    "treatment_effect": null,
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n0",
+    "pm_category": "m0",
+    "stage_group": "iia",
+    "ajcc_version": 7,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 15,
+        "description": "Uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 30,
+        "description": "Uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": 30,
+        "description": "Uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "deep",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Uninvolved by invasive carcinoma"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

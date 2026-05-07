@@ -1,0 +1,28 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": null,
+    "tumor_site": "others",
+    "histology": "hepatocellular_carcinoma_clear_cell",
+    "grade": null,
+    "tumor_size": null,
+    "tumor_focality": null,
+    "perineural_invasion": null,
+    "distant_metastasis": true,
+    "treatment_effect": null,
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": "r",
+    "pt_category": "tx",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": "iva",
+    "ajcc_version": 8,
+    "margins": null,
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

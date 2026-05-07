@@ -1,0 +1,41 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "liver",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "lobectomy",
+    "tumor_site": "right_lobe",
+    "histology": "hepatocellular_carcinoma",
+    "grade": null,
+    "tumor_size": 95,
+    "tumor_focality": "unifocal",
+    "perineural_invasion": null,
+    "distant_metastasis": null,
+    "treatment_effect": "treated",
+    "tumor_extent": null,
+    "vascular_invasion": null,
+    "tnm_descriptor": "y",
+    "pt_category": "t2",
+    "pn_category": "nx",
+    "pm_category": "mx",
+    "overall_stage": null,
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": true,
+        "distance": 0,
+        "description": "Blue inked resection margin of right hepatic lobe"
+      },
+      {
+        "margin_category": "parenchymal",
+        "margin_involved": false,
+        "distance": null,
+        "description": "Additional medial margin specimen"
+      }
+    ],
+    "regional_lymph_node": null,
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

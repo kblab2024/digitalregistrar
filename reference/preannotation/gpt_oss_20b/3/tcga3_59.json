@@ -1,0 +1,65 @@
+{
+  "cancer_excision_report": true,
+  "cancer_category": "esophagus",
+  "cancer_category_others_description": null,
+  "cancer_data": {
+    "procedure": "esophagectomy",
+    "surgical_technique": "open",
+    "cancer_primary_site": "upper_third",
+    "histology": "squamous_cell_carcinoma",
+    "grade": 1,
+    "tumor_extent": "muscularis_propria",
+    "lymphovascular_invasion": false,
+    "perineural_invasion": false,
+    "distant_metastasis": null,
+    "treatment_effect": "None",
+    "tnm_descriptor": null,
+    "pt_category": "t2",
+    "pn_category": "n0",
+    "pm_category": "mx",
+    "stage_group": "iia",
+    "ajcc_version": null,
+    "margins": [
+      {
+        "margin_category": "proximal",
+        "margin_involved": false,
+        "distance": 16,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "distal",
+        "margin_involved": false,
+        "distance": 49,
+        "description": "uninvolved by invasive carcinoma"
+      },
+      {
+        "margin_category": "radial",
+        "margin_involved": false,
+        "distance": 0,
+        "description": "uninvolved by invasive carcinoma"
+      }
+    ],
+    "regional_lymph_node": [
+      {
+        "lymph_node_category": "regional_gastric",
+        "involved": 0,
+        "examined": 15,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "thoracic_4",
+        "involved": 0,
+        "examined": 1,
+        "station_name": null
+      },
+      {
+        "lymph_node_category": "abdomen_106",
+        "involved": 0,
+        "examined": 1,
+        "station_name": null
+      }
+    ],
+    "extranodal_extension": null,
+    "maximal_ln_size": null
+  }
+}

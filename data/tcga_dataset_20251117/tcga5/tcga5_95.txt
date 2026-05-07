@@ -1,0 +1,2 @@
+patient_filename: TCGA-DD-A4NL.54C7EDE1-EDBE-44A4-A3BE-FD639D6891DA
+text: TISSUE DESCRIPTION: A1 A2 A3 A4 A5 A6. Tissue from liver segment VI with portion of liver segment V (255.0. grams, 11.9 x 8.5 x 8.0 cm). DIAGNOSIS: Liver, segment VI with portion of segment V, resection: Well. differentiated hepatocellular carcinoma forming a mass (3.6 x 2.1 x. 2.1 cm) . The surgical resection margins are uninvolved. See. comment. Seen in consultation wit. Comment: Reticulin stain shows loss of reticulin framework in the. carcinoma.
