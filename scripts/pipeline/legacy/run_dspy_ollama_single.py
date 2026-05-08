@@ -1,41 +1,47 @@
 #!/usr/bin/env python3
-"""Single-run OpenAI cancer-extraction experiment using the loose pipeline.
+"""Single-run DSPy + Ollama cancer-extraction experiment (canonical layout).
 
-OpenAI counterpart of ``run_dspy_strict_ollama_single.py``. Routes the
-canonical :func:`digital_registrar_research.pipeline.run_cancer_pipeline`
-(loose JSON, the same one shipped at ``src/digital_registrar_research/
-pipeline.py``) at an OpenAI-hosted model via DSPy / LiteLLM. The
-extraction signatures, prompts, and post-processing are held constant —
-only the LM backend swaps — so the resulting predictions are
-apples-to-apples with the local Ollama runs in the cascade comparator.
+Iterates every ``<case_id>.txt`` under
+``{experiment_root}/data/{dataset}/reports/{organ_n}/`` and writes one
+prediction JSON per report to
+``{experiment_root}/results/predictions/{dataset}/llm/{model_slug}/{run}/{organ_n}/<case_id>.json``.
 
-Why this exists
----------------
-The reviewer asked for a "meaningful baseline" against a top-class
-hosted model. Instead of hand-rolling a separate baseline script (which
-would change prompts, parsing, and fall victim to the apples-to-oranges
-critique), we drive the *same* pipeline through OpenAI. Every per-organ
-``dspy.Predict`` call goes through ``openai/<model>`` via LiteLLM, with
-the API key loaded from ``~/.config/digital-registrar/.env`` (out of
-repo).
-
-Layout, run-slot rotation, manifest format, and per-case JSON output are
-byte-for-byte identical to the dspy_strict and structured siblings so
-the eval pipeline ingests this run without modification.
+Unlike the multirun driver in ``run_gpt_oss_multirun.py``, this script:
+  * talks to a local Ollama daemon via DSPy (no OpenAI-compatible endpoint)
+  * performs one pass with the seed baked into ``models.common.load_model``,
+    rather than K seeded repetitions — invoke multiple times with ``--run
+    runNN`` to build up a stochastic sweep
+  * needs no frozen-protocol YAML — the arguments are just a path and a model
 
 Usage
 -----
-    python scripts/pipeline/run_pipeline_openai_single.py \\
-        --model gpt5_4_mini \\
-        --folder workspace \\
+    python scripts/run_dspy_ollama_single.py \\
+        --model gptoss \\
+        --folder dummy \\
+        --dataset tcga \\
+        --model gptoss \\
+        --folder dummy \\
         --dataset tcga \\
         [--run run01] [--organs 1 2] [--limit N] [--overwrite] \\
         [--tolerate-errors] [-v]
 
-``--model`` must resolve to a ``model_list`` alias whose target starts
-with ``openai/``.  ``--folder`` accepts the shorthands ``dummy`` and
-``workspace`` (resolved against the repo root) or any absolute /
-relative path.
+``--model`` must be one of: gptoss, gemma3, gemma4, qwen3_5, medgemmalarge,
+medgemmasmall. Each alias auto-loads ``configs/dspy_ollama_{alias}.yaml`` for
+decoding overrides (temperature, top_p, num_ctx, max_tokens, ...). Any key
+left null in the YAML falls back to the per-model profile baked into
+``models.common.MODEL_PROFILES``.
+
+``--folder`` accepts the shorthands ``dummy`` and ``workspace`` (resolved
+against the repo root) or any absolute / relative path.
+
+``--model`` must be one of: gptoss, gemma3, gemma4, qwen3_5, medgemmalarge,
+medgemmasmall. Each alias auto-loads ``configs/dspy_ollama_{alias}.yaml`` for
+decoding overrides (temperature, top_p, num_ctx, max_tokens, ...). Any key
+left null in the YAML falls back to the per-model profile baked into
+``models.common.MODEL_PROFILES``.
+
+``--folder`` accepts the shorthands ``dummy`` and ``workspace`` (resolved
+against the repo root) or any absolute / relative path.
 
 Output tree
 -----------
@@ -45,8 +51,6 @@ Output tree
             _summary.json         run-level totals
             _log.jsonl            one row per case
             _run.log              full-verbosity log
-            _run_meta.json        provenance for this run
-            _cost_ledger.json     per-case wall-time (proxy for spend)
             {organ_n}/
                 <case_id>.json    prediction or {"_pipeline_error": true, ...}
 """
@@ -68,16 +72,21 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 # Make the in-tree package importable without requiring `pip install -e .`.
 sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))  # for _config_loader, _run_id
 
-from _config_loader import resolve_folder  # noqa: E402
+from _config_loader import (  # noqa: E402
+    load_model_config,
+    resolve_folder,
+    split_decoding_overrides,
+)
 from _run_id import format_run_id, machine_slug  # noqa: E402
 
 from digital_registrar_research.models.common import (  # noqa: E402
-    compute_lm_kwargs,
+    load_model,
+    localaddr,
     model_list,
 )
 from digital_registrar_research.pipeline import (  # noqa: E402
@@ -85,25 +94,27 @@ from digital_registrar_research.pipeline import (  # noqa: E402
     setup_pipeline,
 )
 from digital_registrar_research.util.logger import setup_logger  # noqa: E402
-from digital_registrar_research.util.secrets import load_openai_key  # noqa: E402
 
 PIPELINE_LOGGER_NAME = "experiment_logger"  # fixed by pipeline.run_pipeline
 
 DATASETS = ("cmuh", "tcga")
 MAX_RUN_SLOTS = 10  # memory: "run01..run10"
 
-# Aliases offered from the CLI. Restricted to OpenAI-prefixed entries in
-# model_list so a stray alias choice does not silently route an Ollama
-# model through this runner (which would still work but defeats its
-# purpose and skips the OPENAI_API_KEY load).
-def _openai_aliases() -> tuple[str, ...]:
-    return tuple(k for k, v in model_list.items() if v.startswith("openai/"))
+# Unified --model aliases consumed by the consolidated runners. The legacy
+# model_list keys (gpt, gemma27b, qwen30b, ...) still resolve but are not
+# offered from the CLI to keep the surface small and self-documenting.
+UNIFIED_MODELS = (
+    "gptoss", "gemma3", "gemma4", "qwen3_5", "medgemmalarge", "medgemmasmall", "gemma4large", "qwen3_6"
+)
 
 
 # --- IO helpers --------------------------------------------------------------
 
 
 def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
+    """Write JSON via a tmp file + rename so a killed run never leaves a
+    half-written ``<case_id>.json`` that would later be mistaken for a valid
+    cached prediction."""
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix=path.name + ".", dir=str(path.parent))
     try:
@@ -119,7 +130,7 @@ def _atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 def _atomic_write_yaml(path: Path, payload: dict[str, Any]) -> None:
-    import yaml
+    import yaml  # lazy so the rest of the script imports without pyyaml
 
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp = tempfile.mkstemp(prefix=path.name + ".", dir=str(path.parent))
@@ -151,6 +162,7 @@ def _utc_now_iso() -> str:
 
 
 def _split_report_rows(report_text: str) -> list[str]:
+    """Normalize raw report text into non-empty paragraph rows."""
     rows = report_text.split("\n\n")
     return [row.strip() for row in rows if row.strip()]
 
@@ -172,17 +184,13 @@ def _git_sha(repo_root: Path) -> str | None:
 
 
 def model_slug(model_key: str) -> str:
-    """Canonical folder name for an OpenAI run.
+    """Canonical folder name for a model, derived from its model_list ID.
 
-    No suffix (unlike the ``_dspy_strict`` variant) because the loose
-    pipeline.py runner is the *only* OpenAI driver in the codebase — no
-    collision to disambiguate.
-
-    ``openai/gpt-5.4-mini`` → ``gpt_5_4_mini``;
-    ``openai/gpt-4o``       → ``gpt_4o``.
+    ``ollama_chat/gpt-oss:20b`` → ``gpt_oss_20b``;
+    ``ollama_chat/qwen3:30b``  → ``qwen3_30b``.
     """
     full = model_list[model_key]
-    tail = full.split("/", 1)[-1]
+    tail = full.split("/", 1)[-1]  # drop the backend prefix
     return re.sub(r"[-:./]", "_", tail)
 
 
@@ -192,13 +200,16 @@ def model_slug(model_key: str) -> str:
 def discover_organs(
     reports_root: Path, organ_filter: list[str] | None,
 ) -> list[tuple[str, Path]]:
+    """Return sorted ``(organ_n, organ_dir)`` pairs for every numeric subdir
+    under ``reports_root`` that contains at least one ``*.txt``.
+    ``organ_filter`` matches against the directory *name* (e.g. "1", "2")."""
     if not reports_root.is_dir():
         return []
     picked: list[tuple[str, Path]] = []
     for child in sorted(reports_root.iterdir(), key=lambda p: p.name):
         if not child.is_dir():
             continue
-        if child.name.startswith("_"):
+        if child.name.startswith("_"):  # sidecar convention
             continue
         if organ_filter and child.name not in organ_filter:
             continue
@@ -216,6 +227,13 @@ def discover_cases(organ_dir: Path, limit: int | None) -> list[Path]:
 
 
 def pick_next_run(model_dir: Path) -> str:
+    """Return the first run-id in 01..10 without a `_summary.json`.
+
+    Names follow ``run{NN}[-{machine_slug}]`` (see ``scripts/_run_id.py``).
+    The slot space is per-machine: with ``DRR_MACHINE_ID=alpha`` the
+    function only ever sees/returns ``run01-alpha..run10-alpha``, so two
+    machines with distinct slugs each get an independent 10-slot budget.
+    Partial-but-not-finalised runs are treated as free (to allow resumption)."""
     slug = machine_slug()
     for k in range(1, MAX_RUN_SLOTS + 1):
         name = format_run_id(k, padded=True)
@@ -238,11 +256,15 @@ def process_case(
     seed: Any,
     out_dir: Path,
     log_fh,
-    cost_ledger: list[dict[str, Any]],
     logger: logging.Logger,
     *,
     overwrite: bool,
 ) -> dict[str, Any]:
+    """Predict for one case.
+
+    ``out_dir`` is the per-run directory whose contents are written as
+    ``{out_dir}/{organ}/<case_id>.json`` — i.e. the organ subdir is
+    preserved inside the run, matching the canonical predictions layout."""
     case_id = report_path.stem
     organ_out_dir = out_dir / organ
     out_path = organ_out_dir / f"{case_id}.json"
@@ -279,7 +301,7 @@ def process_case(
             run_name, organ, case_id, latency_s,
             row["is_cancer"], row["cancer_category"],
         )
-    except Exception as exc:
+    except Exception as exc:  # DSPy/Ollama errors surface here
         latency_s = round(time.perf_counter() - t0, 3)
         sentinel = {
             "_pipeline_error": True,
@@ -298,10 +320,6 @@ def process_case(
 
     log_fh.write(json.dumps(row, ensure_ascii=False) + "\n")
     log_fh.flush()
-    cost_ledger.append({
-        "case_id": case_id, "organ": organ, "elapsed_s": row["latency_s"],
-        "status": row["status"],
-    })
     return row
 
 
@@ -323,6 +341,8 @@ def update_model_manifest(
     model_dir: Path, dataset: str, model_slug_: str, model_id: str,
     run_name: str, run_summary: dict, lm_kwargs: dict,
 ) -> None:
+    """Read-modify-write the model-level ``_manifest.yaml`` so each new run
+    appends/updates its own entry without clobbering prior runs."""
     import yaml
 
     manifest_path = model_dir / "_manifest.yaml"
@@ -371,6 +391,8 @@ def run_single(
     run_dir: Path, run_name: str, organs: list[tuple[str, Path]],
     seed: Any, logger: logging.Logger, args: argparse.Namespace,
 ) -> dict[str, Any]:
+    """Execute one full pass over all discovered cases. Returns the
+    ``_summary.json`` payload."""
     run_dir.mkdir(parents=True, exist_ok=True)
 
     summary: dict[str, Any] = {
@@ -384,7 +406,6 @@ def run_single(
         "wall_time_s": 0.0,
         "created_at": _utc_now_iso(),
     }
-    cost_ledger: list[dict[str, Any]] = []
     t_run = time.perf_counter()
     log_path = run_dir / "_log.jsonl"
     with log_path.open("a", encoding="utf-8") as log_fh:
@@ -398,7 +419,7 @@ def run_single(
             for report_path in cases:
                 row = process_case(
                     report_path, organ_n, run_name, seed, run_dir, log_fh,
-                    cost_ledger, logger, overwrite=args.overwrite,
+                    logger, overwrite=args.overwrite,
                 )
                 summary["n_cases"] += 1
                 per["n_cases"] += 1
@@ -420,15 +441,6 @@ def run_single(
     summary["parse_error_rate"] = (summary["n_pipeline_error"]
                                    / max(summary["n_cases"], 1))
     _atomic_write_json(run_dir / "_summary.json", summary)
-    _atomic_write_json(run_dir / "_cost_ledger.json", {
-        "model_slug": model_slug(args.model),
-        "model_id": model_list[args.model],
-        "run": run_name,
-        "seed": seed,
-        "total_wall_s": summary["wall_time_s"],
-        "n_cases": summary["n_cases"],
-        "per_case": cost_ledger,
-    })
     return summary
 
 
@@ -436,24 +448,28 @@ def run_single(
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    aliases = _openai_aliases()
     ap = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    ap.add_argument("--model", required=True, choices=aliases or None,
-                    help="OpenAI model alias from models.common.model_list "
-                         "(must resolve to 'openai/...'). Available: "
-                         + (", ".join(aliases) if aliases else "(none)"))
-    ap.add_argument("--folder", dest="experiment_root", required=False,
-                    default=None, type=resolve_folder,
+    ap.add_argument("--model", required=True, choices=UNIFIED_MODELS,
+                    help="Model alias: one of " + ", ".join(UNIFIED_MODELS) +
+                         ". Each alias auto-loads "
+                         "configs/dspy_ollama_{alias}.yaml (if present) for "
+                         "decoding overrides.")
+    ap.add_argument("--folder", dest="experiment_root", required=False, default=None,
+                    type=resolve_folder,
                     help="Experiment root containing data/ and results/. "
                          "Shorthand 'dummy', 'workspace', or 'obfustrated' "
-                         "resolves against the repo root; absolute paths or "
-                         "other relative paths are accepted too.")
+                         "resolves against the repo root; absolute paths or other "
+                         "relative paths are accepted too. Required unless "
+                         "--obfustrated is set.")
+    ap.add_argument("--obfustrated", action="store_true",
+                    help="Shortcut for --folder obfustrated (= workspace_obfustrated/). "
+                         "Use to debug pipeline against synthetic PHI-free data; "
+                         "explicit --folder always wins.")
     ap.add_argument("--dataset", required=True, choices=DATASETS,
-                    help="Dataset name under data/ (cmuh or tcga). The "
-                         "rebuttal sweep is tcga (public corpus).")
+                    help="Dataset name under data/ (cmuh or tcga).")
     ap.add_argument("--run", default=None,
                     help="Run slot name, e.g. run01..run10 "
                          "(default: next free slot under the model dir).")
@@ -464,9 +480,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                     help="Cap cases per organ (debugging).")
     ap.add_argument("--overwrite", action="store_true",
                     help="Reprocess cases even if a valid output exists.")
-    ap.add_argument("--seed", type=int, default=None,
-                    help="Decoding seed forwarded to dspy.LM. Default: the "
-                         "value from MODEL_PROFILES / _BASE_KWARGS (10).")
     ap.add_argument("--tolerate-errors", action="store_true",
                     help="Always exit 0 if the script completes, even when "
                          "some cases failed. Default: non-zero on any error.")
@@ -478,30 +491,24 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def run_with_args(
     args: argparse.Namespace, overrides: dict | None = None,
 ) -> int:
+    """Execute a full single-run given a prebuilt argparse.Namespace and an
+    optional decoding-overrides dict. Factored out of ``main`` so the
+    per-(model, tree) YAML wrappers in ``scripts/run_dspy_ollama_single_*.py``
+    can reuse the same body without re-invoking argparse."""
     if args.model not in model_list:
         print(f"error: unknown --model {args.model!r}. "
               f"Valid keys: {', '.join(model_list.keys())}", file=sys.stderr)
         return 2
 
-    model_id = model_list[args.model]
-    if not model_id.startswith("openai/"):
-        print(f"error: --model {args.model!r} resolves to {model_id!r}, "
-              f"which is not an OpenAI-hosted model. Use the Ollama runner "
-              f"for local models.", file=sys.stderr)
-        return 2
-
+    # Resolve --obfustrated shortcut into args.experiment_root if --folder absent.
     if args.experiment_root is None:
-        print("error: --folder is required (use 'dummy', 'workspace', "
-              "'workspace_obfustrated', or an absolute path).",
-              file=sys.stderr)
-        return 2
-
-    # Fail fast if the API key cannot be located, before discovering cases.
-    try:
-        load_openai_key()
-    except RuntimeError as exc:
-        print(f"error: {exc}", file=sys.stderr)
-        return 2
+        if getattr(args, "obfustrated", False):
+            args.experiment_root = resolve_folder("obfustrated")
+        else:
+            print("error: --folder is required (use 'dummy', 'workspace', "
+                  "'workspace_obfustrated', or an absolute path), or pass "
+                  "--obfustrated for the synthetic workspace.", file=sys.stderr)
+            return 2
 
     reports_root = args.experiment_root / "data" / args.dataset / "reports"
     if not reports_root.is_dir():
@@ -543,21 +550,27 @@ def run_with_args(
     )
     logger.info("experiment_root: %s", args.experiment_root)
     logger.info("dataset: %s", args.dataset)
-    logger.info("model: %s (%s) → slug=%s", args.model, model_id, slug)
+    logger.info("model: %s (%s) → slug=%s",
+                args.model, model_list[args.model], slug)
     logger.info("run: %s", run_name)
     logger.info("run dir: %s", run_dir)
     logger.info("organs: %s", [o[0] for o in organs])
+    if overrides:
+        logger.info("decoding overrides: %s", overrides)
 
-    # Merge --seed (CLI) into overrides without clobbering wrapper-supplied
-    # values.
-    effective_overrides = dict(overrides or {})
-    if args.seed is not None:
-        effective_overrides["seed"] = int(args.seed)
-    if effective_overrides:
-        logger.info("decoding overrides: %s", effective_overrides)
-
-    setup_pipeline(args.model, overrides=effective_overrides)
-    lm_kwargs = compute_lm_kwargs(args.model, overrides=effective_overrides)
+    setup_pipeline(args.model, overrides=overrides)  # autoconf_dspy under the hood
+    lm = load_model(args.model, overrides=overrides)
+    lm_kwargs = {
+        "temperature": getattr(lm, "temperature", None) or lm.kwargs.get("temperature"),
+        "top_p": lm.kwargs.get("top_p"),
+        "top_k": lm.kwargs.get("top_k"),
+        "max_tokens": lm.kwargs.get("max_tokens"),
+        "num_ctx": lm.kwargs.get("num_ctx"),
+        "repeat_penalty": lm.kwargs.get("repeat_penalty"),
+        "keep_alive": lm.kwargs.get("keep_alive"),
+        "cache": lm.kwargs.get("cache"),
+        "seed": lm.kwargs.get("seed"),
+    }
 
     started_at = _utc_now_iso()
     t_run = time.perf_counter()
@@ -568,21 +581,24 @@ def run_with_args(
     finally:
         finished_at = _utc_now_iso()
 
+    # Update the model-level manifest idempotently
     update_model_manifest(
-        model_dir, args.dataset, slug, model_id,
+        model_dir, args.dataset, slug, model_list[args.model],
         run_name, summary, lm_kwargs,
     )
 
+    # Stamp some single-run-only provenance next to the summary so it's
+    # recoverable after the fact. Kept under a leading underscore so it
+    # doesn't get picked up as a prediction.
     _atomic_write_json(run_dir / "_run_meta.json", {
         "run": run_name,
         "model_key": args.model,
-        "model_id": model_id,
+        "model_id": model_list[args.model],
         "model_slug": slug,
         "dataset": args.dataset,
         "experiment_root": str(args.experiment_root.resolve()),
         "organs": [o[0] for o in organs],
-        "decoding_mode": "openai_loose_json",
-        "pipeline": "loose",  # pipeline.py, not pipeline_dspy_strict
+        "ollama_endpoint": localaddr,
         "started_at": started_at,
         "finished_at": finished_at,
         "dspy_lm_kwargs": lm_kwargs,
@@ -612,7 +628,9 @@ def run_with_args(
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    return run_with_args(args, overrides=None)
+    cfg = load_model_config(args.model)
+    overrides = split_decoding_overrides(cfg.get("decoding"))
+    return run_with_args(args, overrides)
 
 
 if __name__ == "__main__":

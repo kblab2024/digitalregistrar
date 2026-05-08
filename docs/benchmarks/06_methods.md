@@ -73,7 +73,7 @@ See [`02_train_bert.md#why-pool-train-splits`](02_train_bert.md#why-pool-train-s
 
 ## LLM
 
-**Module / runner:** `scripts/pipeline/run_dspy_ollama_single.py` (and multirun variants).
+**Module / runner:** `scripts/pipeline/legacy/run_dspy_ollama_single.py` (and multirun variants).
 
 Existing canonical pipeline — unchanged by this baseline integration. Uses DSPy signatures + Ollama / OpenAI-compatible endpoints to run a per-organ subsection extraction pipeline. Reads the report, routes to per-organ DSPy modules, returns a structured prediction.
 

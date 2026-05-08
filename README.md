@@ -34,8 +34,9 @@ bash scripts/repo/install_git_hooks.sh
 
 ```
 src/digital_registrar_research/
-├── pipeline.py, experiment.py    # DSPy extraction pipeline (vendored from digitalregistrar)
-├── models/                        # per-organ DSPy signatures + nested Pydantic types
+├── pipeline.py, pipeline_factory.py, runner.py    # DSPy extraction (legacy + factory v2 + runner)
+├── signatures/                    # signature factory: builds dspy.Signature from Pydantic schemas
+├── models/                        # legacy per-organ DSPy signatures (kept until v2 validates)
 ├── util/                          # logging, prediction dump
 ├── schemas/                       # canonical Pydantic case-models → generated JSON schemas
 │   ├── pydantic/                  # ← the source of truth

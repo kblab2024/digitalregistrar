@@ -87,10 +87,10 @@ Cascade auto-discovers these run slots — there is no extra flag to pass at eva
 
 ## LLM (DSPy + Ollama)
 
-The LLM pipeline is unchanged from the existing canonical workflow — see `scripts/pipeline/run_dspy_ollama_single.py` for the single-run runner and `run_dspy_ollama_multirun.py` / `run_gpt_oss_multirun.py` for multi-run sweeps.
+The LLM pipeline is unchanged from the existing canonical workflow — see `scripts/pipeline/legacy/run_dspy_ollama_single.py` for the single-run runner and `run_dspy_ollama_multirun.py` / `run_gpt_oss_multirun.py` for multi-run sweeps.
 
 ```bash
-python scripts/pipeline/run_dspy_ollama_single.py \
+python scripts/pipeline/legacy/run_dspy_ollama_single.py \
     --model gptoss --folder workspace --dataset tcga \
     [--run run01] [--organs 1 2] [--limit N] [--overwrite] [-v]
 ```
@@ -115,12 +115,12 @@ The loader at [`util.secrets.load_openai_key`](../../src/digital_registrar_resea
 
 ```bash
 # Single run (one seed, full TCGA)
-python scripts/pipeline/run_pipeline_openai_single.py \
+python scripts/pipeline/legacy/run_pipeline_openai_single.py \
     --model gpt5_4_mini --folder workspace --dataset tcga \
     [--run run01] [--organs 1 2] [--limit N] [--overwrite] [-v]
 
 # K-seed multirun for statistical comparison (paired bootstrap, ICC, flip rate)
-python scripts/pipeline/run_pipeline_openai_multirun.py \
+python scripts/pipeline/legacy/run_pipeline_openai_multirun.py \
     --model gpt5_4_mini --folder workspace --dataset tcga \
     --n 10 --master-seed 42
 ```

@@ -11,7 +11,7 @@ attributes the headline accuracy back to those choices, one knob at a time.
 ## Canonical layout
 
 Every ablation runner uses the same `--folder/--dataset/--model` contract
-as [`scripts/pipeline/run_dspy_ollama_single.py`](../scripts/pipeline/run_dspy_ollama_single.py)
+as [`scripts/pipeline/legacy/run_dspy_ollama_single.py`](../scripts/pipeline/legacy/run_dspy_ollama_single.py)
 so input data, output predictions, and model aliases share one directory
 convention with the rest of the toolkit.
 

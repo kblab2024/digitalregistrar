@@ -153,6 +153,6 @@ def run_cancer_pipeline(report: str | list[str], fname: str = "") -> tuple[dict,
 
 if __name__ == "__main__":
     # For batch extraction across a folder, use the `registrar-pipeline` console
-    # script (see experiment.py). This block is a minimal smoke test.
+    # script (see runner.py). This block is a minimal smoke test.
     setup_pipeline("gpt")
     print("Pipeline is ready for processing pathology reports.")

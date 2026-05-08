@@ -6,16 +6,18 @@ This package wraps four research concerns around the slim production extractor:
 
 | Subpackage | Purpose |
 |---|---|
-| [`digital_registrar_research.pipeline` + `models/` + `util/`](pipeline.md) | Core DSPy extraction (vendored from the slim `digitalregistrar` release) |
-| [`digital_registrar_research.schemas`](schemas.md) | Canonical Pydantic case-models → generated JSON schemas |
-| [`digital_registrar_research.annotation`](annotation.md) | Streamlit UI for doctors to review GPT-OSS pre-annotations |
-| [`digital_registrar_research.benchmarks`](benchmarks/README.md) | Comparison vs LLM / ClinicalBERT / rule-based — canonical run + eval workflow |
-| [`digital_registrar_research.ablations`](ablations.md) | Modular vs monolithic DSPy × DSPy vs raw-JSON grid |
+| [`pipeline` + `pipeline_factory` + `runner`](pipeline.md) | Core extraction: legacy DSPy + v2 schema-driven factory + batch runner |
+| [`signatures.factory`](pipeline.md#decomposition-modes-factory-engine) | Builds DSPy signatures dynamically from Pydantic case-models |
+| [`schemas`](schemas.md) | Canonical Pydantic case-models → auto-generated JSON schemas |
+| [schema GUI blueprint](schema_gui_blueprint.md) | Future clinician-friendly schema editor (design only) |
+| [`annotation`](annotation.md) | Streamlit UI for doctors to review GPT-OSS pre-annotations |
+| [`benchmarks`](benchmarks/README.md) | Comparison vs LLM / ClinicalBERT / rule-based — canonical run + eval workflow |
+| [`ablations`](ablations.md) | Modular vs monolithic DSPy × DSPy vs raw-JSON grid |
 | [example data](data.md) | Datasets (cmuh, tcga), layout conventions, dummy skeleton |
 | [experiment protocol](experiment_protocol.md) | 2026-04 experiment cross-product, evaluation questions, invariants |
 | [branching strategy](branching_strategy.md) | 12-branch working model (testing / refactor / experiment state) |
 | [evaluation pipeline](eval/index.md) | Paper-grade metric explanations, recipes, and citations |
-| [DSPy deep dive](dspy_deep_dive.md) | Why the strict-schema protocol works on `gpt-oss:20b`, deeper DSPy concepts, phased dev roadmap |
+| [DSPy deep dive](dspy_deep_dive.md) | Why the strict-schema protocol works on `gpt-oss:20b`, dynamic signature construction, phased dev roadmap |
 | [obfuscated workspace](obfuscation.md) | Schema-conformant synthetic copy of `workspace/` for PHI-free debugging |
 
 ## Why this exists

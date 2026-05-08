@@ -39,7 +39,7 @@ import yaml
 
 logger = logging.getLogger("gpt_oss_multirun")
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT / "scripts"))  # for _run_id
 
 from _run_id import format_run_id, machine_slug  # noqa: E402

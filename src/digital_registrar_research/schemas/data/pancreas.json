@@ -74,6 +74,7 @@
               "type": "null"
             }
           ],
+          "default": null,
           "title": "Description"
         },
         "distance": {
@@ -122,14 +123,13 @@
         }
       },
       "required": [
-        "margin_involved",
-        "description"
+        "margin_involved"
       ],
       "title": "PancreasMargin",
       "type": "object"
     }
   },
-  "description": "Canonical extracted case record for pancreas cancer. Built dynamically from the DSPy signatures listed in models.modellist.organmodels['pancreas'].",
+  "description": "Canonical extracted case record for pancreas cancer.",
   "properties": {
     "ajcc_version": {
       "anyOf": [
@@ -142,6 +142,8 @@
       ],
       "default": null,
       "description": "identify the ajcc version of the pathological staging",
+      "dspy_desc": "identify the ajcc version of the pathological staging",
+      "group": "staging",
       "title": "Ajcc Version"
     },
     "distant_metastasis": {
@@ -155,6 +157,8 @@
       ],
       "default": null,
       "description": "check whether or not distant metastasis is present",
+      "dspy_desc": "check whether or not distant metastasis is present",
+      "group": "nonnested",
       "title": "Distant Metastasis"
     },
     "extranodal_extension": {
@@ -168,6 +172,8 @@
       ],
       "default": null,
       "description": "check whether or not extranodal extension is present",
+      "dspy_desc": "check whether or not extranodal extension is present",
+      "group": "lymph_nodes",
       "title": "Extranodal Extension"
     },
     "histology": {
@@ -190,6 +196,8 @@
       ],
       "default": null,
       "description": "identify the histological type of the cancer. e.g. invasive carcinoma of no special type",
+      "dspy_desc": "identify the histological type of the cancer. e.g. invasive carcinoma of no special type",
+      "group": "nonnested",
       "title": "Histology"
     },
     "lymphovascular_invasion": {
@@ -203,6 +211,8 @@
       ],
       "default": null,
       "description": "check whether or not lymphovascular invasion is present",
+      "dspy_desc": "check whether or not lymphovascular invasion is present",
+      "group": "nonnested",
       "title": "Lymphovascular Invasion"
     },
     "margins": {
@@ -219,6 +229,8 @@
       ],
       "default": null,
       "description": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"proximal_duodenal\", \"margin_involved\": true, \"distance\": null}, {\"margin_category\": \"anterior_outmost\", \"margin_involved\": false, \"distance\": 10}, {\"margin_category\": \"radial\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "dspy_desc": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"proximal_duodenal\", \"margin_involved\": true, \"distance\": null}, {\"margin_category\": \"anterior_outmost\", \"margin_involved\": false, \"distance\": 10}, {\"margin_category\": \"radial\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "group": "margins",
       "title": "Margins"
     },
     "maximal_ln_size": {
@@ -232,6 +244,8 @@
       ],
       "default": null,
       "description": "check the maximal size of node metastatic tumor in mm, rounded to integer. if not, return None",
+      "dspy_desc": "check the maximal size of node metastatic tumor in mm, rounded to integer. if not, return None",
+      "group": "lymph_nodes",
       "title": "Maximal Ln Size"
     },
     "overall_stage": {
@@ -253,6 +267,8 @@
       ],
       "default": null,
       "description": "identify the overall stage of the tumor",
+      "dspy_desc": "identify the overall stage of the tumor",
+      "group": "staging",
       "title": "Overall Stage"
     },
     "perineural_invasion": {
@@ -266,6 +282,8 @@
       ],
       "default": null,
       "description": "check whether or not perineural invasion is present",
+      "dspy_desc": "check whether or not perineural invasion is present",
+      "group": "nonnested",
       "title": "Perineural Invasion"
     },
     "pm_category": {
@@ -283,6 +301,8 @@
       ],
       "default": null,
       "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "dspy_desc": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "group": "staging",
       "title": "Pm Category"
     },
     "pn_category": {
@@ -302,6 +322,8 @@
       ],
       "default": null,
       "description": "identify the pn category of the tumor",
+      "dspy_desc": "identify the pn category of the tumor",
+      "group": "staging",
       "title": "Pn Category"
     },
     "procedure": {
@@ -324,6 +346,8 @@
       ],
       "default": null,
       "description": "identify which surgery procedure was used. e.g. partial pancreatectomy, pylorus-preserving pancreaticoduodenectomy(PPPD), Subtotal stomach-preserving pancreaticoduodenectomy (SSPPD), Whipple procedure, etc.",
+      "dspy_desc": "identify which surgery procedure was used. e.g. partial pancreatectomy, pylorus-preserving pancreaticoduodenectomy(PPPD), Subtotal stomach-preserving pancreaticoduodenectomy (SSPPD), Whipple procedure, etc.",
+      "group": "nonnested",
       "title": "Procedure"
     },
     "pt_category": {
@@ -347,6 +371,8 @@
       ],
       "default": null,
       "description": "identify the pt category of the tumor",
+      "dspy_desc": "identify the pt category of the tumor",
+      "group": "staging",
       "title": "Pt Category"
     },
     "regional_lymph_node": {
@@ -363,6 +389,8 @@
       ],
       "default": null,
       "description": "return all of the involved regional lymph node. example:[{\"lymph_node_category\": \"1\", \"involved\": 2, \"examined\": 5, \"station_name\": \"station 1\"}, {\"lymph_node_category\": \"2\", \"involved\": 0, \"examined\": 3, \"station_name\": \"station 2\"}, ...]. If not present, just output null for every lymph node",
+      "dspy_desc": "return all of the involved regional lymph node. example:[{\"lymph_node_category\": \"1\", \"involved\": 2, \"examined\": 5, \"station_name\": \"station 1\"}, {\"lymph_node_category\": \"2\", \"involved\": 0, \"examined\": 3, \"station_name\": \"station 2\"}, ...]. If not present, just output null for every lymph node",
+      "group": "lymph_nodes",
       "title": "Regional Lymph Node"
     },
     "tnm_descriptor": {
@@ -381,6 +409,8 @@
       ],
       "default": null,
       "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "dspy_desc": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "group": "staging",
       "title": "Tnm Descriptor"
     },
     "treatment_effect": {
@@ -394,6 +424,8 @@
       ],
       "default": null,
       "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "dspy_desc": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "group": "nonnested",
       "title": "Treatment Effect"
     },
     "tumor_extension": {
@@ -413,6 +445,8 @@
       ],
       "default": null,
       "description": "identify the extent of tumor extension. e.g. within pancreas",
+      "dspy_desc": "identify the extent of tumor extension. e.g. within pancreas",
+      "group": "nonnested",
       "title": "Tumor Extension"
     },
     "tumor_site": {
@@ -434,6 +468,8 @@
       ],
       "default": null,
       "description": "identify the primary site of cancer. e.g. head of pancreas",
+      "dspy_desc": "identify the primary site of cancer. e.g. head of pancreas",
+      "group": "nonnested",
       "title": "Tumor Site"
     },
     "tumor_size": {
@@ -447,6 +483,8 @@
       ],
       "default": null,
       "description": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+      "dspy_desc": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+      "group": "nonnested",
       "title": "Tumor Size"
     }
   },

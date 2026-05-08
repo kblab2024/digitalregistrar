@@ -42,10 +42,10 @@ import sys
 import time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))  # for _config_loader, _run_id
-sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline"))  # for sibling imports
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))  # for sibling imports
 
 from _config_loader import (  # noqa: E402
     load_model_config,

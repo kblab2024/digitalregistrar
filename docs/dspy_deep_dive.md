@@ -2,7 +2,18 @@
 
 This doc is the **postmortem-turned-roadmap** companion to [dspy_ollama_model_compatibility.md](dspy_ollama_model_compatibility.md). The compatibility doc explained *why* DSPy was failing on Gemma / Qwen and quietly succeeding on `gpt-oss:20b`. This one starts from the now-confirmed fact that the protocol in [pipeline_dspy_strict.py](../src/digital_registrar_research/pipeline_dspy_strict.py) — `litellm.register_model(...supports_response_schema=True)` + `dspy.adapters.JSONAdapter` + `dspy.ChainOfThought` per signature — works, and then unpacks (a) what each piece is doing on the wire, (b) the parts of DSPy this repo has not yet used, and (c) a phased plan for what to build next.
 
-Pinned versions referenced throughout: **DSPy 3.2.0**, **Ollama ≥ 0.5**, **LiteLLM** as bundled by DSPy 3.2.
+Pinned versions referenced throughout: **DSPy 3.2.1**, **Ollama ≥ 0.5**, **LiteLLM** as bundled by DSPy 3.2.
+
+> **2026-05 update.** This repo now ships a v2 schema-driven pipeline
+> ([`pipeline_factory.py`](../src/digital_registrar_research/pipeline_factory.py))
+> alongside the legacy DSPy stack and the strict/structured variants
+> described below. The v2 pipeline builds DSPy signatures dynamically
+> from Pydantic schemas via the
+> [signature factory](../src/digital_registrar_research/signatures/factory.py)
+> — see §1.5 below for the relationship to the strict-protocol
+> machinery in this doc. Everything else here still applies; the
+> v2 pipeline reuses the same JSONAdapter / `supports_response_schema`
+> path under the hood.
 
 ---
 
@@ -118,6 +129,85 @@ output_report["cancer_data"].update(organ_data)
 ```
 
 If you're tempted to keep the reasoning trace for analysis, put it in a sidecar (see Phase 1 in §3) — don't leak it into `cancer_data`, because the cascade comparison code expects a fixed key set.
+
+### 1.5 Dynamic signature construction (v2 factory)
+
+The v2 schema-driven pipeline (
+[`pipeline_factory.py`](../src/digital_registrar_research/pipeline_factory.py))
+does not declare its `dspy.Signature` subclasses statically. They're built
+at construction time from Pydantic case-models by the factory in
+[`signatures/factory.py`](../src/digital_registrar_research/signatures/factory.py)
+using DSPy's runtime constructor:
+
+```python
+from dspy.signatures.signature import make_signature
+
+sig = make_signature(
+    {
+        "report":          (list, dspy.InputField(desc="...")),
+        "report_jsonized": (dict, dspy.InputField(desc="...")),
+        "procedure":       (Literal["partial_mastectomy", ...] | None,
+                            dspy.OutputField(desc="...")),
+        # ...
+    },
+    instructions="<schema docstring + per-group instruction>",
+    signature_name="BreastCancer__nonnested",
+    custom_types={"BreastMargin": BreastMargin, ...},  # nested BaseModel refs
+)
+predictor = dspy.Predict(sig)
+```
+
+`make_signature` has been API-stable since DSPy 2.5 and is unchanged in
+3.2.1. Two things make `custom_types` essential:
+
+- DSPy serializes the signature's type hints to a string for the
+  prompt (e.g. `list[BreastMargin]`); `custom_types` provides the
+  symbol table so it can resolve the bare name when later
+  deserializing the LM's response.
+- Without `custom_types`, the factory would be limited to `Literal`,
+  primitives, and `list[primitive]`. The factory walks every nested
+  `BaseModel` in the schema annotations (via
+  [`iter_custom_types`](../src/digital_registrar_research/schemas/pydantic/_factory_helpers.py))
+  and passes them as a dict.
+
+#### How v2 relates to the strict-protocol pieces in §1.1
+
+The factory is orthogonal to the JSONAdapter / `supports_response_schema`
+/ ChainOfThought layer:
+
+- `pipeline_factory.CancerPipelineV2` uses `dspy.Predict`, NOT
+  `dspy.ChainOfThought`. Modern local models (Gemma 3 27B,
+  GPT-OSS 20B, Qwen 3.5 27B) have enough internal reasoning capacity
+  that the explicit `reasoning: str` slot adds latency without
+  meaningfully improving Literal-field accuracy on this corpus. If a
+  weaker model needs it, swap `dspy.Predict` for `dspy.ChainOfThought`
+  in
+  [`_get_extractors`](../src/digital_registrar_research/pipeline_factory.py)
+  — the factory output is signature-agnostic.
+- `pipeline_structured.py` and `pipeline_dspy_strict.py` (the
+  variants this doc was originally written about) are NOT touched by
+  the v2 redesign. They keep their hand-written signatures and the
+  full strict-schema protocol. The factory replaces only the loose
+  pipeline.
+
+#### DSPy 3.2 capability properties
+
+3.2 adds capability flags on `dspy.LM`: `supports_response_schema`,
+`supports_function_calling`, `supports_reasoning`, `supported_params`.
+The factory's `decomposition="auto"` mode consults
+`dspy.settings.lm.supports_response_schema` to pick `monolithic`
+(strict-schema-capable LMs) vs `per_group` (default for local Ollama
+models that don't advertise the flag). `dspy.ContextWindowExceededError`
+also replaces LiteLLM's variant in 3.2 — code paths that catch it
+should import from `dspy` rather than `litellm`.
+
+#### `typeguard` warnings
+
+DSPy 3.2 added `typeguard`-based runtime type checking on input fields.
+For dynamically-built signatures the warnings can be noisy without
+indicating real bugs. `pipeline_factory.setup_pipeline_v2` calls
+`dspy.configure(disable_typeguard_warnings=True)` by default; pass
+`quiet=False` to opt in.
 
 ---
 
@@ -502,9 +592,9 @@ Read the printed prompt. The first JSON property in the response should be `reas
 
 ```bash
 # Run each pipeline on the same fixture
-python scripts/pipeline/run_dspy_ollama_smoke_dummy.py --pipeline structured \
+python scripts/pipeline/legacy/run_dspy_ollama_smoke_dummy.py --pipeline structured \
     --model gptoss --out workspace/runs/structured_gptoss
-python scripts/pipeline/run_dspy_ollama_smoke_dummy.py --pipeline dspy_strict \
+python scripts/pipeline/legacy/run_dspy_ollama_smoke_dummy.py --pipeline dspy_strict \
     --model gptoss --out workspace/runs/dspy_strict_gptoss
 
 # Compare in cascade

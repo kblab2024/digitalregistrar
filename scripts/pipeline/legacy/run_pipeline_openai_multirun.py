@@ -44,10 +44,10 @@ import sys
 import time
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
-sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline"))
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))
 
 from _config_loader import resolve_folder  # noqa: E402
 

@@ -48,10 +48,10 @@ import random
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))  # for _config_loader, _run_id
-sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline"))  # for sibling imports
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))  # for sibling imports
 
 # Reuse the low-level helpers from the full-run script so the two stay in
 # lockstep w/r/t output format and atomic-write semantics.

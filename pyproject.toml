@@ -23,7 +23,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
 dependencies = [
-  "dspy>=2.6",
+  "dspy>=3.2",
   "pydantic>=2",
   "numpy",
   "pandas",
@@ -37,7 +37,7 @@ dev         = ["pytest>=8", "ruff", "mypy", "scipy", "statsmodels", "jsonschema"
 all         = ["digital-registrar-research[annotation,benchmarks,ablations,dev]"]
 
 [project.scripts]
-registrar-pipeline  = "digital_registrar_research.experiment:main"
+registrar-pipeline  = "digital_registrar_research.runner:main"
 registrar-annotate  = "digital_registrar_research.annotation.app:main_cli"
 registrar-annotate-workspace = "digital_registrar_research.annotation.app_canonical:main_cli_workspace"
 registrar-annotate-dummy     = "digital_registrar_research.annotation.app_canonical:main_cli_dummy"

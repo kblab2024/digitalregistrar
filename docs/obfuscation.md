@@ -109,10 +109,10 @@ python scripts/ablations/run_cell_a.py --folder obfustrated --dataset tcga --mod
 
 ```bash
 # Existing — unchanged:
-python scripts/pipeline/run_dspy_ollama_single.py --folder dummy --dataset tcga --model gptoss --run smoke
+python scripts/pipeline/legacy/run_dspy_ollama_single.py --folder dummy --dataset tcga --model gptoss --run smoke
 
 # New:
-python scripts/pipeline/run_dspy_ollama_single.py --obfustrated --dataset tcga --model gptoss --run smoke
+python scripts/pipeline/legacy/run_dspy_ollama_single.py --obfustrated --dataset tcga --model gptoss --run smoke
 ```
 
 ### Library code

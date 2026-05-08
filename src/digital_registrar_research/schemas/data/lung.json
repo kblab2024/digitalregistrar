@@ -189,6 +189,7 @@
               "type": "null"
             }
           ],
+          "default": null,
           "title": "Description"
         },
         "distance": {
@@ -230,14 +231,13 @@
         }
       },
       "required": [
-        "margin_involved",
-        "description"
+        "margin_involved"
       ],
       "title": "LungMargin",
       "type": "object"
     }
   },
-  "description": "Canonical extracted case record for lung cancer. Built dynamically from the DSPy signatures listed in models.modellist.organmodels['lung'].",
+  "description": "Canonical extracted case record for lung cancer.",
   "properties": {
     "ajcc_version": {
       "anyOf": [
@@ -250,6 +250,8 @@
       ],
       "default": null,
       "description": "identify the ajcc version of the pathological staging",
+      "dspy_desc": "identify the ajcc version of the pathological staging",
+      "group": "staging",
       "title": "Ajcc Version"
     },
     "biomarkers": {
@@ -266,6 +268,8 @@
       ],
       "default": null,
       "description": "return all of the examined biomarkers using immunohistochemistry techniques,like alk, ros1, pd-l1. in JSON format. example:[{\"biomarker_category\": \"ALK\", \"expression\": true, \"percentage\": 70}, {\"biomarker_category\": \"PDL1\", \"expression\": false, \"percentage\": 0}]. If not present, just output None for every biomarker",
+      "dspy_desc": "return all of the examined biomarkers using immunohistochemistry techniques,like alk, ros1, pd-l1. in JSON format. example:[{\"biomarker_category\": \"ALK\", \"expression\": true, \"percentage\": 70}, {\"biomarker_category\": \"PDL1\", \"expression\": false, \"percentage\": 0}]. If not present, just output None for every biomarker",
+      "group": "biomarkers",
       "title": "Biomarkers"
     },
     "cancer_primary_site": {
@@ -288,6 +292,8 @@
       ],
       "default": null,
       "description": "identify the primary site of cancer. e.g. upper_lobe",
+      "dspy_desc": "identify the primary site of cancer. e.g. upper_lobe",
+      "group": "nonnested",
       "title": "Cancer Primary Site"
     },
     "direct_invasion_of_adjacent_structures": {
@@ -301,6 +307,8 @@
       ],
       "default": null,
       "description": "check whether or not direct invasion of adjacent structures is present",
+      "dspy_desc": "check whether or not direct invasion of adjacent structures is present",
+      "group": "nonnested",
       "title": "Direct Invasion Of Adjacent Structures"
     },
     "distant_metastasis": {
@@ -314,6 +322,8 @@
       ],
       "default": null,
       "description": "check whether or not distant metastasis is present",
+      "dspy_desc": "check whether or not distant metastasis is present",
+      "group": "nonnested",
       "title": "Distant Metastasis"
     },
     "extranodal_extension": {
@@ -327,6 +337,8 @@
       ],
       "default": null,
       "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+      "dspy_desc": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+      "group": "lymph_nodes",
       "title": "Extranodal Extension"
     },
     "grade": {
@@ -340,6 +352,8 @@
       ],
       "default": null,
       "description": "identify the grade of the cancer, well->1, moderate->2, poor->3, undiff->4",
+      "dspy_desc": "identify the grade of the cancer, well->1, moderate->2, poor->3, undiff->4",
+      "group": "nonnested",
       "title": "Grade"
     },
     "histological_patterns": {
@@ -356,6 +370,8 @@
       ],
       "default": null,
       "description": "if the histology is invasive non-mucinous adenocarcinoma, please identify all of the histological patterns and its percentage. if not, return None",
+      "dspy_desc": "if the histology is invasive non-mucinous adenocarcinoma, please identify all of the histological patterns and its percentage. if not, return None",
+      "group": "othernested",
       "title": "Histological Patterns"
     },
     "histology": {
@@ -386,6 +402,8 @@
       ],
       "default": null,
       "description": "identify the histological type of the cancer. e.g. adenocarcinoma",
+      "dspy_desc": "identify the histological type of the cancer. e.g. adenocarcinoma",
+      "group": "nonnested",
       "title": "Histology"
     },
     "lymphovascular_invasion": {
@@ -399,6 +417,8 @@
       ],
       "default": null,
       "description": "check whether or not lymphovascular invasion is present",
+      "dspy_desc": "check whether or not lymphovascular invasion is present",
+      "group": "nonnested",
       "title": "Lymphovascular Invasion"
     },
     "margins": {
@@ -415,6 +435,8 @@
       ],
       "default": null,
       "description": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"bronchial\", \"margin_involved\": true, \"distance\": 5}, {\"margin_category\": \"vascular\", \"margin_involved\": false, \"distance\": null}, {\"margin_category\": \"parenchymal\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "dspy_desc": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"bronchial\", \"margin_involved\": true, \"distance\": 5}, {\"margin_category\": \"vascular\", \"margin_involved\": false, \"distance\": null}, {\"margin_category\": \"parenchymal\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "group": "margins",
       "title": "Margins"
     },
     "maximal_ln_size": {
@@ -428,6 +450,8 @@
       ],
       "default": null,
       "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+      "dspy_desc": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+      "group": "lymph_nodes",
       "title": "Maximal Ln Size"
     },
     "perineural_invasion": {
@@ -441,6 +465,8 @@
       ],
       "default": null,
       "description": "check whether or not perineural invasion is present",
+      "dspy_desc": "check whether or not perineural invasion is present",
+      "group": "nonnested",
       "title": "Perineural Invasion"
     },
     "pm_category": {
@@ -461,6 +487,8 @@
       ],
       "default": null,
       "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "dspy_desc": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "group": "staging",
       "title": "Pm Category"
     },
     "pn_category": {
@@ -481,6 +509,8 @@
       ],
       "default": null,
       "description": "identify the pn category of the tumor",
+      "dspy_desc": "identify the pn category of the tumor",
+      "group": "staging",
       "title": "Pn Category"
     },
     "procedure": {
@@ -505,6 +535,8 @@
       ],
       "default": null,
       "description": "identify which surgery procedure was used. e.g. polypectomy",
+      "dspy_desc": "identify which surgery procedure was used. e.g. polypectomy",
+      "group": "nonnested",
       "title": "Procedure"
     },
     "pt_category": {
@@ -530,6 +562,8 @@
       ],
       "default": null,
       "description": "identify the pt category of the tumor",
+      "dspy_desc": "identify the pt category of the tumor",
+      "group": "staging",
       "title": "Pt Category"
     },
     "regional_lymph_node": {
@@ -546,6 +580,8 @@
       ],
       "default": null,
       "description": "return all of the involved regional lymph node. example:[{\"lymph_node_side\": \"right\", \"lymph_node_category\": \"4\", \"involved\": 2, \"examined\": 5}, {\"lymph_node_side\": \"left\", \"lymph_node_category\": \"7\", \"involved\": 0, \"examined\": 3}]. If not present, just output null for every lymph node",
+      "dspy_desc": "return all of the involved regional lymph node. example:[{\"lymph_node_side\": \"right\", \"lymph_node_category\": \"4\", \"involved\": 2, \"examined\": 5}, {\"lymph_node_side\": \"left\", \"lymph_node_category\": \"7\", \"involved\": 0, \"examined\": 3}]. If not present, just output null for every lymph node",
+      "group": "lymph_nodes",
       "title": "Regional Lymph Node"
     },
     "sideness": {
@@ -564,6 +600,8 @@
       ],
       "default": null,
       "description": "identify which side the tumor is located. e.g. right",
+      "dspy_desc": "identify which side the tumor is located. e.g. right",
+      "group": "nonnested",
       "title": "Sideness"
     },
     "spread_through_air_spaces_stas": {
@@ -577,6 +615,8 @@
       ],
       "default": null,
       "description": "check whether or not spread through air spaces (STAS) is present",
+      "dspy_desc": "check whether or not spread through air spaces (STAS) is present",
+      "group": "nonnested",
       "title": "Spread Through Air Spaces Stas"
     },
     "stage_group": {
@@ -605,6 +645,8 @@
       ],
       "default": null,
       "description": "identify the stage group of the tumor",
+      "dspy_desc": "identify the stage group of the tumor",
+      "group": "staging",
       "title": "Stage Group"
     },
     "surgical_technique": {
@@ -625,6 +667,8 @@
       ],
       "default": null,
       "description": "identify how the surgery was taken. e.g. thoracoscopic",
+      "dspy_desc": "identify how the surgery was taken. e.g. thoracoscopic",
+      "group": "nonnested",
       "title": "Surgical Technique"
     },
     "tnm_descriptor": {
@@ -643,6 +687,8 @@
       ],
       "default": null,
       "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "dspy_desc": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "group": "staging",
       "title": "Tnm Descriptor"
     },
     "treatment_effect": {
@@ -656,6 +702,8 @@
       ],
       "default": null,
       "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "dspy_desc": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "group": "nonnested",
       "title": "Treatment Effect"
     },
     "tumor_focality": {
@@ -675,6 +723,8 @@
       ],
       "default": null,
       "description": "identify whether the tumor is single focus or multiple foci; this is important for t and m category",
+      "dspy_desc": "identify whether the tumor is single focus or multiple foci; this is important for t and m category",
+      "group": "nonnested",
       "title": "Tumor Focality"
     },
     "visceral_pleural_invasion": {
@@ -688,6 +738,8 @@
       ],
       "default": null,
       "description": "check whether or not visceral pleural invasion is present",
+      "dspy_desc": "check whether or not visceral pleural invasion is present",
+      "group": "nonnested",
       "title": "Visceral Pleural Invasion"
     }
   },

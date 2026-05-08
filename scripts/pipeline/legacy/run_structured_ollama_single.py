@@ -1,32 +1,23 @@
 #!/usr/bin/env python3
-"""Single-run DSPy-strict Ollama cancer-extraction experiment.
+"""Single-run structured-outputs Ollama cancer-extraction experiment.
 
-Third sibling of ``run_dspy_ollama_single.py`` and
-``run_structured_ollama_single.py``. Wraps every per-organ ``dspy.Predict``
-call (the decomposition the structured pipeline collapsed into one giant
-schema) in :class:`dspy.ChainOfThought` and routes the LM call through
-DSPy's :class:`JSONAdapter`, which posts
-``response_format={"type": "json_schema", "strict": true}`` to Ollama's
-OpenAI-compat endpoint. Per-organ focus + token-level schema enforcement
-+ a ``reasoning`` slot before the structured body.
-
-Layout, run-slot rotation, manifest format, and per-case JSON output are
-byte-for-byte identical to the other two variants so the eval pipeline
-ingests all three without modification. The only structural difference
-is that the model_slug carries a ``_dspy_strict`` suffix so the
-prediction tree does not collide with the existing DSPy / structured
-runs.
+Sibling of ``run_dspy_ollama_single.py`` that swaps the LM call boundary
+from DSPy + LiteLLM to Ollama's OpenAI-compatible endpoint with
+``response_format={"type": "json_schema", "json_schema": {...}}`` —
+schema-enforced JSON at the token level. Layout, run-slot rotation,
+manifest format, and per-case JSON output are byte-for-byte identical to
+the DSPy variant so the eval pipeline ingests both without modification.
 
 Iterates every ``<case_id>.txt`` under
 ``{experiment_root}/data/{dataset}/reports/{organ_n}/`` and writes one
 prediction JSON per report to
-``{experiment_root}/results/predictions/{dataset}/llm/{model_slug}_dspy_strict/{run}/{organ_n}/<case_id>.json``.
+``{experiment_root}/results/predictions/{dataset}/llm/{model_slug}/{run}/{organ_n}/<case_id>.json``.
 
-Requires Ollama >=0.5 for OpenAI-compat structured outputs and DSPy >=3.
+Requires Ollama >=0.5 for OpenAI-compat structured outputs.
 
 Usage
 -----
-    python scripts/pipeline/run_dspy_strict_ollama_single.py \\
+    python scripts/pipeline/run_structured_ollama_single.py \\
         --model gptoss \\
         --folder dummy \\
         --dataset tcga \\
@@ -36,15 +27,15 @@ Usage
 ``--model`` must be one of: gptoss, gemma3, gemma4, qwen3_5, medgemmalarge,
 medgemmasmall. Each alias auto-loads ``configs/dspy_ollama_{alias}.yaml``
 for decoding overrides (temperature, top_p, num_ctx, max_tokens, ...).
-The same config files are reused across DSPy, structured, and dspy_strict
-runs by design — the ``decoding`` block is model-agnostic.
+The same config files are reused across DSPy and structured runs by
+design — the ``decoding`` block is model-agnostic.
 
 ``--folder`` accepts the shorthands ``dummy`` and ``workspace`` (resolved
 against the repo root) or any absolute / relative path.
 
 Output tree
 -----------
-    {experiment_root}/results/predictions/{dataset}/llm/{model_slug}_dspy_strict/
+    {experiment_root}/results/predictions/{dataset}/llm/{model_slug}/
         _manifest.yaml            aggregated across all runs (updated in place)
         {run}/                    e.g. run01
             _summary.json         run-level totals
@@ -71,7 +62,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 # Make the in-tree package importable without requiring `pip install -e .`.
 sys.path.insert(0, str(REPO_ROOT / "src"))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))  # for _config_loader, _run_id
@@ -87,10 +78,10 @@ from digital_registrar_research.models.common import (  # noqa: E402
     localaddr,
     model_list,
 )
-from digital_registrar_research.pipeline_dspy_strict import (  # noqa: E402
+from digital_registrar_research.pipeline_structured import (  # noqa: E402
     load_decoding_kwargs,
-    run_cancer_pipeline_dspy_strict as run_cancer_pipeline,
-    setup_pipeline_dspy_strict as setup_pipeline,
+    run_cancer_pipeline_structured as run_cancer_pipeline,
+    setup_pipeline_structured as setup_pipeline,
 )
 from digital_registrar_research.util.logger import setup_logger  # noqa: E402
 
@@ -103,7 +94,7 @@ MAX_RUN_SLOTS = 10  # memory: "run01..run10"
 # model_list keys (gpt, gemma27b, qwen30b, ...) still resolve but are not
 # offered from the CLI to keep the surface small and self-documenting.
 UNIFIED_MODELS = (
-    "gptoss", "gemma3", "gemma4", "qwen3_5", "medgemmalarge", "medgemmasmall", "gemma4large", "qwen3_6"
+    "gptoss", "gemma3", "gemma4", "qwen3_5", "medgemmalarge", "medgemmasmall",
 )
 
 
@@ -183,19 +174,14 @@ def _git_sha(repo_root: Path) -> str | None:
 
 
 def model_slug(model_key: str) -> str:
-    """Canonical folder name for a dspy_strict run.
+    """Canonical folder name for a model, derived from its model_list ID.
 
-    Suffixed with ``_dspy_strict`` so the prediction tree does not collide
-    with the existing DSPy / structured runs (both of which write to
-    ``ollama_chat/gpt-oss:20b`` → ``gpt_oss_20b``).
-
-    ``ollama_chat/gpt-oss:20b`` → ``gpt_oss_20b_dspy_strict``;
-    ``ollama_chat/qwen3:30b``  → ``qwen3_30b_dspy_strict``.
+    ``ollama_chat/gpt-oss:20b`` → ``gpt_oss_20b``;
+    ``ollama_chat/qwen3:30b``  → ``qwen3_30b``.
     """
     full = model_list[model_key]
     tail = full.split("/", 1)[-1]  # drop the backend prefix
-    base = re.sub(r"[-:./]", "_", tail)
-    return f"{base}_dspy_strict"
+    return re.sub(r"[-:./]", "_", tail)
 
 
 # --- Discovery ---------------------------------------------------------------
@@ -461,8 +447,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                          ". Each alias auto-loads "
                          "configs/dspy_ollama_{alias}.yaml (if present) for "
                          "decoding overrides — the same config tree as the "
-                         "DSPy / structured variants; the decoding block is "
-                         "model-agnostic.")
+                         "DSPy variant; the decoding block is model-agnostic.")
     ap.add_argument("--folder", dest="experiment_root", required=False, default=None,
                     type=resolve_folder,
                     help="Experiment root containing data/ and results/. "
@@ -563,7 +548,7 @@ def run_with_args(
     if overrides:
         logger.info("decoding overrides: %s", overrides)
 
-    setup_pipeline(args.model, overrides=overrides)  # DSPy LM + JSONAdapter
+    setup_pipeline(args.model, overrides=overrides)  # OpenAI client + cached kwargs
     lm_kwargs = load_decoding_kwargs(args.model, overrides=overrides)
 
     started_at = _utc_now_iso()
@@ -593,8 +578,7 @@ def run_with_args(
         "experiment_root": str(args.experiment_root.resolve()),
         "organs": [o[0] for o in organs],
         "ollama_endpoint": localaddr,
-        "decoding_mode": "dspy_strict_json_schema",
-        "pipeline": "dspy_strict",
+        "decoding_mode": "structured_json_schema",
         "started_at": started_at,
         "finished_at": finished_at,
         "dspy_lm_kwargs": lm_kwargs,

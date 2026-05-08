@@ -17,7 +17,7 @@ how long it lives, and whether it ever merges back.
 
 | Branch | What goes on it |
 |---|---|
-| `testing_llm` | LLM multi-run inference (`scripts/pipeline/run_gpt_oss_multirun.py`, per-model sweeps); trying new prompts, decoding params, retry logic |
+| `testing_llm` | LLM multi-run inference (`scripts/pipeline/legacy/run_gpt_oss_multirun.py`, per-model sweeps); trying new prompts, decoding params, retry logic |
 | `testing_ui` | Streamlit annotation app (`src/.../annotation/`, session state, discovery, annotator-mode switching) |
 | `testing_bert` | ClinicalBERT training / inference (`scripts/baselines/predict_clinicalbert_cls_mac.py`, head architecture, calibration) |
 | `testing_rule` | Rule-based baseline (`src/.../benchmarks/baselines/rules.py`), regex tuning |
@@ -51,7 +51,7 @@ how long it lives, and whether it ever merges back.
 ```bash
 git checkout testing_llm
 # edit configs/experiments/multirun_gpt_oss.yaml
-python scripts/pipeline/run_gpt_oss_multirun.py --config ...  --dry-run
+python scripts/pipeline/legacy/run_gpt_oss_multirun.py --config ...  --dry-run
 # iterate until happy
 git checkout main && git branch -D testing_llm && git branch testing_llm   # reset & try again
 ```

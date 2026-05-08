@@ -17,7 +17,7 @@ import dspy
 
 model_list = {
     # --- Legacy keys (still used by pipeline.py __main__, ablations, existing
-    # experiment.py invocations). Do not remove without sweeping callers. ---
+    # runner.py invocations). Do not remove without sweeping callers. ---
     "gemma4b": "ollama_chat/gemma3:4b",
     "gemma1b": "ollama_chat/gemma3:1b",
     "gemma4e2b": "ollama_chat/gemma4:e2b",

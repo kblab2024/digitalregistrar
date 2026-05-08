@@ -70,10 +70,10 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
 # Make the in-tree package importable without `pip install -e .`.
 sys.path.insert(0, str(REPO_ROOT / "src"))
-sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline"))  # for sibling imports
+sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))  # for sibling imports
 
 import dspy  # noqa: E402
 

@@ -282,7 +282,7 @@ a temporary glitch.
 ## 4. Which of these is actually biting you? A free diagnostic plan (no code changes)
 
 You can answer this in 30 minutes without touching the pipeline code. Run these
-probes one at a time against one of the `scripts/pipeline/run_dspy_ollama_smoke_*_dummy.py`
+probes one at a time against one of the `scripts/pipeline/legacy/run_dspy_ollama_smoke_*_dummy.py`
 entry points with `gemma4` or `qwen3_5`, not `gptoss`.
 
 ### 4.1 Turn on DSPy's verbose logging
