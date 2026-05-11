@@ -28,6 +28,10 @@ from pathlib import Path
 import pandas as pd
 
 from .scope import (
+    # `X as X` flags these as deliberate public re-exports for downstream
+    # callers (ablations/, tests/) and stops ruff F401 from pruning them.
+    BIOMARKER_WHITELIST as BIOMARKER_WHITELIST,
+    BREAST_BIOMARKERS as BREAST_BIOMARKERS,
     EVAL_EXCLUDED_FIELDS,
     EXCLUDED_INNER_KEYS_BY_FIELD,
     FAIR_SCOPE,
