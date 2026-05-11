@@ -38,7 +38,6 @@ from collections.abc import Sequence
 import numpy as np
 from scipy import stats as sstats
 
-
 # --- ICC ------------------------------------------------------------------
 
 def _icc_components(matrix: np.ndarray) -> tuple[float, float, float, int, int]:

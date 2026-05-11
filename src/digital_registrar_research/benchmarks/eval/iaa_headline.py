@@ -44,16 +44,14 @@ from .ci import bootstrap_ci
 from .iaa import (
     CaseEntry,
     Pair,
+    _default_field_list,
+    _field_applies_to_organ,
     classify_field,
     classify_section,
     cohen_kappa,
-    extract_pairs,
-    observed_agreement,
     pabak,
     pairwise_iaa,
     whole_report_stats,
-    _default_field_list,
-    _field_applies_to_organ,
 )
 from .metrics import (
     NUMERIC_TOLERANCE_MM,

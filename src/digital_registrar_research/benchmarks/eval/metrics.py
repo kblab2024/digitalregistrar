@@ -28,8 +28,6 @@ from pathlib import Path
 import pandas as pd
 
 from .scope import (
-    BIOMARKER_WHITELIST,
-    BREAST_BIOMARKERS,
     EVAL_EXCLUDED_FIELDS,
     EXCLUDED_INNER_KEYS_BY_FIELD,
     FAIR_SCOPE,

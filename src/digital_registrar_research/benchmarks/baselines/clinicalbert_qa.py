@@ -216,7 +216,8 @@ def train(args) -> None:
     if len(ds) == 0:
         raise SystemExit("no silver-aligned training examples — every gold value was "
                          "missing from its report. Check --data-root or the question bank.")
-    g = torch.Generator(); g.manual_seed(seed)
+    g = torch.Generator()
+    g.manual_seed(seed)
     loader = DataLoader(ds, batch_size=8, shuffle=True, generator=g, num_workers=0)
 
     opt = torch.optim.AdamW(model.parameters(), lr=3e-5)

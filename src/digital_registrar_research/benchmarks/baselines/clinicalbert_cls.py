@@ -188,7 +188,8 @@ def train(args) -> None:
     if not cases:
         raise SystemExit("no training cases — check --data-root, --datasets, --organs")
 
-    g = torch.Generator(); g.manual_seed(seed)
+    g = torch.Generator()
+    g.manual_seed(seed)
     train_loader = DataLoader(
         PathologyCases(cases, tok, field_to_idx),
         batch_size=4, shuffle=True, collate_fn=collate,

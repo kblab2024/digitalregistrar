@@ -41,7 +41,6 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
-
 _ORGAN_KEY_RE = re.compile(r"^[a-z][a-z0-9_]*$")
 
 # Resolve once: the directory containing this module is ``schemas/``.
