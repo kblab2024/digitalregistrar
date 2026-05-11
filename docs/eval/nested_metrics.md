@@ -5,7 +5,7 @@
 > 1. **Lymph nodes are no longer scored by bipartite matching on `station_name`.** The free-text `station_name` is unstable across annotators (e.g. `"nonsentinel #1"`, `"nonsentinel #2"`), so `examined`/`involved` are now summed per `(lymph_node_side, lymph_node_category)` group on each side and groups are matched by the deterministic key. New columns: `ln_group_recall`, `ln_group_precision`, `ln_n_groups_gold`, `ln_n_groups_pred`. The legacy `ln_station_*` keys still exist and now refer to GROUPS (not per-list rows).
 > 2. **Biomarker scoring is restricted to a per-organ whitelist.** Only `{er, pr, her2, ki67}` are scored for breast and `{msh2, msh6, pms2, mlh1}` for colorectal. Other biomarker entries (e.g. colon `her2`, `p53`) are filtered from gold and prediction before bipartite matching. The `description` inner key on margins is also stripped before matching.
 >
-> Output paths: `nested/...` → `chapter3_field_extraction/nested_*.csv`. See [CHANGELOG.md](CHANGELOG.md) and [../stat_methods.md](../stat_methods.md) §1.
+> Output paths: `nested/...` → `chapter3_field_extraction/nested_*.csv`. See [CHANGELOG.md](CHANGELOG.md) and [../reference/stat_methods.md](../reference/stat_methods.md) §1.
 
 For list-of-dict fields where each case has 0–N items (e.g. multiple lymph node stations or margin measurements). Scoring uses **bipartite matching** between gold and predicted items, then per-attribute accuracy on matched pairs.
 

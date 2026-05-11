@@ -1,5 +1,7 @@
 # Experiment protocol (2026-04 round)
 
+> Last updated: 2026-05-11 · Reflects: `d11d072` · Round status: in flight
+
 This document is the reference for the in-flight experiment. Any change
 that invalidates a headline number (new seed, new prompt, new scoring
 rule) requires bumping the relevant `experiment_id` in
@@ -12,7 +14,7 @@ rule) requires bumping the relevant `experiment_id` in
 | Dataset | `cmuh`, `tcga` | 2 |
 | Human annotator | `nhc`, `kpc` | 2 |
 | Annotation mode | `with_preann`, `without_preann` | 2 |
-| LLM model | `gpt_oss_20b`, `gemma4_30b`, `qwen3_30b`, `gemma4_e2b`* | 3 (+1 optional) |
+| LLM model | `gpt_oss_20b`, `gemma4_30b`, `qwen3_30b`, `gemma4_e2b`* | 3 (+1 tentative) |
 | LLM run | `run01`..`run10` (fixed seeds 42..51) | 10 |
 | BERT variant | `v1_baseline`, `v2_finetuned` | 2 |
 | Rule-based | single deterministic run | 1 |
@@ -37,7 +39,7 @@ Total: ~40+ artifacts per case, fully tracked by folder convention.
 
 ### Q1 — How accurate is each method against gold?
 - **Output**: `results/evaluation/{dataset}/accuracy/by_method.csv`, `per_field.csv`, `per_organ.csv`, `per_fieldtype.csv`
-- **Unit of analysis**: case × field, scored by `score_case` in [`metrics.py`](../src/digital_registrar_research/benchmarks/eval/metrics.py)
+- **Unit of analysis**: case × field, scored by `score_case` in [`metrics.py`](../../src/digital_registrar_research/benchmarks/eval/metrics.py)
 - **CI**: case-level bootstrap (n=2000), run-level bootstrap over the 10 LLM runs, and a total-CI combining both
 
 ### Q2 — How consistent are LLM runs?
@@ -72,11 +74,15 @@ These cannot change without bumping `experiment_id`:
 3. Prompt template hash (`prompts/gpt_oss_pathology_v1.jinja` — stored in
    `configs/experiments/multirun_{model}.yaml`).
 4. Schema scope — `FAIR_SCOPE ∪ {margins, regional_lymph_node, breast biomarkers}` from
-   [`scope.py`](../src/digital_registrar_research/benchmarks/eval/scope.py).
+   [`scope.py`](../../src/digital_registrar_research/benchmarks/eval/scope.py).
 5. Acceptance thresholds: `parse_error_rate_max = 0.05`, `missing_case_rate_max = 0.01`.
 6. Annotator identity + mode assignment (fixed in `configs/annotators/annotators.yaml`).
 
 ## Timeline
+
+The canonical phase state lives on the `experiment_cmuh_pilot` branch's
+`STATUS.md` (run `git log experiment_cmuh_pilot -- STATUS.md` to inspect).
+The phases below define the pipeline shape, not the calendar.
 
 | Phase | Milestone | Branch |
 |---|---|---|

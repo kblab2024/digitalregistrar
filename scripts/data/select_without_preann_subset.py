@@ -61,9 +61,9 @@ def parse_args() -> argparse.Namespace:
     args = ap.parse_args()
 
     if args.dummy:
-        if args.base is not None and args.base != REPO_ROOT / "dummy":
+        if args.base is not None and args.base != REPO_ROOT / "examples" / "dummy":
             ap.error("--dummy and --base are mutually exclusive")
-        args.base = REPO_ROOT / "dummy"
+        args.base = REPO_ROOT / "examples" / "dummy"
     elif args.base is None:
         args.base = REPO_ROOT / "workspace"
 

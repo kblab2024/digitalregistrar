@@ -1,7 +1,12 @@
 # Why only `gpt-oss:20b` runs your DSPy pipeline smoothly — diagnostic report
 
-> **Scope note.** You asked for a research report, not code changes. This file is a
-> diagnostic + background-knowledge document. Nothing in your repo has been modified.
+> Last updated: 2026-05-11 · Reflects: `d11d072` · Frozen audit against DSPy 3.2.1 / Ollama ≥ 0.5
+
+> **Scope note.** A frozen diagnostic + background-knowledge document.
+> The parameter recommendations and the four-layer diagnostic frame
+> reflect a snapshot of the Ollama/LiteLLM stack as of the original audit
+> and are not actively maintained line-by-line. The conclusions hold
+> for the model combinations and DSPy version pinned above.
 
 ---
 

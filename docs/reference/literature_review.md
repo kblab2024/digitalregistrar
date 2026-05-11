@@ -1,5 +1,7 @@
 # Literature review — comparison design for Digital Registrar
 
+> Last updated: 2026-05-11 · Reflects: `d11d072`
+
 This annotated bibliography documents the prior work that informs the
 comparison design in this benchmark. Each entry notes (a) what the
 paper contributes and (b) how it supports one or more of our

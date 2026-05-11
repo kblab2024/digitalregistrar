@@ -10,7 +10,7 @@ How to interpret column names, CI bands, and the long-form vs wide-form conventi
 > - `chapter3_field_extraction/` — Stage-C field accuracy: per_field_overall.csv, per_field_by_organ.csv, per_organ_overall.csv, plus the cascade-specific `cascade_funnel.csv` and `conditional_accuracy_grid.csv`.
 > - `model_pair_tests/` — only when scoring multiple models in one run; pairwise McNemar / Cochran-Q / Stuart-Maxwell with Holm + BH adjustments.
 >
-> See [CHANGELOG.md](CHANGELOG.md) and [../stat_methods.md](../stat_methods.md).
+> See [CHANGELOG.md](CHANGELOG.md) and [../reference/stat_methods.md](../reference/stat_methods.md).
 
 ## Output structure
 

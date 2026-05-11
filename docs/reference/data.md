@@ -1,5 +1,7 @@
 # Datasets — layout and conventions
 
+> Last updated: 2026-05-11 · Reflects: `d11d072`
+
 The repo holds two datasets and the outputs of every method / annotator /
 run that touches them. Layout covers the full cross-product so you never
 have to guess which file belongs to which condition.
@@ -47,13 +49,19 @@ configs/
 models/clinicalbert/{v1_baseline,v2_finetuned}/{checkpoint.pt,config.yaml}
 ```
 
+`dataset_manifest.yaml` is the canonical per-dataset descriptor —
+case IDs in scope, organ partitions, the gpt-oss pre-annotation source
+hash, and the git SHA of the schema the annotations validate against.
+Tooling reads it when discovering cases (rather than relying on
+`os.listdir` to be deterministic across machines).
+
 ## Naming conventions
 
 | Thing | Pattern | Example |
 |---|---|---|
 | Dataset | lowercase, no date | `cmuh`, `tcga` |
 | Case ID | `{dataset}{N}_{idx}` | `tcga1_37`, `cmuh1_1` |
-| Organ partition | numeric dir, **dataset-specific** per [`configs/organ_code.yaml`](../configs/organ_code.yaml) | `tcga/.../1/` = breast, `cmuh/.../1/` = pancreas |
+| Organ partition | numeric dir, **dataset-specific** per [`configs/organ_code.yaml`](../../configs/organ_code.yaml) | `tcga/.../1/` = breast, `cmuh/.../1/` = pancreas |
 | LLM model | snake_case with size | `gpt_oss_20b`, `gemma4_e2b` |
 | Run directory | zero-padded, optional machine suffix | `run01`..`run10`, or `run01-alpha`..`run10-alpha` |
 | Mode subtree | `{with,without}_preann/` | `with_preann/` |
@@ -61,7 +69,7 @@ models/clinicalbert/{v1_baseline,v2_finetuned}/{checkpoint.pt,config.yaml}
 | Sidecar files | leading underscore | `_summary.json`, `_manifest.yaml`, `_log.jsonl` |
 | Case files | `{case_id}.json` — annotator/run/model is encoded by the folder | `tcga1_1.json` |
 
-The **leading-underscore sidecar rule** lets any glob of `**/*.json` filter
+The leading-underscore sidecar rule lets any glob of `**/*.json` filter
 out metadata files: `[p for p in paths if not p.name.startswith("_")]`.
 
 ## The four annotation modes
@@ -84,6 +92,7 @@ production, `without_preann` may hold a different (smaller) subset of
 cases than `with_preann`.
 
 This layout enables two comparisons:
+
 1. **Inter-annotator agreement** (`pairwise_nhc_vs_kpc_with_preann.csv`, `…_without_preann.csv`).
 2. **Pre-annotation effect** (`preann_effect_nhc.csv`, `preann_effect_kpc.csv`) — same annotator, with vs without the LLM draft.
 
@@ -107,18 +116,19 @@ results/predictions/cmuh/llm/gpt_oss_20b/
 
 ### Multi-machine sweeps
 
-When the same `(dataset, model)` is processed on more than one host, set a
-short stable slug per machine so each one writes to a disjoint slot space:
+When the same `(dataset, model)` is processed on more than one host,
+set a short stable slug per machine so each one writes to a disjoint
+slot space:
 
-  * Env var (one-shot): `DRR_MACHINE_ID=alpha python scripts/pipeline/run_…`
+  * Env var (one-shot): `DRR_MACHINE_ID=alpha python scripts/pipeline/run_factory_ollama_single.py …`
   * Persistent: `machine_id: alpha` in `configs/local/runtime.yaml`
     (the `configs/local/` tree is gitignored, so each checkout sets its own).
 
-Run dirs then become `run01-alpha .. run10-alpha` on machine *alpha* and
-`run01-beta .. run10-beta` on machine *beta*. Both forms still match the
-`startswith("run")` discovery glob in
-[`benchmarks/eval/multirun.py`](../src/digital_registrar_research/benchmarks/eval/multirun.py),
-so the eval aggregator naturally treats them as additional samples for the
+Run dirs then become `run01-alpha .. run10-alpha` on machine *alpha*
+and `run01-beta .. run10-beta` on machine *beta*. Both forms still
+match the `startswith("run")` discovery glob in
+[`benchmarks/eval/multirun.py`](../../src/digital_registrar_research/benchmarks/eval/multirun.py),
+so the eval aggregator treats them as additional samples for the
 confidence interval. Slug format: `^[a-z0-9][a-z0-9-]{0,11}$`.
 
 Majority-vote ensembles live under
@@ -127,8 +137,9 @@ the individual runs — they're a derived artifact, not a separate model.
 
 ## Paths in code
 
-All hardcoded paths go through [`paths.py`](../src/digital_registrar_research/paths.py).
-Downstream code uses the resolver rather than string literals:
+All hardcoded paths go through
+[`paths.py`](../../src/digital_registrar_research/paths.py). Downstream
+code uses the resolver rather than string literals:
 
 ```python
 from digital_registrar_research.paths import dataset, predictions_dir, evaluation_dir
@@ -142,45 +153,55 @@ evaluation_dir("cmuh", "iaa")
 
 ## Dummy skeleton
 
-`python scripts/data/gen_dummy_skeleton.py --out dummy --clean` writes the
-entire layout with schema-valid but trivial content — 2 datasets × 2 organs × 3 cases
-— so eval scripts can be smoke-tested before real data lands. Regenerate
-anytime; it is deterministic (seed = `20251117`).
+`python scripts/data/gen_dummy_skeleton.py --out examples/dummy --clean`
+writes the entire layout with schema-valid but trivial content — 2
+datasets × 2 organs × 3 cases — so eval scripts can be smoke-tested
+before real data lands. Regenerate anytime; it is deterministic
+(seed = `20251117`).
 
 ## Obfuscated workspace (`workspace_obfustrated/`)
 
-A third workspace root, sibling of `workspace/` and `dummy/`, holds a
-schema-conformant **synthetic-from-real** copy of the live workspace —
-real-shape, real-scale, but byte-for-byte different from `workspace/` and
-PHI-free. Generated by `python scripts/obfuscate_workspace.py` (or
+A third workspace root, sibling of `workspace/` and `examples/dummy/`,
+holds a schema-conformant **synthetic-from-real** copy of the live
+workspace — real-shape, real-scale, but byte-for-byte different from
+`workspace/` and PHI-free. Generated by
+`python scripts/data/obfuscate_workspace.py` (or
 `pip install -e obfuscator/ && obfuscate-workspace`). Use it to give a
-Claude session (or any external collaborator) a workspace they can read
+Claude session (or external collaborator) a workspace they can read
 freely without exposing patient data.
 
-Pointing scripts at it (additive — existing `--folder dummy` / `--folder workspace`
-invocations are unchanged):
+Pointing scripts at it (additive — existing `--folder examples/dummy`
+/ `--folder workspace` invocations are unchanged):
 
-- `--folder obfustrated` shorthand in any script that calls `resolve_folder`
-  (`scripts/_config_loader.py`)
+- `--folder obfustrated` shorthand in any script that calls
+  `resolve_folder` (`scripts/_helpers/_config_loader.py`)
 - `--obfustrated` boolean flag on eval, ablation, and pipeline scripts
 - `DIGITAL_REGISTRAR_WORKSPACE=workspace_obfustrated` env var (lowest
-  precedence — only consulted when `--folder` and `--obfustrated` are absent)
+  precedence — only consulted when `--folder` and `--obfustrated` are
+  absent)
 
-See [obfuscation.md](obfuscation.md) for the threat model, generation pipeline,
-and full integration recipe.
+See [../workflows/obfuscation.md](../workflows/obfuscation.md) for the
+threat model, generation pipeline, and full integration recipe.
 
-## Migration from the legacy TCGA layout
+## Legacy TCGA layout
 
 The old convention — `data/tcga_{dataset,result,annotation}_20251117/`
-with `_{suffix}` annotator filename tags — is being retired. See
-[`testing_migration`](branching_strategy.md) branch and
-`scripts/migrate_tcga_layout.py` (to be added) for the byte-equal copy
-procedure.
+with `_{suffix}` annotator filename tags — predates the canonical
+`with_preann/without_preann` layout. The bundled gold annotations at
+`data/tcga_annotation_20251117/` remain tracked for reproducibility of
+historical paper results that cite that exact path; new work should
+use the canonical layout above. There is no scheduled migration
+script — the historical tree is read-only.
 
 ## Provenance
 
-- **TCGA**: public pathology reports sampled to cover ten organs. Initial 151 cases (100 breast + 51 colorectal) produced during the 2025-11 round.
-- **CMUH**: local hospital cohort; data collection for the 2026-04 experiment round begins on [`experiment_cmuh_pilot`](branching_strategy.md).
+- **TCGA**: public pathology reports sampled to cover ten organs.
+  Initial 151 cases (100 breast + 51 colorectal) produced during the
+  2025-11 round.
+- **CMUH**: local hospital cohort; data collection for the 2026-04
+  experiment round runs on
+  [`experiment_cmuh_pilot`](../workflows/branching_strategy.md).
 
-Pre-annotations across both datasets are produced by a single gpt-oss:20b
-pass (Ollama / vLLM) so the "with_preann" condition is held constant across annotators.
+Pre-annotations across both datasets are produced by a single
+gpt-oss:20b pass (Ollama / vLLM) so the `with_preann` condition is
+held constant across annotators.

@@ -1,47 +1,81 @@
 # Digital Registrar — Research
 
-Research stack for **The Digital Registrar**, a model-agnostic, resource-efficient AI framework for comprehensive cancer surveillance from pathology reports.
+> Last updated: 2026-05-11 · Reflects: `d11d072`
 
-This package wraps four research concerns around the slim production extractor:
+Research stack for **The Digital Registrar** — a schema-driven, model-agnostic
+pipeline for cancer-registry extraction from pathology reports. One import
+root, one `pyproject.toml`, four research concerns around the slim production
+extractor (vendored under `src/digital_registrar_research/`).
 
-| Subpackage | Purpose |
+## Repo layout
+
+```
+drr-next/
+├── src/digital_registrar_research/
+│   ├── pipeline.py + pipeline_factory.py + runner.py   # extraction (v1 + v2)
+│   ├── signatures/                                     # DSPy signature factory
+│   ├── schemas/                                        # 3-layer source-of-truth
+│   ├── annotation/                                     # Streamlit review UI
+│   ├── benchmarks/                                     # baselines + harness
+│   ├── ablations/                                      # ablation grid runners
+│   ├── models/, util/, paths.py                        # support modules
+│   └── _legacy/                                        # archived, off import path
+├── scripts/                                            # CLIs + run-time helpers
+│   ├── _helpers/, _legacy/
+│   ├── ablations/, annotation/, baselines/, data/
+│   ├── eval/    ── unified cascade eval CLI
+│   ├── pipeline/, repo/
+├── tests/                                              # mirrors src/ tree
+├── docs/                                               # this directory
+├── configs/, data/, results/                           # canonical layout
+├── examples/dummy/                                     # runnable skeleton
+├── obfuscator/                                         # standalone synthetic-data subpkg
+└── packaging/                                          # build & launch dispatchers
+```
+
+## Where to read what
+
+| Concern | Doc |
 |---|---|
-| [`pipeline` + `pipeline_factory` + `runner`](pipeline.md) | Core extraction: legacy DSPy + v2 schema-driven factory + batch runner |
-| [`signatures.factory`](pipeline.md#decomposition-modes-factory-engine) | Builds DSPy signatures dynamically from Pydantic case-models |
-| [`schemas`](schemas.md) | Canonical Pydantic case-models → auto-generated JSON schemas |
-| [schema GUI blueprint](schema_gui_blueprint.md) | Future clinician-friendly schema editor (design only) |
-| [`annotation`](annotation.md) | Streamlit UI for doctors to review GPT-OSS pre-annotations |
-| [`benchmarks`](benchmarks/README.md) | Comparison vs LLM / ClinicalBERT / rule-based — canonical run + eval workflow |
-| [`ablations`](ablations.md) | Modular vs monolithic DSPy × DSPy vs raw-JSON grid |
-| [example data](data.md) | Datasets (cmuh, tcga), layout conventions, dummy skeleton |
-| [experiment protocol](experiment_protocol.md) | 2026-04 experiment cross-product, evaluation questions, invariants |
-| [branching strategy](branching_strategy.md) | 12-branch working model (testing / refactor / experiment state) |
-| [evaluation pipeline](eval/index.md) | Paper-grade metric explanations, recipes, and citations |
-| [DSPy deep dive](dspy_deep_dive.md) | Why the strict-schema protocol works on `gpt-oss:20b`, dynamic signature construction, phased dev roadmap |
-| [obfuscated workspace](obfuscation.md) | Schema-conformant synthetic copy of `workspace/` for PHI-free debugging |
-
-## Why this exists
-
-The original `digitalregistrar` package is the slim, production-facing extractor — most non-academic users install just that and never touch the surrounding research apparatus. This research package vendors the pipeline and adds the four research concerns under one import root, so academic users don't have to juggle four sibling repos with `sys.path.insert` glue.
-
-Concretely, this consolidation:
-
-1. Replaces four `requirements.txt` files with one `pyproject.toml` + extras.
-2. Eliminates every `sys.path.insert` — clean `from digital_registrar_research.…` imports throughout.
-3. Establishes one canonical Pydantic schema layer that both the JSON schemas (consumed by the annotation UI and the raw-JSON ablation runner) and the DSPy signatures (used by the extraction pipeline) are pinned against in CI.
-4. Co-locates the TCGA gold set so benchmarks and ablations work out of the box.
+| Extraction engines (v1 legacy + v2 factory + runner) | [architecture/pipeline.md](architecture/pipeline.md) |
+| Canonical schema architecture (pydantic / extraction / aliases) | [architecture/schemas.md](architecture/schemas.md) |
+| Why DSPy + gpt-oss:20b works; roadmap status | [architecture/dspy_deep_dive.md](architecture/dspy_deep_dive.md) |
+| DSPy compatibility across local models | [architecture/dspy_ollama_model_compatibility.md](architecture/dspy_ollama_model_compatibility.md) |
+| Annotation UI workflows | [workflows/annotation.md](workflows/annotation.md) |
+| 2026-04 experiment protocol & status | [workflows/experiment_protocol.md](workflows/experiment_protocol.md) |
+| 12-branch working model | [workflows/branching_strategy.md](workflows/branching_strategy.md) |
+| Obfuscated workspace (PHI-free debug copy) | [workflows/obfuscation.md](workflows/obfuscation.md) |
+| Comparison benchmarks (LLM / ClinicalBERT / rules) | [benchmarks/00_overview.md](benchmarks/00_overview.md) |
+| Ablation suite & design rationale | [ablations/index.md](ablations/index.md) |
+| Cascade evaluation methodology | [eval/index.md](eval/index.md) |
+| Datasets, layout, naming conventions | [reference/data.md](reference/data.md) |
+| Statistical methods (cascade + ablation) | [reference/stat_methods.md](reference/stat_methods.md) |
+| Schema-editor GUI blueprint (not yet built) | [reference/schema_gui_blueprint.md](reference/schema_gui_blueprint.md) |
+| Literature review | [reference/literature_review.md](reference/literature_review.md) |
 
 ## Quick start
 
 ```bash
-git clone <this-repo> digital-registrar-research
-cd digital-registrar-research
+git clone <this-repo> drr-next
+cd drr-next
 pip install -e .[all]
-pytest                                    # 46 tests
-registrar-schemas --check                 # confirm Pydantic ↔ JSON parity
-registrar-annotate                        # launch the annotation UI
+pytest -q                                  # 458 tests collected
+registrar-schemas --check                  # Pydantic ↔ JSON parity check
+registrar-annotate                         # launch the annotation UI
 ```
 
-## Relationship to the slim release
+## Why this exists
 
-The `digitalregistrar/` repo (sibling folder, untouched) is still the pip-installable home for production users. The vendored copy under `src/digital_registrar_research/` is the **research tip-of-tree**. When research-side improvements stabilise, backport them to the slim release manually; `scripts/repo/diff_against_slim.py` shows what has diverged.
+The slim [`digitalregistrar`](https://github.com/kblab2024/digitalregistrar)
+package is the pip-installable extractor most non-academic users want. This
+research package **vendors** that pipeline at `src/digital_registrar_research/`
+and adds the surrounding research apparatus — schemas as a canonical
+source-of-truth, an annotation UI, comparison baselines, an ablation grid,
+and a cascade-style evaluation pipeline — under one import root.
+
+Concretely the consolidation:
+
+1. One `pyproject.toml` with extras (`[annotation]`, `[benchmarks]`, `[ablations]`, `[dev]`, `[all]`) — no more sibling-repo `sys.path.insert` glue.
+2. Pydantic case-models are the single source of truth; JSON schemas regenerate via `registrar-schemas`; concordance enforced in CI.
+3. TCGA gold annotations are co-located (`data/tcga_annotation_20251117/`) so benchmarks and ablations run out of the box.
+4. Archived material lives at `src/digital_registrar_research/_legacy/` and `scripts/_legacy/`, off the active import path and out of CI.

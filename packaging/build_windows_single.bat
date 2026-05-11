@@ -1,17 +1,9 @@
 @echo off
-rem Build the Windows bundle with a single annotator (NHC only).
-rem Output: packaging\dist\digital-registrar-annotator-windows-single.zip
+rem Thin wrapper — see packaging/build.py for the canonical entry point.
 setlocal
-set "PLATFORM=windows"
-set "ANNOTATOR_SET=single"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0_build_common.ps1"
+python "%~dp0build.py" --platform windows --annotators single %*
 set "RC=%ERRORLEVEL%"
-if not "%RC%"=="0" (
-    echo.
-    echo Build failed with exit code %RC%.
-    pause
-    exit /b %RC%
-)
+if not "%RC%"=="0" ( echo. & echo Build failed with exit code %RC%. & pause & exit /b %RC% )
 echo.
 pause
 endlocal

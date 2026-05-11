@@ -933,7 +933,7 @@ def main_cli_workspace():
 
 def main_cli_dummy():
     """Console-script entry for `registrar-annotate-dummy`."""
-    _spawn_streamlit(_repo_root() / "dummy")
+    _spawn_streamlit(_repo_root() / "examples" / "dummy")
 
 
 if os.environ.get("STREAMLIT_SERVER_PORT") or st.runtime.exists():

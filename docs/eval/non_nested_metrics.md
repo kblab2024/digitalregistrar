@@ -1,6 +1,6 @@
 # Non-nested (scalar) field metrics
 
-> **Cascade-redesign note (2026-05).** The standalone `non_nested` subcommand was removed; scalar-field accuracy is now produced by the `cascade` subcommand and lives under `chapter3_field_extraction/`. Output filenames in this doc that reference `non_nested/` should be read as `chapter3_field_extraction/`. The metric definitions below are unchanged. See [CHANGELOG.md](CHANGELOG.md) and [../stat_methods.md](../stat_methods.md).
+> **Cascade-redesign note (2026-05).** The standalone `non_nested` subcommand was removed; scalar-field accuracy is now produced by the `cascade` subcommand and lives under `chapter3_field_extraction/`. Output filenames in this doc that reference `non_nested/` should be read as `chapter3_field_extraction/`. The metric definitions below are unchanged. See [CHANGELOG.md](CHANGELOG.md) and [../reference/stat_methods.md](../reference/stat_methods.md).
 
 For single-value fields (categorical, boolean, ordinal, continuous numeric) **plus list-of-literals fields** (set-valued enums like `tumor_extent`, `vascular_invasion`, `involved_margin_list`). Reported per-field, per-organ, and per-subgroup (single vs multi-primary). For nested-list (list-of-dicts) fields see [nested_metrics.md](nested_metrics.md).
 

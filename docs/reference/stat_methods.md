@@ -1,10 +1,17 @@
-# Statistical methods of the cascade evaluation
+# Statistical methods — cascade evaluation + ablation stats
 
-This document is the canonical reference for every statistic the
-cascade pipeline reports. It maps each method to (a) its file in the
-`benchmarks/eval/stats/` package, (b) the chapter CSV it produces, and
-(c) the reviewer comment it addresses. The manuscript supplement
-should cite this document when referencing methods.
+> Last updated: 2026-05-11 · Reflects: `d11d072`
+
+Canonical reference for every statistic reported by the cascade
+evaluation pipeline (`scripts/eval/cli.py cascade`) and the ablation
+statistics pack (`scripts/ablations/run_stats.py`). The two share the
+same underlying primitives — what differs is the upstream long-form
+table they consume.
+
+Each method below maps to (a) its file in the
+`benchmarks/eval/stats/` package, (b) the chapter or ablation CSV it
+produces, and (c) the reviewer comment it addresses. The manuscript
+supplement should cite this document when referencing methods.
 
 ## 1. Cascade architecture
 

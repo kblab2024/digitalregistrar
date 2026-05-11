@@ -1,5 +1,7 @@
 # Obfuscated workspace — schema-conformant synthetic data for PHI-free debugging
 
+> Last updated: 2026-05-11 · Reflects: `d11d072`
+
 ## Why this exists
 
 Real patient pathology reports under `workspace/` carry PHI (case IDs, dates, surgeon names, hospital codes, narrative text). Running a Claude session against them is unacceptable.
@@ -12,7 +14,7 @@ Three workspace roots coexist as first-class peers:
 | --- | --- | --- |
 | `workspace/` | Real PHI — production data | yes |
 | `workspace_obfustrated/` | Synthetic-from-real, real-shape, real-scale | yes |
-| `dummy/` | Small synthetic-from-nothing fixture for unit tests | partly |
+| `examples/dummy/` | Small synthetic-from-nothing fixture for unit tests | partly |
 
 `workspace_obfustrated/` is **gitignored** but **not Claude-ignored** — Claude needs read access for the debugging workflow this is built for.
 
@@ -31,8 +33,8 @@ Treat `workspace_obfustrated/` as **public**. Assume it leaks. The obfuscator th
 From the inference repo root:
 
 ```bash
-python scripts/obfuscate_workspace.py                    # workspace/ -> workspace_obfustrated/
-python scripts/obfuscate_workspace.py --src dummy --out /tmp/dummy_obf --seed 1234
+python scripts/data/obfuscate_workspace.py                    # workspace/ -> workspace_obfustrated/
+python scripts/data/obfuscate_workspace.py --src examples/dummy --out /tmp/dummy_obf --seed 1234
 ```
 
 Or install the standalone CLI:
@@ -74,15 +76,15 @@ Default rates (configurable in `obfuscator/src/obfuscator/profiles.yaml`):
 
 ## Point eval / ablation / inference scripts at it
 
-All scripts that take `--folder` or `--root` accept an `--obfustrated` shortcut alongside the existing `dummy` and `workspace` options. **Existing flags are unchanged** — this is purely additive.
+All scripts that take `--folder` or `--root` accept an `--obfustrated` shortcut alongside the existing `examples/dummy` and `workspace` options. **Existing flags are unchanged** — this is purely additive.
 
 ### Eval subcommands
 
 > Cascade redesign (2026-05): the `non_nested` and `nested` subcommands have been replaced by the unified `cascade` subcommand. Examples below have been updated.
 
 ```bash
-python -m scripts.eval.cli cascade --root dummy     --dataset cmuh --model gpt_oss_20b --annotator gold
-python -m scripts.eval.cli cascade --root workspace --dataset tcga --model gpt_oss_20b --annotator gold
+python -m scripts.eval.cli cascade --root examples/dummy --dataset cmuh --model gpt_oss_20b --annotator gold
+python -m scripts.eval.cli cascade --root workspace      --dataset tcga --model gpt_oss_20b --annotator gold
 
 # With --obfustrated shortcut:
 python -m scripts.eval.cli cascade --obfustrated --dataset tcga --model gpt_oss_20b --annotator gold
@@ -96,8 +98,8 @@ When `--obfustrated` is set without an explicit `--root`, defaults to `--root wo
 
 ```bash
 # Existing — unchanged:
-python scripts/ablations/run_cell_a.py --folder dummy --dataset tcga --model gptoss
-python scripts/ablations/run_cell_a.py --folder workspace --dataset tcga --model gptoss
+python scripts/ablations/run_cell_a.py --folder examples/dummy --dataset tcga --model gptoss
+python scripts/ablations/run_cell_a.py --folder workspace      --dataset tcga --model gptoss
 
 # New:
 python scripts/ablations/run_cell_a.py --obfustrated --dataset tcga --model gptoss
@@ -109,10 +111,10 @@ python scripts/ablations/run_cell_a.py --folder obfustrated --dataset tcga --mod
 
 ```bash
 # Existing — unchanged:
-python scripts/pipeline/legacy/run_dspy_ollama_single.py --folder dummy --dataset tcga --model gptoss --run smoke
+python scripts/pipeline/run_factory_ollama_single.py --folder examples/dummy --dataset tcga --model gptoss --run smoke
 
 # New:
-python scripts/pipeline/legacy/run_dspy_ollama_single.py --obfustrated --dataset tcga --model gptoss --run smoke
+python scripts/pipeline/run_factory_ollama_single.py --obfustrated --dataset tcga --model gptoss --run smoke
 ```
 
 ### Library code
@@ -134,10 +136,10 @@ data = workspace_root("workspace_obfustrated") / "data" / "tcga" / "reports"
 
 Highest wins; all options coexist:
 
-1. Explicit `--folder <path>` / `--root <path>` (any of `dummy`, `workspace`, `workspace_obfustrated`, abs path)
+1. Explicit `--folder <path>` / `--root <path>` (any of `examples/dummy`, `workspace`, `workspace_obfustrated`, abs path)
 2. `--obfustrated` flag → `workspace_obfustrated/`
 3. `DIGITAL_REGISTRAR_WORKSPACE` env var → `<repo_root>/<value>`
-4. Existing default (`workspace/` for production, `dummy/` where current code already defaults to dummy — unchanged)
+4. Existing default (`workspace/` for production, `examples/dummy/` where current code already defaults to dummy — unchanged)
 
 ## Audit trail
 

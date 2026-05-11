@@ -78,7 +78,7 @@ from digital_registrar_research.models.common import (  # noqa: E402
     localaddr,
     model_list,
 )
-from digital_registrar_research.pipeline_structured import (  # noqa: E402
+from digital_registrar_research._legacy.pipeline_structured import (  # noqa: E402
     load_decoding_kwargs,
     run_cancer_pipeline_structured as run_cancer_pipeline,
     setup_pipeline_structured as setup_pipeline,

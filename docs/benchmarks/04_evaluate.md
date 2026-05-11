@@ -4,7 +4,7 @@ The eval pipeline lives at `scripts/eval/cli.py` with subcommand dispatch. For b
 
 The whole eval surface is **method-agnostic** — pass `--method {rule_based|clinicalbert|llm}` and it consumes the canonical predictions tree. So the rule, BERT, and LLM baselines all produce comparable metrics CSVs out of the box.
 
-> **Cascade-redesign note (2026-05).** This page is being rewritten incrementally. The legacy `non_nested` and `nested` subcommands are gone — `cascade` produces strictly more output (three chapter folders, an others ledger, multirun reliability, paired-test CSVs) and applies cascade gating so that field-level accuracy is reported on the cohort that legitimately reached Stage C. See [eval/CHANGELOG.md](../eval/CHANGELOG.md) for the migration map and [stat_methods.md](../stat_methods.md) for the new statistical-methods inventory.
+> **Cascade-redesign note (2026-05).** This page is being rewritten incrementally. The legacy `non_nested` and `nested` subcommands are gone — `cascade` produces strictly more output (three chapter folders, an others ledger, multirun reliability, paired-test CSVs) and applies cascade gating so that field-level accuracy is reported on the cohort that legitimately reached Stage C. See [eval/CHANGELOG.md](../eval/CHANGELOG.md) for the migration map and [stat_methods.md](../reference/stat_methods.md) for the new statistical-methods inventory.
 
 ## Per-method `cascade`
 

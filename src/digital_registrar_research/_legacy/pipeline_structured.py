@@ -33,11 +33,11 @@ from typing import Any
 
 from openai import OpenAI
 
-from .ablations.runners._base import default_api_base, ollama_tag
-from .ablations.utils.categories import CANCER_CATEGORIES
-from .models.common import MODEL_PROFILES, _BASE_KWARGS, model_list
-from .paths import SCHEMAS_DATA
-from .schemas.builder import (
+from ..ablations.runners._base import default_api_base, ollama_tag
+from ..ablations.utils.categories import CANCER_CATEGORIES
+from ..models.common import MODEL_PROFILES, _BASE_KWARGS, model_list
+from ..paths import SCHEMAS_DATA
+from ..schemas.builder import (
     flatten_schema_for_prompt,
     load_organ_schema,
     validate_cancer_data,

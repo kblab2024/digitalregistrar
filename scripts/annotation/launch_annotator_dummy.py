@@ -15,7 +15,7 @@ APP = REPO_ROOT / "src" / "digital_registrar_research" / "annotation" / "app_can
 
 if __name__ == "__main__":
     env = os.environ.copy()
-    env.setdefault("REGISTRAR_ANNOTATE_BASE_DIR", str(REPO_ROOT / "dummy"))
+    env.setdefault("REGISTRAR_ANNOTATE_BASE_DIR", str(REPO_ROOT / "examples" / "dummy"))
     sys.exit(subprocess.call(
         [sys.executable, "-m", "streamlit", "run", str(APP), *sys.argv[1:]],
         env=env,

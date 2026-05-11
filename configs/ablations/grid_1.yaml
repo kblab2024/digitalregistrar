@@ -12,7 +12,7 @@
 
 name: grid_1
 description: "Minimum-viable lesion study × gptoss, single seed"
-folder: dummy            # 'dummy' | 'workspace' | absolute path
+folder: examples/dummy   # 'examples/dummy' | 'workspace' | absolute path
 dataset: tcga            # 'cmuh' | 'tcga'
 
 runs:

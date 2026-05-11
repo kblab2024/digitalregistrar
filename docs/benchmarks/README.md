@@ -86,7 +86,7 @@ Intra-corpus evaluation (e.g. CMUH-train / CMUH-test) is no longer supported in-
 
 ## Conventions used throughout
 
-- **`{folder}`** in commands means `dummy` (synthetic data), `workspace` (live data on this box), `workspace_obfustrated` / `obfustrated` (schema-conformant synthetic copy of `workspace/` for PHI-free debugging — see [../obfuscation.md](../obfuscation.md)), or any absolute path. Resolved via `scripts/_config_loader.py:resolve_folder`. Default is `workspace`.
+- **`{folder}`** in commands means `dummy` (synthetic data), `workspace` (live data on this box), `workspace_obfustrated` / `obfustrated` (schema-conformant synthetic copy of `workspace/` for PHI-free debugging — see [../workflows/obfuscation.md](../workflows/obfuscation.md)), or any absolute path. Resolved via `scripts/_config_loader.py:resolve_folder`. Default is `workspace`.
 - **`{dataset}`** is `cmuh` or `tcga`.
 - **`{organ_n}`** is the 1-based numeric organ index, **dataset-specific** per [`configs/organ_code.yaml`](../../configs/organ_code.yaml). TCGA covers 5 organs (1=breast, 2=colorectal, 3=esophagus, 4=stomach, 5=liver); CMUH covers 10 (1=pancreas, 2=breast, 3=cervix, 4=colorectal, 5=esophagus, 6=liver, 7=lung, 8=prostate, 9=stomach, 10=thyroid). The cross-corpus baseline restricts to the 5 shared organs. See [01_data_layout.md](01_data_layout.md#input-layout-folderdatadataset).
 - **`{case_id}`** is the corpus-prefixed report id, e.g. `cmuh1_17` (cmuh dataset, organ index 1, case 17).

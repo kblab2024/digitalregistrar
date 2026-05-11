@@ -40,7 +40,7 @@ so eval logic can be exercised end-to-end without exposing patient data.
 
 ```
 # 1. Generate the synthetic workspace (one-time per workspace state).
-python scripts/obfuscate_workspace.py --seed 42
+python scripts/data/obfuscate_workspace.py --seed 42
 
 # 2. Run any eval subcommand against it via the --obfustrated shortcut.
 python -m scripts.eval.cli non_nested \
@@ -56,7 +56,7 @@ python -m scripts.eval.cli non_nested \
 ```
 
 Eval signal is meaningful (annotations are deliberately consistent with
-report text up to per-field noise — see [obfuscation.md](../obfuscation.md)
+report text up to per-field noise — see [obfuscation.md](../workflows/obfuscation.md)
 for the layered noise pipeline). Existing `--root dummy` / `--root workspace`
 recipes are unchanged.
 
@@ -252,7 +252,7 @@ python scripts/ablations/run_cell_c.py --model gpt-oss:20b \
     --out workspace/results/ablations/raw_json_gpt-oss
 ```
 
-See [ablations.md](../ablations.md) for the per-cell argument reference and the lesion-study reading guide.
+See [ablations.md](../ablations/index.md) for the per-cell argument reference and the lesion-study reading guide.
 
 ## Ablation aggregator across smoke + real outputs
 

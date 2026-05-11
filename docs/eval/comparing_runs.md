@@ -126,7 +126,7 @@ VERDICT (Stage C, pairwise):
   qwen3_30b vs gemma3_27b:    0.929 / 0.898, Δ = -0.031, p = 0.012 → qwen3_30b better
 ```
 
-For an omnibus "are all 3 different?" test instead of all pairwise, use Cochran's Q via the cascade orchestrator's `--multi-model-roots` flag (see [stat_methods.md](../stat_methods.md) §2.2).
+For an omnibus "are all 3 different?" test instead of all pairwise, use Cochran's Q via the cascade orchestrator's `--multi-model-roots` flag (see [stat_methods.md](../reference/stat_methods.md) §2.2).
 
 ---
 

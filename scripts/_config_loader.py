@@ -95,17 +95,18 @@ def split_decoding_overrides(decoding_section: dict[str, Any] | None) -> dict[st
 def resolve_folder(raw: str | Path) -> Path:
     """Resolve a ``--folder`` CLI arg against the repo root when relative.
 
-    "dummy" and "workspace" are plain relative paths — they resolve to
-    ``<repo_root>/dummy`` and ``<repo_root>/workspace`` respectively.
+    "dummy" is a shortcut for ``<repo_root>/examples/dummy``; "workspace"
+    is a plain relative path resolving to ``<repo_root>/workspace``.
 
     "obfustrated" is a shortcut for ``<repo_root>/workspace_obfustrated`` —
     the schema-conformant synthetic copy produced by the obfuscator
-    (``scripts/obfuscate_workspace.py`` / ``obfuscate-workspace`` CLI). Use
+    (``scripts/data/obfuscate_workspace.py`` / ``obfuscate-workspace`` CLI). Use
     this when debugging eval/ablation/inference paths without touching PHI.
 
     "reference" is a virtual experiment root: it resolves to
-    ``<repo_root>/reference/_staged``, a symlink tree built on demand from
-    the canonical TCGA test data at ``reference/reports/<organ_n>/*.txt``.
+    ``<repo_root>/tests/fixtures/reference/_staged``, a symlink tree built
+    on demand from the canonical TCGA test data at
+    ``tests/fixtures/reference/reports/<organ_n>/*.txt``.
     The staging tree mirrors the canonical
     ``data/{dataset}/reports/{organ_n}/*.txt`` layout that runners expect,
     so they need no special handling. Predict-side runs work from this
@@ -118,33 +119,35 @@ def resolve_folder(raw: str | Path) -> Path:
         return _ensure_reference_staged()
     if str(raw) == "obfustrated":
         return (REPO_ROOT / "workspace_obfustrated").resolve()
+    if str(raw) == "dummy":
+        return (REPO_ROOT / "examples" / "dummy").resolve()
     p = Path(raw)
     if not p.is_absolute():
         p = REPO_ROOT / p
     return p.resolve()
 
 
-_REFERENCE_DIR = REPO_ROOT / "reference"
+_REFERENCE_DIR = REPO_ROOT / "tests" / "fixtures" / "reference"
 _REFERENCE_STAGED = _REFERENCE_DIR / "_staged"
 # Datasets whose reports live under the canonical flat layout
-# ``reference/reports/<organ_n>/*.txt``. The reference checkout is
-# reports-only — gold annotations are not staged. Add a tuple here when a
-# new dataset gets a reference subset, and split `reports/` per-dataset
-# (e.g. ``reference/reports/<dataset>/<organ_n>/...``) if/when the
-# reports tree stops being TCGA-only.
+# ``tests/fixtures/reference/reports/<organ_n>/*.txt``. The reference
+# checkout is reports-only — gold annotations are not staged. Add a tuple
+# here when a new dataset gets a reference subset, and split `reports/`
+# per-dataset (e.g. ``tests/fixtures/reference/reports/<dataset>/<organ_n>/...``)
+# if/when the reports tree stops being TCGA-only.
 _REFERENCE_DATASETS: tuple[str, ...] = ("tcga",)
 
 
 def _ensure_reference_staged() -> Path:
     """Build (or refresh) the canonical-layout symlink tree under
-    ``reference/_staged/``. Idempotent: re-uses existing symlinks when the
-    target paths haven't changed.
+    ``tests/fixtures/reference/_staged/``. Idempotent: re-uses existing
+    symlinks when the target paths haven't changed.
 
     Source layout (reports-only):
-        reference/reports/<organ_n>/<case_id>.txt
+        tests/fixtures/reference/reports/<organ_n>/<case_id>.txt
 
     Staged layout (what runners read via ``--folder reference``):
-        reference/_staged/data/<dataset>/reports/<organ_n>/<case_id>.txt
+        tests/fixtures/reference/_staged/data/<dataset>/reports/<organ_n>/<case_id>.txt
     """
     if not _REFERENCE_DIR.is_dir():
         raise FileNotFoundError(
@@ -162,8 +165,8 @@ def _ensure_reference_staged() -> Path:
 
 
 def _stage_reports(dataset: str, src_root: Path) -> None:
-    """Symlink ``reference/reports/<organ_n>/<case_id>.txt`` to
-    ``reference/_staged/data/<dataset>/reports/<organ_n>/<case_id>.txt``.
+    """Symlink ``tests/fixtures/reference/reports/<organ_n>/<case_id>.txt`` to
+    ``tests/fixtures/reference/_staged/data/<dataset>/reports/<organ_n>/<case_id>.txt``.
 
     The source layout is already canonical (numeric ``<organ_n>`` dirs,
     ``<case_id>.txt`` filenames), so this is a 1:1 file-level symlink

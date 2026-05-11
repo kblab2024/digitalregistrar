@@ -1,4 +1,4 @@
-"""Smoke test for :mod:`digital_registrar_research.pipeline_structured`.
+"""Smoke test for :mod:`digital_registrar_research._legacy.pipeline_structured`.
 
 Mocks the OpenAI client to:
   * confirm the structured pipeline returns the expected output shape
@@ -62,7 +62,7 @@ def _enqueue(client, payload: dict) -> None:
 
 def test_classify_only_when_not_cancer(fake_client, captured_calls):
     """A negative classify result short-circuits — no extract call should fire."""
-    from digital_registrar_research import pipeline_structured as ps
+    from digital_registrar_research._legacy import pipeline_structured as ps
 
     _enqueue(fake_client, {
         "cancer_excision_report": False,
@@ -88,7 +88,7 @@ def test_positive_breast_runs_extract_and_returns_cancer_data(
 ):
     """Positive classify + breast organ triggers an extract call with the
     breast schema; output keeps the canonical shape."""
-    from digital_registrar_research import pipeline_structured as ps
+    from digital_registrar_research._legacy import pipeline_structured as ps
 
     _enqueue(fake_client, {
         "cancer_excision_report": True,
@@ -117,7 +117,7 @@ def test_every_call_uses_json_schema_response_format(
     fake_client, captured_calls,
 ):
     """Guards against regression to plain JSON mode."""
-    from digital_registrar_research import pipeline_structured as ps
+    from digital_registrar_research._legacy import pipeline_structured as ps
 
     _enqueue(fake_client, {
         "cancer_excision_report": True,
@@ -146,7 +146,7 @@ def test_every_call_uses_json_schema_response_format(
 def test_extract_call_targets_organ_schema(fake_client, captured_calls):
     """The second call's schema must be the breast organ schema, not the
     classify schema."""
-    from digital_registrar_research import pipeline_structured as ps
+    from digital_registrar_research._legacy import pipeline_structured as ps
 
     _enqueue(fake_client, {
         "cancer_excision_report": True,
@@ -178,7 +178,7 @@ def test_parse_error_surfaces_under_underscore_key(
     """If the model still emits invalid JSON despite schema enforcement,
     the residual failure is surfaced under ``_parse_error`` so the eval
     pipeline's parse-error tracking still sees it."""
-    from digital_registrar_research import pipeline_structured as ps
+    from digital_registrar_research._legacy import pipeline_structured as ps
 
     fake_client._queue.append("not a json string {{{ ")
 

@@ -2,7 +2,7 @@
 
 ELI5-style explanations of every metric the `scripts/eval/` pipeline produces, plus paper-ready citations.
 
-> **Cascade redesign (2026-05).** The `non_nested` and `nested` subcommands have been replaced by a single `cascade` subcommand that gates evaluation as three sequential stages. Output paths have moved into `chapter1_eligibility/`, `chapter2_organ_classification/`, `chapter3_field_extraction/`. See [CHANGELOG.md](CHANGELOG.md) for the migration map and [../stat_methods.md](../stat_methods.md) for the new statistical-methods inventory.
+> **Cascade redesign (2026-05).** The `non_nested` and `nested` subcommands have been replaced by a single `cascade` subcommand that gates evaluation as three sequential stages. Output paths have moved into `chapter1_eligibility/`, `chapter2_organ_classification/`, `chapter3_field_extraction/`. See [CHANGELOG.md](CHANGELOG.md) for the migration map and [../reference/stat_methods.md](../reference/stat_methods.md) for the new statistical-methods inventory.
 
 ## Decision tree — which doc do I read?
 
@@ -29,7 +29,7 @@ ELI5-style explanations of every metric the `scripts/eval/` pipeline produces, p
 | "How reproducible is this model across reruns?" | [comparing_runs.md](comparing_runs.md) (Recipe 2) |
 | "How do I run eval on GPU (CUDA / MPS)?" | [gpu_acceleration.md](gpu_acceleration.md) |
 | "How do I cite this in the paper Methods section?" | [methods_citations.md](methods_citations.md) |
-| "I want to debug eval without exposing PHI." | [../obfuscation.md](../obfuscation.md) |
+| "I want to debug eval without exposing PHI." | [../workflows/obfuscation.md](../workflows/obfuscation.md) |
 
 ## CSV → metric crosswalk
 
@@ -47,7 +47,7 @@ ELI5-style explanations of every metric the `scripts/eval/` pipeline produces, p
 | `chapter3_field_extraction/cascade_funnel.csv` | n_total / n_passed / n_dropped per stage | [diagnostics.md](diagnostics.md) |
 | `chapter3_field_extraction/conditional_accuracy_grid.csv` | `P(field_correct \| stage_b ∧ stage_a)` per field | [diagnostics.md](diagnostics.md) |
 | `chapter*/multirun_consistency.csv` | ICC(2,1), ICC(3,k), Cronbach α, accuracy-flip-rate | [multirun.md](multirun.md) |
-| `model_pair_tests/*.csv` | McNemar / Cochran-Q / Stuart-Maxwell + Holm/BH adjusted p | [multiple_comparisons.md](multiple_comparisons.md), [../stat_methods.md](../stat_methods.md) §2.2 |
+| `model_pair_tests/*.csv` | McNemar / Cochran-Q / Stuart-Maxwell + Holm/BH adjusted p | [multiple_comparisons.md](multiple_comparisons.md), [../reference/stat_methods.md](../reference/stat_methods.md) §2.2 |
 | `iaa/pair_*.csv` | Cohen's κ (un/weighted), CCC, ICC, BA LoA, F1, Krippendorff α | [iaa_basics.md](iaa_basics.md) |
 | `iaa_pair/pair_<a>_vs_<b>/headline.csv` | overall pair κ — mean per-field κ, n-weighted mean, pooled categorical κ, agree/disagree PABAK, Krippendorff α | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |
 | `iaa_pair/pair_<a>_vs_<b>/per_section.csv` | section roll-up (top_level / scalar_pathology / nested) | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |

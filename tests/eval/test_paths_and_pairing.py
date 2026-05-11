@@ -1,4 +1,4 @@
-"""Path-resolution and paired-case discovery tests against /dummy."""
+"""Path-resolution and paired-case discovery tests against /examples/dummy."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -15,7 +15,7 @@ from scripts.eval._common.stratify import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DUMMY = REPO_ROOT / "dummy"
+DUMMY = REPO_ROOT / "examples" / "dummy"
 HAS_DUMMY = DUMMY.is_dir()
 
 

@@ -1,6 +1,11 @@
 # Schema editor GUI — design blueprint
 
-> Status: blueprint only. Not implemented in this PR. Tracked for a follow-up.
+> Last updated: 2026-05-11 · Reflects: `d11d072`
+>
+> Status: blueprint only. Not implemented. Roadmap: TBD — implementation
+> begins when a clinician collaborator commits to hand-editing schemas
+> on a recurring basis. The Pydantic + `registrar-schemas` flow remains
+> the canonical authoring path until then.
 
 ## Why
 

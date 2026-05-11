@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Build the Unix (Linux x86_64) bundle with a single annotator (NHC only).
-# Output: packaging/dist/digital-registrar-annotator-unix-single.tar.gz
+# Thin wrapper — see packaging/build.py for the canonical entry point.
 set -euo pipefail
-export PLATFORM=unix ANNOTATOR_SET=single
-exec bash "$(dirname "$0")/_build_common.sh"
+exec python3 "$(dirname "$0")/build.py" --platform unix --annotators single "$@"

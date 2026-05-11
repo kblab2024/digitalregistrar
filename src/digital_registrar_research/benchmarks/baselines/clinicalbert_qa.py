@@ -356,8 +356,8 @@ def main() -> None:
     ap.add_argument("--ckpt", default="ckpts/clinicalbert_qa")
     ap.add_argument("--out", default=str(BENCHMARKS_RESULTS / "clinicalbert_qa"),
                     help="Output dir; per-dataset subdirs are created under it.")
-    ap.add_argument("--data-root", default="dummy",
-                    help="Root containing data/<dataset>/ subtrees (default: dummy).")
+    ap.add_argument("--data-root", default="examples/dummy",
+                    help="Root containing data/<dataset>/ subtrees (default: examples/dummy).")
     ap.add_argument("--organs", default=",".join(DEFAULT_ORGANS),
                     help="CSV of cancer_category values to include.")
     ap.add_argument("--datasets", default=",".join(DEFAULT_DATASETS),

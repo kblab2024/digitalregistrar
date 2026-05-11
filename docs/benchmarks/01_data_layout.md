@@ -7,7 +7,7 @@ Every method (rule, BERT, LLM) reads inputs from the same place and writes outpu
 `{folder}` is one of `dummy`, `workspace`, `workspace_obfustrated`, or an
 absolute path. The first three are sibling directories at the repo root that
 serve different purposes (real PHI / small unit-test fixture / real-shape
-synthetic-from-real for debugging — see [../obfuscation.md](../obfuscation.md)).
+synthetic-from-real for debugging — see [../workflows/obfuscation.md](../workflows/obfuscation.md)).
 
 ```
 {folder}/data/{dataset}/

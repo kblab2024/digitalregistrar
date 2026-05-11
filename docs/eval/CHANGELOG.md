@@ -54,7 +54,7 @@ extraction). Cascade attrition is recorded explicitly in
   category-aggregation. `examined` and `involved` are summed per
   `(lymph_node_side, lymph_node_category)` group, then matched on the
   group key. See [nested_metrics.md](nested_metrics.md) and
-  [../stat_methods.md](../stat_methods.md) §1.
+  [../reference/stat_methods.md](../reference/stat_methods.md) §1.
 - **Field exclusions**: `ajcc_version`, `treatment_effect`,
   `margins[*].description`, `regional_lymph_node[*].station_name` are
   excluded from every metric (not just stat tests). The deprecated
@@ -69,7 +69,7 @@ extraction). Cascade attrition is recorded explicitly in
   kappa, weighted kappa, Krippendorff alpha, ICC(2,1), ICC(3,k),
   Cronbach alpha, Stuart-Maxwell, Cochran's Q, Lin's CCC, Bland-Altman,
   cascade-funnel and conditional-accuracy diagnostics. See
-  [../stat_methods.md](../stat_methods.md).
+  [../reference/stat_methods.md](../reference/stat_methods.md).
 - **Outputs gained**: each chapter has Cohen's-kappa CSVs, paired-test
   CSVs (when multiple models scored), `multirun_consistency.csv` with
   ICC and flip-rate columns, and the cascade funnel.

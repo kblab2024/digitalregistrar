@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Thin wrapper so `python scripts/obfuscate_workspace.py` works without `pip install -e obfuscator/`.
+"""Thin wrapper so `python scripts/data/obfuscate_workspace.py` works without `pip install -e obfuscator/`.
 
 Adds ``obfuscator/src`` to sys.path then delegates to ``obfuscator.cli:main``.
 """
@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-_REPO_ROOT = Path(__file__).resolve().parents[1]
+_REPO_ROOT = Path(__file__).resolve().parents[2]
 _OBFUSCATOR_SRC = _REPO_ROOT / "obfuscator" / "src"
 if str(_OBFUSCATOR_SRC) not in sys.path:
     sys.path.insert(0, str(_OBFUSCATOR_SRC))

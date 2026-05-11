@@ -12,7 +12,7 @@ python scripts/baselines/run_rule.py \
 
 | Flag | Default | Effect |
 |---|---|---|
-| `--folder` | `workspace` | Experiment root (`dummy` / `workspace` / `workspace_obfustrated` / abs path). Also accepts the `obfustrated` shorthand for `workspace_obfustrated/` — see [../obfuscation.md](../obfuscation.md). |
+| `--folder` | `workspace` | Experiment root (`dummy` / `workspace` / `workspace_obfustrated` / abs path). Also accepts the `obfustrated` shorthand for `workspace_obfustrated/` — see [../workflows/obfuscation.md](../workflows/obfuscation.md). |
 | `--datasets` | `tcga` | The LLM-comparable evaluation corpus. Pass `cmuh tcga` for both, or `cmuh` for intra-corpus ablations. |
 | `--organs` | Numeric organ subdirs to keep, e.g. `1 2 3`. Default: every organ subdir under `reports/` that has at least one `.txt`. |
 | `--limit N` | Cap cases per organ (debugging). |
