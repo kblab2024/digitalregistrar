@@ -1,5 +1,62 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/thyroid.py + src/digital_registrar_research/schemas/extraction/thyroid.py + src/digital_registrar_research/schemas/aliases/thyroid.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "LymphNodeSide": {
+      "description": "Standard ipsilateral/contralateral/midline side designation.",
+      "enum": [
+        "right",
+        "left",
+        "midline",
+        "not_stated"
+      ],
+      "title": "LymphNodeSide",
+      "type": "string"
+    },
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
+    },
+    "ThyroidExtrathyroidExtension": {
+      "enum": [
+        "microscopic_strap_muscle",
+        "macroscopic_strap_muscle_t3b",
+        "subcutaneous_trachea_esophagus_rln_t4a",
+        "prevertebral_carotid_mediastinal_t4b",
+        "not_stated"
+      ],
+      "title": "ThyroidExtrathyroidExtension",
+      "type": "string"
+    },
+    "ThyroidHistology": {
+      "enum": [
+        "papillary_thyroid_carcinoma",
+        "follicular_thyroid_carcinoma",
+        "medullary_thyroid_carcinoma",
+        "anaplastic_thyroid_carcinoma",
+        "others",
+        "not_stated"
+      ],
+      "title": "ThyroidHistology",
+      "type": "string"
+    },
     "ThyroidLN": {
       "properties": {
         "examined": {
@@ -13,17 +70,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "level_vi_central",
-                "level_i",
-                "level_ii",
-                "level_iii",
-                "level_iv",
-                "level_v",
-                "level_vii",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/ThyroidLNCategory"
             },
             {
               "type": "null"
@@ -36,12 +83,7 @@
         "lymph_node_side": {
           "anyOf": [
             {
-              "enum": [
-                "right",
-                "left",
-                "midline"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LymphNodeSide"
             },
             {
               "type": "null"
@@ -71,6 +113,21 @@
       ],
       "title": "ThyroidLN",
       "type": "object"
+    },
+    "ThyroidLNCategory": {
+      "enum": [
+        "level_vi_central",
+        "level_i",
+        "level_ii",
+        "level_iii",
+        "level_iv",
+        "level_v",
+        "level_vii",
+        "others",
+        "not_stated"
+      ],
+      "title": "ThyroidLNCategory",
+      "type": "string"
     },
     "ThyroidMargin": {
       "properties": {
@@ -102,14 +159,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "outmost",
-                "anterior_outmost",
-                "posterior_outmost",
-                "isthmus",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/ThyroidMarginSite"
             },
             {
               "type": "null"
@@ -129,6 +179,109 @@
       ],
       "title": "ThyroidMargin",
       "type": "object"
+    },
+    "ThyroidMarginSite": {
+      "enum": [
+        "outmost",
+        "anterior_outmost",
+        "posterior_outmost",
+        "isthmus",
+        "others",
+        "not_stated"
+      ],
+      "title": "ThyroidMarginSite",
+      "type": "string"
+    },
+    "ThyroidMitoticActivity": {
+      "enum": [
+        "less_than_3",
+        "three_to_five",
+        "more_than_5",
+        "not_stated"
+      ],
+      "title": "ThyroidMitoticActivity",
+      "type": "string"
+    },
+    "ThyroidOverallStage": {
+      "enum": [
+        "stagei",
+        "stageii",
+        "stageiii",
+        "stageiva",
+        "stageivb",
+        "stageivc",
+        "not_stated"
+      ],
+      "title": "ThyroidOverallStage",
+      "type": "string"
+    },
+    "ThyroidPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1a",
+        "n1b",
+        "not_stated"
+      ],
+      "title": "ThyroidPN",
+      "type": "string"
+    },
+    "ThyroidPT": {
+      "enum": [
+        "tx",
+        "t1a",
+        "t1b",
+        "t2",
+        "t3a",
+        "t3b",
+        "t4a",
+        "t4b",
+        "not_stated"
+      ],
+      "title": "ThyroidPT",
+      "type": "string"
+    },
+    "ThyroidPredisposingCondition": {
+      "enum": [
+        "radiation",
+        "family_history",
+        "not_stated"
+      ],
+      "title": "ThyroidPredisposingCondition",
+      "type": "string"
+    },
+    "ThyroidProcedure": {
+      "enum": [
+        "partial_excision",
+        "right_lobectomy",
+        "left_lobectomy",
+        "total_thyroidectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "ThyroidProcedure",
+      "type": "string"
+    },
+    "ThyroidTumorFocality": {
+      "enum": [
+        "unifocal",
+        "multifocal",
+        "not_specified"
+      ],
+      "title": "ThyroidTumorFocality",
+      "type": "string"
+    },
+    "ThyroidTumorSite": {
+      "enum": [
+        "right_lobe",
+        "left_lobe",
+        "isthmus",
+        "both_lobe",
+        "others",
+        "not_stated"
+      ],
+      "title": "ThyroidTumorSite",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for thyroid cancer.",
@@ -181,13 +334,7 @@
     "extrathyroid_extension": {
       "anyOf": [
         {
-          "enum": [
-            "microscopic_strap_muscle",
-            "macroscopic_strap_muscle_t3b",
-            "subcutaneous_trachea_esophagus_rln_t4a",
-            "prevertebral_carotid_mediastinal_t4b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidExtrathyroidExtension"
         },
         {
           "type": "null"
@@ -202,14 +349,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "papillary_thyroid_carcinoma",
-            "follicular_thyroid_carcinoma",
-            "medullary_thyroid_carcinoma",
-            "anaplastic_thyroid_carcinoma",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidHistology"
         },
         {
           "type": "null"
@@ -272,12 +412,7 @@
     "mitotic_activity": {
       "anyOf": [
         {
-          "enum": [
-            "less_than_3",
-            "3_to_5",
-            "more_than_5"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidMitoticActivity"
         },
         {
           "type": "null"
@@ -292,15 +427,7 @@
     "overall_stage": {
       "anyOf": [
         {
-          "enum": [
-            "i",
-            "ii",
-            "iii",
-            "iva",
-            "ivb",
-            "ivc"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidOverallStage"
         },
         {
           "type": "null"
@@ -330,12 +457,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PMCategory"
         },
         {
           "type": "null"
@@ -350,13 +472,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1a",
-            "n1b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidPN"
         },
         {
           "type": "null"
@@ -371,11 +487,7 @@
     "predisposing_condition": {
       "anyOf": [
         {
-          "enum": [
-            "radiation",
-            "family_history"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidPredisposingCondition"
         },
         {
           "type": "null"
@@ -390,14 +502,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "partial_excision",
-            "right_lobectomy",
-            "left_lobectomy",
-            "total_thyroidectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidProcedure"
         },
         {
           "type": "null"
@@ -412,17 +517,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "t1a",
-            "t1b",
-            "t2",
-            "t3a",
-            "t3b",
-            "t4a",
-            "t4b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidPT"
         },
         {
           "type": "null"
@@ -455,12 +550,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -490,12 +580,7 @@
     "tumor_focality": {
       "anyOf": [
         {
-          "enum": [
-            "unifocal",
-            "multifocal",
-            "not_specified"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidTumorFocality"
         },
         {
           "type": "null"
@@ -525,14 +610,7 @@
     "tumor_site": {
       "anyOf": [
         {
-          "enum": [
-            "right_lobe",
-            "left_lobe",
-            "isthmus",
-            "both_lobe",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ThyroidTumorSite"
         },
         {
           "type": "null"

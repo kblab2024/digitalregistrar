@@ -1,5 +1,44 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/prostate.py + src/digital_registrar_research/schemas/extraction/prostate.py + src/digital_registrar_research/schemas/aliases/prostate.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "LymphNodeSide": {
+      "description": "Standard ipsilateral/contralateral/midline side designation.",
+      "enum": [
+        "right",
+        "left",
+        "midline",
+        "not_stated"
+      ],
+      "title": "LymphNodeSide",
+      "type": "string"
+    },
+    "ProstateGleasonGroup": {
+      "enum": [
+        "group_1_3_3",
+        "group_2_3_4",
+        "group_3_4_3",
+        "group_4_4_4",
+        "group_5_4_5",
+        "group_5_5_4",
+        "group_5_5_5",
+        "not_stated"
+      ],
+      "title": "ProstateGleasonGroup",
+      "type": "string"
+    },
+    "ProstateHistology": {
+      "enum": [
+        "acinar_adenocarcinoma",
+        "intraductal_carcinoma",
+        "ductal_adenocarcinoma",
+        "mixed_acinar_ductal",
+        "neuroendocrine_carcinoma_small_cell",
+        "others",
+        "not_stated"
+      ],
+      "title": "ProstateHistology",
+      "type": "string"
+    },
     "ProstateLN": {
       "properties": {
         "examined": {
@@ -13,17 +52,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "hypogastric",
-                "obturator",
-                "external_iliac",
-                "internal_iliac",
-                "common_iliac",
-                "iliac_nos",
-                "pelvic_nos",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/ProstateLNCategory"
             },
             {
               "type": "null"
@@ -36,12 +65,7 @@
         "lymph_node_side": {
           "anyOf": [
             {
-              "enum": [
-                "right",
-                "left",
-                "midline"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LymphNodeSide"
             },
             {
               "type": "null"
@@ -71,6 +95,130 @@
       ],
       "title": "ProstateLN",
       "type": "object"
+    },
+    "ProstateLNCategory": {
+      "enum": [
+        "hypogastric",
+        "obturator",
+        "external_iliac",
+        "internal_iliac",
+        "common_iliac",
+        "iliac_nos",
+        "pelvic_nos",
+        "others",
+        "not_stated"
+      ],
+      "title": "ProstateLNCategory",
+      "type": "string"
+    },
+    "ProstateMarginLength": {
+      "enum": [
+        "limited",
+        "non_limited",
+        "not_stated"
+      ],
+      "title": "ProstateMarginLength",
+      "type": "string"
+    },
+    "ProstateMarginSite": {
+      "enum": [
+        "right_apical",
+        "left_apical",
+        "right_bladder_neck",
+        "left_bladder_neck",
+        "right_anterior",
+        "left_anterior",
+        "right_lateral",
+        "left_lateral",
+        "right_posterolateral",
+        "left_posterolateral",
+        "right_posterior",
+        "left_posterior"
+      ],
+      "title": "ProstateMarginSite",
+      "type": "string"
+    },
+    "ProstatePM": {
+      "enum": [
+        "mx",
+        "m0",
+        "m1a",
+        "m1b",
+        "m1c",
+        "not_stated"
+      ],
+      "title": "ProstatePM",
+      "type": "string"
+    },
+    "ProstatePN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "not_stated"
+      ],
+      "title": "ProstatePN",
+      "type": "string"
+    },
+    "ProstatePT": {
+      "enum": [
+        "tx",
+        "t2",
+        "t3a",
+        "t3b",
+        "t4",
+        "not_stated"
+      ],
+      "title": "ProstatePT",
+      "type": "string"
+    },
+    "ProstateProcedure": {
+      "enum": [
+        "radical_prostatectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "ProstateProcedure",
+      "type": "string"
+    },
+    "ProstateStageGroup": {
+      "enum": [
+        "stage0",
+        "stagei",
+        "stageiia",
+        "stageiib",
+        "stageiic",
+        "stageiiia",
+        "stageiiib",
+        "stageiiic",
+        "stageiva",
+        "stageivb",
+        "not_stated"
+      ],
+      "title": "ProstateStageGroup",
+      "type": "string"
+    },
+    "ProstateSurgicalTechnique": {
+      "enum": [
+        "open",
+        "robotic",
+        "hybrid",
+        "others",
+        "not_stated"
+      ],
+      "title": "ProstateSurgicalTechnique",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for prostate cancer.",
@@ -198,16 +346,7 @@
     "grade": {
       "anyOf": [
         {
-          "enum": [
-            "group_1_3_3",
-            "group_2_3_4",
-            "group_3_4_3",
-            "group_4_4_4",
-            "group_5_4_5",
-            "group_5_5_4",
-            "group_5_5_5"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstateGleasonGroup"
         },
         {
           "type": "null"
@@ -222,15 +361,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "acinar_adenocarcinoma",
-            "intraductal_carcinoma",
-            "ductal_adenocarcinoma",
-            "mixed_acinar_ductal",
-            "neuroendocrine_carcinoma_small_cell",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstateHistology"
         },
         {
           "type": "null"
@@ -261,21 +392,7 @@
       "anyOf": [
         {
           "items": {
-            "enum": [
-              "right_apical",
-              "left_apical",
-              "right_bladder_neck",
-              "left_bladder_neck",
-              "right_anterior",
-              "left_anterior",
-              "right_lateral",
-              "left_lateral",
-              "right_posterolateral",
-              "left_posterolateral",
-              "right_posterior",
-              "left_posterior"
-            ],
-            "type": "string"
+            "$ref": "#/$defs/ProstateMarginSite"
           },
           "type": "array"
         },
@@ -307,11 +424,7 @@
     "margin_length": {
       "anyOf": [
         {
-          "enum": [
-            "limited",
-            "non_limited"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstateMarginLength"
         },
         {
           "type": "null"
@@ -371,14 +484,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1a",
-            "m1b",
-            "m1c"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstatePM"
         },
         {
           "type": "null"
@@ -393,12 +499,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstatePN"
         },
         {
           "type": "null"
@@ -413,11 +514,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "radical_prostatectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstateProcedure"
         },
         {
           "type": "null"
@@ -462,14 +559,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "t2",
-            "t3a",
-            "t3b",
-            "t4"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstatePT"
         },
         {
           "type": "null"
@@ -517,19 +607,7 @@
     "stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "i",
-            "iia",
-            "iib",
-            "iic",
-            "iiia",
-            "iiib",
-            "iiic",
-            "iva",
-            "ivb"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstateStageGroup"
         },
         {
           "type": "null"
@@ -544,13 +622,7 @@
     "surgical_technique": {
       "anyOf": [
         {
-          "enum": [
-            "open",
-            "robotic",
-            "hybrid",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ProstateSurgicalTechnique"
         },
         {
           "type": "null"
@@ -565,12 +637,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"

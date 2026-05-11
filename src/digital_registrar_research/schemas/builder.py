@@ -119,25 +119,51 @@ def describe_field_list(flat_schema: dict) -> str:
     """Return a human-readable field checklist for the prompt. We keep
     it concise: `  - field_name (type, optional): description`."""
     lines: list[str] = []
+    defs = flat_schema.get("$defs", {})
     for name, spec in flat_schema.get("properties", {}).items():
-        type_desc = _spec_type_label(spec)
+        type_desc = _spec_type_label(spec, defs)
         desc = spec.get("description", "")
         lines.append(f"  - {name} ({type_desc}): {desc}")
     return "\n".join(lines)
 
 
-def _enum_values(spec: dict) -> list:
+def _resolve_ref(spec: dict, defs: dict) -> dict:
+    """Dereference a ``$ref`` once against the supplied ``$defs`` map.
+
+    Returns ``spec`` unchanged when there's no ``$ref`` or the referenced
+    name isn't in ``defs``. Only handles intra-schema refs of the form
+    ``"#/$defs/<Name>"`` — sufficient for what Pydantic emits.
+    """
+    ref = spec.get("$ref")
+    if not isinstance(ref, str) or not ref.startswith("#/$defs/"):
+        return spec
+    name = ref.removeprefix("#/$defs/")
+    target = defs.get(name)
+    return target if isinstance(target, dict) else spec
+
+
+def _enum_values(spec: dict, defs: dict | None = None) -> list:
     """Return the inline enum value list for a field spec, recursing
-    through ``anyOf`` arms (e.g. ``Literal[...] | None``). Empty list if
-    no enum is found."""
+    through ``anyOf`` arms (e.g. ``Literal[...] | None``) and
+    dereferencing ``$ref`` entries against ``defs`` (a ``$defs`` map).
+    Empty list if no enum is found.
+
+    Pydantic emits StrEnum-typed fields as ``$ref`` entries, so callers
+    that produce an enum-allowed-values prompt line (see
+    :func:`describe_field_list_strict`) must thread ``$defs`` through.
+    """
     if "enum" in spec:
         return list(spec["enum"])
+    if "$ref" in spec and defs is not None:
+        resolved = _resolve_ref(spec, defs)
+        if resolved is not spec:
+            return _enum_values(resolved, defs)
     for arm in spec.get("anyOf", []):
-        vals = _enum_values(arm)
+        vals = _enum_values(arm, defs)
         if vals:
             return vals
     if spec.get("type") == "array":
-        return _enum_values(spec.get("items", {}))
+        return _enum_values(spec.get("items", {}), defs)
     return []
 
 
@@ -148,13 +174,14 @@ def describe_field_list_strict(flat_schema: dict) -> str:
     ``Allowed:`` line listing every permitted value. Pushes the model
     harder to comply with the schema instead of inventing values."""
     blocks: list[str] = []
+    defs = flat_schema.get("$defs", {})
     for name, spec in flat_schema.get("properties", {}).items():
-        type_desc = _spec_type_label(spec)
+        type_desc = _spec_type_label(spec, defs)
         desc = spec.get("description", "")
         block = [f"- {name} ({type_desc}):"]
         if desc:
             block.append(f"    {desc}")
-        enum_vals = _enum_values(spec)
+        enum_vals = _enum_values(spec, defs)
         if enum_vals:
             rendered = ", ".join(json.dumps(v) for v in enum_vals)
             block.append(f"    Allowed: [{rendered}] or null")
@@ -170,19 +197,23 @@ def describe_skeleton(flat_schema: dict) -> str:
     return json.dumps(skeleton, indent=2, ensure_ascii=False)
 
 
-def _spec_type_label(spec: dict) -> str:
+def _spec_type_label(spec: dict, defs: dict | None = None) -> str:
     if "anyOf" in spec:
-        inner = [_spec_type_label(x) for x in spec["anyOf"]]
+        inner = [_spec_type_label(x, defs) for x in spec["anyOf"]]
         return " | ".join(inner)
     if "enum" in spec:
         return f"enum{tuple(spec['enum'])}"
+    if "$ref" in spec:
+        if defs is not None:
+            resolved = _resolve_ref(spec, defs)
+            if resolved is not spec and "enum" in resolved:
+                return f"enum{tuple(resolved['enum'])}"
+        return f"ref:{spec['$ref'].split('/')[-1]}"
     if "type" in spec:
         t = spec["type"]
         if t == "array":
-            return f"array<{_spec_type_label(spec.get('items', {}))}>"
+            return f"array<{_spec_type_label(spec.get('items', {}), defs)}>"
         return str(t)
-    if "$ref" in spec:
-        return f"ref:{spec['$ref'].split('/')[-1]}"
     return "any"
 
 

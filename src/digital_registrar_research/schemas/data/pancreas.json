@@ -1,5 +1,20 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/pancreas.py + src/digital_registrar_research/schemas/extraction/pancreas.py + src/digital_registrar_research/schemas/aliases/pancreas.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "PancreasHistology": {
+      "enum": [
+        "ductal_adenocarcinoma_nos",
+        "ipmn_with_carcinoma",
+        "itpn_with_carcinoma",
+        "acinar_cell_carcinoma",
+        "solid_pseudopapillary_neoplasm",
+        "undifferentiated_carcinoma",
+        "others",
+        "not_stated"
+      ],
+      "title": "PancreasHistology",
+      "type": "string"
+    },
     "PancreasLN": {
       "properties": {
         "examined": {
@@ -13,26 +28,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "regional_pancreatic",
-                "regional_gastric",
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/PancreasLNCategory"
             },
             {
               "type": "null"
@@ -62,6 +58,30 @@
       ],
       "title": "PancreasLN",
       "type": "object"
+    },
+    "PancreasLNCategory": {
+      "enum": [
+        "regional_pancreatic",
+        "regional_gastric",
+        "ln1",
+        "ln2",
+        "ln3",
+        "ln4",
+        "ln5",
+        "ln6",
+        "ln7",
+        "ln8",
+        "ln9",
+        "ln10",
+        "ln11",
+        "ln12",
+        "ln13",
+        "ln14",
+        "others",
+        "not_stated"
+      ],
+      "title": "PancreasLNCategory",
+      "type": "string"
     },
     "PancreasMargin": {
       "properties": {
@@ -93,21 +113,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "distal_pancreatic",
-                "proximal_pancreatic",
-                "pancreatic_neck",
-                "uncinate",
-                "bile_duct",
-                "proximal_gastric",
-                "proximal_duodenal",
-                "distal_intestinal",
-                "outmost",
-                "anterior_outmost",
-                "posterior_outmost",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/PancreasMarginSite"
             },
             {
               "type": "null"
@@ -127,6 +133,122 @@
       ],
       "title": "PancreasMargin",
       "type": "object"
+    },
+    "PancreasMarginSite": {
+      "enum": [
+        "distal_pancreatic",
+        "proximal_pancreatic",
+        "pancreatic_neck",
+        "uncinate",
+        "bile_duct",
+        "proximal_gastric",
+        "proximal_duodenal",
+        "distal_intestinal",
+        "outmost",
+        "anterior_outmost",
+        "posterior_outmost",
+        "others",
+        "not_stated"
+      ],
+      "title": "PancreasMarginSite",
+      "type": "string"
+    },
+    "PancreasOverallStage": {
+      "enum": [
+        "stageia",
+        "stageib",
+        "stageiia",
+        "stageiib",
+        "stageiii",
+        "stageiv",
+        "not_stated"
+      ],
+      "title": "PancreasOverallStage",
+      "type": "string"
+    },
+    "PancreasPM": {
+      "enum": [
+        "mx",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PancreasPM",
+      "type": "string"
+    },
+    "PancreasPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "n2",
+        "not_stated"
+      ],
+      "title": "PancreasPN",
+      "type": "string"
+    },
+    "PancreasPT": {
+      "enum": [
+        "tx",
+        "tis",
+        "t1a",
+        "t1b",
+        "t1c",
+        "t2",
+        "t3",
+        "t4",
+        "not_stated"
+      ],
+      "title": "PancreasPT",
+      "type": "string"
+    },
+    "PancreasProcedure": {
+      "enum": [
+        "partial_pancreatectomy",
+        "ssppd",
+        "pppd",
+        "whipple_procedure",
+        "distal_pancreatectomy",
+        "total_pancreatectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "PancreasProcedure",
+      "type": "string"
+    },
+    "PancreasTumorExtension": {
+      "enum": [
+        "within_pancreas",
+        "peripancreatic_soft_tissue",
+        "adjacent_organs_structures",
+        "others",
+        "not_stated"
+      ],
+      "title": "PancreasTumorExtension",
+      "type": "string"
+    },
+    "PancreasTumorSite": {
+      "enum": [
+        "head",
+        "neck",
+        "body",
+        "tail",
+        "uncinate_process",
+        "others",
+        "not_stated"
+      ],
+      "title": "PancreasTumorSite",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for pancreas cancer.",
@@ -179,16 +301,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "ductal_adenocarcinoma_nos",
-            "ipmn_with_carcinoma",
-            "itpn_with_carcinoma",
-            "acinar_cell_carcinoma",
-            "solid_pseudopapillary_neoplasm",
-            "undifferentiated_carcinoma",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasHistology"
         },
         {
           "type": "null"
@@ -251,15 +364,7 @@
     "overall_stage": {
       "anyOf": [
         {
-          "enum": [
-            "ia",
-            "ib",
-            "iia",
-            "iib",
-            "iii",
-            "iv"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasOverallStage"
         },
         {
           "type": "null"
@@ -289,11 +394,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasPM"
         },
         {
           "type": "null"
@@ -308,13 +409,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1",
-            "n2"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasPN"
         },
         {
           "type": "null"
@@ -329,16 +424,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "partial_pancreatectomy",
-            "ssppd",
-            "pppd",
-            "whipple_procedure",
-            "distal_pancreatectomy",
-            "total_pancreatectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasProcedure"
         },
         {
           "type": "null"
@@ -353,17 +439,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "tis",
-            "t1a",
-            "t1b",
-            "t1c",
-            "t2",
-            "t3",
-            "t4"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasPT"
         },
         {
           "type": "null"
@@ -396,12 +472,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -431,13 +502,7 @@
     "tumor_extension": {
       "anyOf": [
         {
-          "enum": [
-            "within_pancreas",
-            "peripancreatic_soft_tissue",
-            "adjacent_organs_structures",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasTumorExtension"
         },
         {
           "type": "null"
@@ -452,15 +517,7 @@
     "tumor_site": {
       "anyOf": [
         {
-          "enum": [
-            "head",
-            "neck",
-            "body",
-            "tail",
-            "uncinate_process",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PancreasTumorSite"
         },
         {
           "type": "null"

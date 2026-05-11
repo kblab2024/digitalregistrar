@@ -12,6 +12,7 @@ import typing as _t
 
 import pytest
 
+from digital_registrar_research.schemas.extraction import EXTRACTION_META
 from digital_registrar_research.schemas.pydantic import CASE_MODELS
 from digital_registrar_research.signatures import (
     ExtractionStep,
@@ -21,6 +22,19 @@ from digital_registrar_research.signatures import (
 )
 
 ORGANS = sorted(CASE_MODELS)
+
+
+def _build_extraction_signatures(organ: str, **kwargs):
+    """Build extraction signatures by threading the organ's metadata through.
+
+    Centralised so individual parity tests don't repeat the metadata
+    lookup boilerplate.
+    """
+    schema = CASE_MODELS[organ]
+    organ_meta = EXTRACTION_META[organ]
+    return build_extraction_signatures(
+        schema, organ_meta["fields"], organ_meta["groups"], **kwargs,
+    )
 
 
 def test_router_keys_match_registry():
@@ -38,7 +52,7 @@ def test_router_keys_match_registry():
 def test_factory_covers_schema(organ):
     """Per-group decomposition: union of step output fields == case-model fields."""
     schema = CASE_MODELS[organ]
-    steps = build_extraction_signatures(schema, decomposition="per_group")
+    steps = _build_extraction_signatures(organ, decomposition="per_group")
     assert all(isinstance(s, ExtractionStep) for s in steps)
     factory_fields: set[str] = set()
     for s in steps:
@@ -55,7 +69,7 @@ def test_factory_covers_schema(organ):
 def test_factory_monolithic_covers_schema(organ):
     """Monolithic mode produces exactly one step covering every field."""
     schema = CASE_MODELS[organ]
-    steps = build_extraction_signatures(schema, decomposition="monolithic")
+    steps = _build_extraction_signatures(organ, decomposition="monolithic")
     assert len(steps) == 1
     assert set(steps[0].output_field_names) == set(schema.model_fields)
     assert steps[0].group == "<monolithic>"
@@ -64,8 +78,7 @@ def test_factory_monolithic_covers_schema(organ):
 @pytest.mark.parametrize("organ", ORGANS)
 def test_factory_per_group_no_orphans(organ):
     """Every step's group tag must be non-empty and a valid string."""
-    schema = CASE_MODELS[organ]
-    for step in build_extraction_signatures(schema, decomposition="per_group"):
+    for step in _build_extraction_signatures(organ, decomposition="per_group"):
         assert isinstance(step.group, str) and step.group, (
             f"{organ}: step {step.name} has empty group tag"
         )
@@ -86,8 +99,7 @@ def test_jsonize_literal_excludes_others():
 @pytest.mark.parametrize("organ", ORGANS)
 def test_each_step_signature_has_required_inputs(organ):
     """Every per-group signature must accept ``report`` and ``report_jsonized`` inputs."""
-    schema = CASE_MODELS[organ]
-    for step in build_extraction_signatures(schema, decomposition="per_group"):
+    for step in _build_extraction_signatures(organ, decomposition="per_group"):
         fields = step.signature.model_fields
         assert "report" in fields
         assert "report_jsonized" in fields

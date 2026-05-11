@@ -25,6 +25,7 @@ from pydantic import ValidationError
 
 from .models.common import autoconf_dspy, model_list
 from .schemas import CASE_MODELS
+from .schemas.extraction import EXTRACTION_META
 from .signatures.factory import (
     build_extraction_signatures,
     build_jsonize_signature,
@@ -101,8 +102,18 @@ class CancerPipelineV2(dspy.Module):
         cached = self._extractor_cache.get(organ)
         if cached is not None:
             return cached
+        try:
+            organ_meta = EXTRACTION_META[organ]
+        except KeyError as e:
+            raise KeyError(
+                f"No extraction metadata registered for organ {organ!r}. "
+                f"Add a module under schemas/extraction/ and register it "
+                f"in EXTRACTION_META."
+            ) from e
         steps = build_extraction_signatures(
             CASE_MODELS[organ],
+            organ_meta["fields"],
+            organ_meta["groups"],
             decomposition=self._decomposition,
             model_profile=self._model_profile,
         )

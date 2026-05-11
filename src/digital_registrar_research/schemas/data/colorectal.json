@@ -1,19 +1,12 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/colorectal.py + src/digital_registrar_research/schemas/extraction/colorectal.py + src/digital_registrar_research/schemas/aliases/colorectal.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
     "ColonBiomarker": {
       "properties": {
         "biomarker_category": {
           "anyOf": [
             {
-              "enum": [
-                "mlh1",
-                "msh2",
-                "msh6",
-                "pms2",
-                "her2",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/ColorectalBiomarkerCategory"
             },
             {
               "type": "null"
@@ -98,12 +91,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "regional",
-                "mesenteric",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/ColorectalLNCategory"
             },
             {
               "type": "null"
@@ -164,15 +152,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "proximal",
-                "distal",
-                "mesenteric_pedicle",
-                "radial_or_circumferencial",
-                "outmost_of_adhered_tissue",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/ColorectalMarginSite"
             },
             {
               "type": "null"
@@ -192,6 +172,202 @@
       ],
       "title": "ColonMargin",
       "type": "object"
+    },
+    "ColorectalBiomarkerCategory": {
+      "enum": [
+        "mlh1",
+        "msh2",
+        "msh6",
+        "pms2",
+        "her2",
+        "others",
+        "not_stated"
+      ],
+      "title": "ColorectalBiomarkerCategory",
+      "type": "string"
+    },
+    "ColorectalHistology": {
+      "enum": [
+        "adenocarcinoma",
+        "mucinous_adenocarcinoma",
+        "signet_ring_cell_carcinoma",
+        "medullary_carcinoma",
+        "micropapillary_adenocarcinoma",
+        "serrated_adenocarcinoma",
+        "adenosquamous_carcinoma",
+        "neuroendocrine_carcinoma",
+        "others",
+        "not_stated"
+      ],
+      "title": "ColorectalHistology",
+      "type": "string"
+    },
+    "ColorectalLNCategory": {
+      "enum": [
+        "regional",
+        "mesenteric",
+        "others",
+        "not_stated"
+      ],
+      "title": "ColorectalLNCategory",
+      "type": "string"
+    },
+    "ColorectalMarginSite": {
+      "enum": [
+        "proximal",
+        "distal",
+        "mesenteric_pedicle",
+        "radial_or_circumferencial",
+        "outmost_of_adhered_tissue",
+        "others",
+        "not_stated"
+      ],
+      "title": "ColorectalMarginSite",
+      "type": "string"
+    },
+    "ColorectalPM": {
+      "enum": [
+        "mx",
+        "m0",
+        "m1a",
+        "m1b",
+        "m1c",
+        "not_stated"
+      ],
+      "title": "ColorectalPM",
+      "type": "string"
+    },
+    "ColorectalPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1a",
+        "n1b",
+        "n1c",
+        "n2a",
+        "n2b",
+        "not_stated"
+      ],
+      "title": "ColorectalPN",
+      "type": "string"
+    },
+    "ColorectalPT": {
+      "enum": [
+        "tx",
+        "tis",
+        "t1",
+        "t2",
+        "t3",
+        "t4a",
+        "t4b",
+        "not_stated"
+      ],
+      "title": "ColorectalPT",
+      "type": "string"
+    },
+    "ColorectalPrimarySite": {
+      "enum": [
+        "cecum",
+        "ascending_colon",
+        "hepatic_flexure",
+        "transverse_colon",
+        "splenic_flexure",
+        "descending_colon",
+        "sigmoid_colon",
+        "rectosigmoid_junction",
+        "rectum",
+        "appendix",
+        "not_stated"
+      ],
+      "title": "ColorectalPrimarySite",
+      "type": "string"
+    },
+    "ColorectalProcedure": {
+      "enum": [
+        "right_hemicolectomy",
+        "extended_right_hemicolectomy",
+        "left_hemicolectomy",
+        "low_anterior_resection",
+        "anterior_resection",
+        "abdominoperineal_resection",
+        "total_mesorectal_excision",
+        "total_colectomy",
+        "subtotal_colectomy",
+        "segmental_colectomy",
+        "transanal_local_excision",
+        "polypectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "ColorectalProcedure",
+      "type": "string"
+    },
+    "ColorectalStageGroup": {
+      "enum": [
+        "stage0",
+        "stagei",
+        "stageiia",
+        "stageiib",
+        "stageiic",
+        "stageiiia",
+        "stageiiib",
+        "stageiiic",
+        "stageiva",
+        "stageivb",
+        "stageivc",
+        "not_stated"
+      ],
+      "title": "ColorectalStageGroup",
+      "type": "string"
+    },
+    "ColorectalSurgicalTechnique": {
+      "enum": [
+        "open",
+        "laparoscopic",
+        "robotic",
+        "ta_tme",
+        "hybrid",
+        "others",
+        "not_stated"
+      ],
+      "title": "ColorectalSurgicalTechnique",
+      "type": "string"
+    },
+    "ColorectalTumorInvasion": {
+      "enum": [
+        "lamina_propria",
+        "submucosa",
+        "muscularis_propria",
+        "pericolorectal_tissue",
+        "visceral_peritoneum_surface",
+        "adjacent_organs_structures",
+        "not_stated"
+      ],
+      "title": "ColorectalTumorInvasion",
+      "type": "string"
+    },
+    "ColorectalTypeOfPolyp": {
+      "enum": [
+        "tubular_adenoma",
+        "tubulovillous_adenoma",
+        "villous_adenoma",
+        "sessile_serrated_adenoma",
+        "traditional_serrated_adenoma",
+        "not_stated"
+      ],
+      "title": "ColorectalTypeOfPolyp",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for colorectal cancer.",
@@ -232,19 +408,7 @@
     "cancer_primary_site": {
       "anyOf": [
         {
-          "enum": [
-            "cecum",
-            "ascending_colon",
-            "hepatic_flexure",
-            "transverse_colon",
-            "splenic_flexure",
-            "descending_colon",
-            "sigmoid_colon",
-            "rectosigmoid_junction",
-            "rectum",
-            "appendix"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalPrimarySite"
         },
         {
           "type": "null"
@@ -319,18 +483,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "adenocarcinoma",
-            "mucinous_adenocarcinoma",
-            "signet_ring_cell_carcinoma",
-            "medullary_carcinoma",
-            "micropapillary_adenocarcinoma",
-            "serrated_adenocarcinoma",
-            "adenosquamous_carcinoma",
-            "neuroendocrine_carcinoma",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalHistology"
         },
         {
           "type": "null"
@@ -408,14 +561,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1a",
-            "m1b",
-            "m1c"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalPM"
         },
         {
           "type": "null"
@@ -430,16 +576,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1a",
-            "n1b",
-            "n1c",
-            "n2a",
-            "n2b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalPN"
         },
         {
           "type": "null"
@@ -454,22 +591,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "right_hemicolectomy",
-            "extended_right_hemicolectomy",
-            "left_hemicolectomy",
-            "low_anterior_resection",
-            "anterior_resection",
-            "abdominoperineal_resection",
-            "total_mesorectal_excision",
-            "total_colectomy",
-            "subtotal_colectomy",
-            "segmental_colectomy",
-            "transanal_local_excision",
-            "polypectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalProcedure"
         },
         {
           "type": "null"
@@ -484,16 +606,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "tis",
-            "t1",
-            "t2",
-            "t3",
-            "t4a",
-            "t4b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalPT"
         },
         {
           "type": "null"
@@ -541,20 +654,7 @@
     "stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "i",
-            "iia",
-            "iib",
-            "iic",
-            "iiia",
-            "iiib",
-            "iiic",
-            "iva",
-            "ivb",
-            "ivc"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalStageGroup"
         },
         {
           "type": "null"
@@ -569,15 +669,7 @@
     "surgical_technique": {
       "anyOf": [
         {
-          "enum": [
-            "open",
-            "laparoscopic",
-            "robotic",
-            "ta_tme",
-            "hybrid",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalSurgicalTechnique"
         },
         {
           "type": "null"
@@ -592,12 +684,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -642,15 +729,7 @@
     "tumor_invasion": {
       "anyOf": [
         {
-          "enum": [
-            "lamina_propria",
-            "submucosa",
-            "muscularis_propria",
-            "pericolorectal_tissue",
-            "visceral_peritoneum_surface",
-            "adjacent_organs_structures"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalTumorInvasion"
         },
         {
           "type": "null"
@@ -665,14 +744,7 @@
     "type_of_polyp": {
       "anyOf": [
         {
-          "enum": [
-            "tubular_adenoma",
-            "tubulovillous_adenoma",
-            "villous_adenoma",
-            "sessile_serrated_adenoma",
-            "traditional_serrated_adenoma"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/ColorectalTypeOfPolyp"
         },
         {
           "type": "null"

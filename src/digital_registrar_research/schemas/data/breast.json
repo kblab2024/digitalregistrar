@@ -1,18 +1,12 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/breast.py + src/digital_registrar_research/schemas/extraction/breast.py + src/digital_registrar_research/schemas/aliases/breast.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
     "BreastBiomarker": {
       "properties": {
         "biomarker_category": {
           "anyOf": [
             {
-              "enum": [
-                "er",
-                "pr",
-                "her2",
-                "ki67",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/BreastBiomarkerCategory"
             },
             {
               "type": "null"
@@ -84,6 +78,34 @@
       "title": "BreastBiomarker",
       "type": "object"
     },
+    "BreastBiomarkerCategory": {
+      "enum": [
+        "er",
+        "pr",
+        "her2",
+        "ki67",
+        "others",
+        "not_stated"
+      ],
+      "title": "BreastBiomarkerCategory",
+      "type": "string"
+    },
+    "BreastHistology": {
+      "enum": [
+        "invasive_carcinoma_no_special_type",
+        "invasive_lobular_carcinoma",
+        "mixed_ductal_and_lobular_carcinoma",
+        "tubular_adenocarcinoma",
+        "mucinous_adenocarcinoma",
+        "encapsulated_papillary_carcinoma",
+        "solid_papillary_carcinoma",
+        "inflammatory_carcinoma",
+        "other_special_types",
+        "not_stated"
+      ],
+      "title": "BreastHistology",
+      "type": "string"
+    },
     "BreastLN": {
       "properties": {
         "examined": {
@@ -97,12 +119,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "sentinel",
-                "nonsentinel",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/BreastLNCategory"
             },
             {
               "type": "null"
@@ -115,12 +132,7 @@
         "lymph_node_side": {
           "anyOf": [
             {
-              "enum": [
-                "right",
-                "left",
-                "midline"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LymphNodeSide"
             },
             {
               "type": "null"
@@ -150,6 +162,26 @@
       ],
       "title": "BreastLN",
       "type": "object"
+    },
+    "BreastLNCategory": {
+      "enum": [
+        "sentinel",
+        "nonsentinel",
+        "others",
+        "not_stated"
+      ],
+      "title": "BreastLNCategory",
+      "type": "string"
+    },
+    "BreastLaterality": {
+      "enum": [
+        "right",
+        "left",
+        "bilateral",
+        "not_stated"
+      ],
+      "title": "BreastLaterality",
+      "type": "string"
     },
     "BreastMargin": {
       "properties": {
@@ -181,19 +213,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "12_3_clock",
-                "3_6_clock",
-                "6_9_clock",
-                "9_12_clock",
-                "12_clock",
-                "3_clock",
-                "6_clock",
-                "9_clock",
-                "superficial",
-                "base"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/BreastMarginSite"
             },
             {
               "type": "null"
@@ -213,6 +233,135 @@
       ],
       "title": "BreastMargin",
       "type": "object"
+    },
+    "BreastMarginSite": {
+      "enum": [
+        "clock_12_3",
+        "clock_3_6",
+        "clock_6_9",
+        "clock_9_12",
+        "clock_12",
+        "clock_3",
+        "clock_6",
+        "clock_9",
+        "superficial",
+        "base",
+        "not_stated"
+      ],
+      "title": "BreastMarginSite",
+      "type": "string"
+    },
+    "BreastPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1mi",
+        "n1a",
+        "n1b",
+        "n1c",
+        "n2a",
+        "n2b",
+        "n3a",
+        "n3b",
+        "n3c",
+        "not_stated"
+      ],
+      "title": "BreastPN",
+      "type": "string"
+    },
+    "BreastPT": {
+      "enum": [
+        "tx",
+        "tis",
+        "t1mi",
+        "t1a",
+        "t1b",
+        "t1c",
+        "t2",
+        "t3",
+        "t4a",
+        "t4b",
+        "t4c",
+        "not_stated"
+      ],
+      "title": "BreastPT",
+      "type": "string"
+    },
+    "BreastProcedure": {
+      "enum": [
+        "partial_mastectomy",
+        "simple_mastectomy",
+        "breast_conserving_surgery",
+        "modified_radical_mastectomy",
+        "total_mastectomy",
+        "wide_excision",
+        "others",
+        "not_stated"
+      ],
+      "title": "BreastProcedure",
+      "type": "string"
+    },
+    "BreastQuadrant": {
+      "enum": [
+        "upper_outer_quadrant",
+        "upper_inner_quadrant",
+        "lower_outer_quadrant",
+        "lower_inner_quadrant",
+        "nipple",
+        "others",
+        "not_stated"
+      ],
+      "title": "BreastQuadrant",
+      "type": "string"
+    },
+    "BreastStageGroup": {
+      "enum": [
+        "stage0",
+        "stageia",
+        "stageib",
+        "stageiia",
+        "stageiib",
+        "stageiiia",
+        "stageiiib",
+        "stageiiic",
+        "stageiv",
+        "not_stated"
+      ],
+      "title": "BreastStageGroup",
+      "type": "string"
+    },
+    "LymphNodeSide": {
+      "description": "Standard ipsilateral/contralateral/midline side designation.",
+      "enum": [
+        "right",
+        "left",
+        "midline",
+        "not_stated"
+      ],
+      "title": "LymphNodeSide",
+      "type": "string"
+    },
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for breast cancer.",
@@ -235,18 +384,7 @@
     "anatomic_stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "ia",
-            "ib",
-            "iia",
-            "iib",
-            "iiia",
-            "iiib",
-            "iiic",
-            "iv"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastStageGroup"
         },
         {
           "type": "null"
@@ -308,12 +446,7 @@
     "cancer_laterality": {
       "anyOf": [
         {
-          "enum": [
-            "right",
-            "left",
-            "bilateral"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastLaterality"
         },
         {
           "type": "null"
@@ -328,15 +461,7 @@
     "cancer_quadrant": {
       "anyOf": [
         {
-          "enum": [
-            "upper_outer_quadrant",
-            "upper_inner_quadrant",
-            "lower_outer_quadrant",
-            "lower_inner_quadrant",
-            "nipple",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastQuadrant"
         },
         {
           "type": "null"
@@ -466,18 +591,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "invasive_carcinoma_no_special_type",
-            "invasive_lobular_carcinoma",
-            "mixed_ductal_and_lobular_carcinoma",
-            "tubular_adenocarcinoma",
-            "mucinous_adenocarcinoma",
-            "encapsulated_papillary_carcinoma",
-            "solid_papillary_carcinoma",
-            "inflammatory_carcinoma",
-            "other_special_types"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastHistology"
         },
         {
           "type": "null"
@@ -580,18 +694,7 @@
     "pathologic_stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "ia",
-            "ib",
-            "iia",
-            "iib",
-            "iiia",
-            "iiib",
-            "iiic",
-            "iv"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastStageGroup"
         },
         {
           "type": "null"
@@ -621,12 +724,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PMCategory"
         },
         {
           "type": "null"
@@ -641,20 +739,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1mi",
-            "n1a",
-            "n1b",
-            "n1c",
-            "n2a",
-            "n2b",
-            "n3a",
-            "n3b",
-            "n3c"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastPN"
         },
         {
           "type": "null"
@@ -669,16 +754,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "partial_mastectomy",
-            "simple_mastectomy",
-            "breast_conserving_surgery",
-            "modified_radical_mastectomy",
-            "total_mastectomy",
-            "wide_excision",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastProcedure"
         },
         {
           "type": "null"
@@ -693,20 +769,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "tis",
-            "t1mi",
-            "t1a",
-            "t1b",
-            "t1c",
-            "t2",
-            "t3",
-            "t4a",
-            "t4b",
-            "t4c"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/BreastPT"
         },
         {
           "type": "null"
@@ -739,12 +802,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"

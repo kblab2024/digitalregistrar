@@ -316,7 +316,7 @@ def parse_cancer_schema(cancer_type: str) -> list[SectionSpec]:
     path = SCHEMAS_DIR / schema_file
     if not path.exists():
         return []
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         schema = json.load(f)
 
     defs = schema.get("$defs", {})

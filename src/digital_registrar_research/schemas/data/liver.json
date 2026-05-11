@@ -1,5 +1,18 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/liver.py + src/digital_registrar_research/schemas/extraction/liver.py + src/digital_registrar_research/schemas/aliases/liver.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "LiverHistology": {
+      "enum": [
+        "hepatocellular_carcinoma",
+        "hepatocellular_carcinoma_fibrolamellar",
+        "hepatocellular_carcinoma_scirrhous",
+        "hepatocellular_carcinoma_clear_cell",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverHistology",
+      "type": "string"
+    },
     "LiverLN": {
       "properties": {
         "examined": {
@@ -61,14 +74,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "parenchymal",
-                "hepatic_vein",
-                "portal_vein",
-                "bile_duct",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LiverMarginSite"
             },
             {
               "type": "null"
@@ -88,6 +94,132 @@
       ],
       "title": "LiverMargin",
       "type": "object"
+    },
+    "LiverMarginSite": {
+      "enum": [
+        "parenchymal",
+        "hepatic_vein",
+        "portal_vein",
+        "bile_duct",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverMarginSite",
+      "type": "string"
+    },
+    "LiverOverallStage": {
+      "enum": [
+        "stageia",
+        "stageib",
+        "stageii",
+        "stageiiia",
+        "stageiiib",
+        "stageiva",
+        "stageivb",
+        "not_stated"
+      ],
+      "title": "LiverOverallStage",
+      "type": "string"
+    },
+    "LiverPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "not_stated"
+      ],
+      "title": "LiverPN",
+      "type": "string"
+    },
+    "LiverPT": {
+      "enum": [
+        "tx",
+        "t1a",
+        "t1b",
+        "t2",
+        "t3",
+        "t4",
+        "not_stated"
+      ],
+      "title": "LiverPT",
+      "type": "string"
+    },
+    "LiverProcedure": {
+      "enum": [
+        "wedge_resection",
+        "partial_hepatectomy",
+        "segmentectomy",
+        "lobectomy",
+        "total_hepatectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverProcedure",
+      "type": "string"
+    },
+    "LiverTumorExtent": {
+      "enum": [
+        "hepatic_vein",
+        "portal_vein",
+        "visceral_peritoneum",
+        "gallbladder",
+        "diaphragm",
+        "others"
+      ],
+      "title": "LiverTumorExtent",
+      "type": "string"
+    },
+    "LiverTumorFocality": {
+      "enum": [
+        "unifocal",
+        "multifocal",
+        "not_stated"
+      ],
+      "title": "LiverTumorFocality",
+      "type": "string"
+    },
+    "LiverTumorSite": {
+      "enum": [
+        "right_lobe",
+        "left_lobe",
+        "caudate_lobe",
+        "quadrate_lobe",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverTumorSite",
+      "type": "string"
+    },
+    "LiverVascularInvasion": {
+      "enum": [
+        "large_hepatic_vein",
+        "large_portal_vein",
+        "small_vessel"
+      ],
+      "title": "LiverVascularInvasion",
+      "type": "string"
+    },
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for liver cancer.",
@@ -161,14 +293,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "hepatocellular_carcinoma",
-            "hepatocellular_carcinoma_fibrolamellar",
-            "hepatocellular_carcinoma_scirrhous",
-            "hepatocellular_carcinoma_clear_cell",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverHistology"
         },
         {
           "type": "null"
@@ -216,16 +341,7 @@
     "overall_stage": {
       "anyOf": [
         {
-          "enum": [
-            "ia",
-            "ib",
-            "ii",
-            "iiia",
-            "iiib",
-            "iva",
-            "ivb"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverOverallStage"
         },
         {
           "type": "null"
@@ -255,12 +371,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PMCategory"
         },
         {
           "type": "null"
@@ -275,12 +386,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverPN"
         },
         {
           "type": "null"
@@ -295,15 +401,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "wedge_resection",
-            "partial_hepatectomy",
-            "segmentectomy",
-            "lobectomy",
-            "total_hepatectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverProcedure"
         },
         {
           "type": "null"
@@ -318,15 +416,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "t1a",
-            "t1b",
-            "t2",
-            "t3",
-            "t4"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverPT"
         },
         {
           "type": "null"
@@ -359,12 +449,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -395,15 +480,7 @@
       "anyOf": [
         {
           "items": {
-            "enum": [
-              "hepatic_vein",
-              "portal_vein",
-              "visceral_peritoneum",
-              "gallbladder",
-              "diaphragm",
-              "others"
-            ],
-            "type": "string"
+            "$ref": "#/$defs/LiverTumorExtent"
           },
           "type": "array"
         },
@@ -420,11 +497,7 @@
     "tumor_focality": {
       "anyOf": [
         {
-          "enum": [
-            "unifocal",
-            "multifocal"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverTumorFocality"
         },
         {
           "type": "null"
@@ -439,14 +512,7 @@
     "tumor_site": {
       "anyOf": [
         {
-          "enum": [
-            "right_lobe",
-            "left_lobe",
-            "caudate_lobe",
-            "quadrate_lobe",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LiverTumorSite"
         },
         {
           "type": "null"
@@ -477,12 +543,7 @@
       "anyOf": [
         {
           "items": {
-            "enum": [
-              "large_hepatic_vein",
-              "large_portal_vein",
-              "small_vessel"
-            ],
-            "type": "string"
+            "$ref": "#/$defs/LiverVascularInvasion"
           },
           "type": "array"
         },

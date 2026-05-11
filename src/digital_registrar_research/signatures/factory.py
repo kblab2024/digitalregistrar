@@ -1,8 +1,10 @@
 """Build ``dspy.Signature`` classes dynamically from Pydantic schemas.
 
-The factory introspects a case-model's :func:`GroupedField`-tagged fields,
-groups them by tag, and emits one ``dspy.Signature`` per group (the
-``"per_group"`` decomposition mode), or merges all groups into one
+The factory consumes the two-layer schema authoring style: a clean
+Pydantic case-model from :mod:`schemas.pydantic` plus a per-organ
+metadata module (``FIELD_META`` + ``GROUP_INSTRUCTIONS``) from
+:mod:`schemas.extraction`. It emits one ``dspy.Signature`` per group
+(the ``"per_group"`` decomposition mode), or merges all groups into one
 monolithic signature. ``"auto"`` decomposition consults the live LM's
 ``supports_response_schema`` capability + field/group counts.
 
@@ -20,16 +22,17 @@ from typing import Any, Literal
 
 import dspy
 from pydantic import BaseModel
+from pydantic.fields import FieldInfo
 
-from ..schemas.pydantic._factory_helpers import (
-    DEFAULT_GROUP_INSTRUCTION,
-    field_desc,
-    field_group,
-    group_instructions,
-    group_order,
-    iter_custom_types,
-    iter_fields_by_group,
+from ..schemas.extraction import FieldMeta
+from ..schemas.extraction._resolve import (
+    field_desc as meta_field_desc,
+    field_group as meta_field_group,
+    fields_by_group as meta_fields_by_group,
+    group_order as meta_group_order,
 )
+from ..schemas.pydantic._factory_helpers import DEFAULT_GROUP_INSTRUCTION
+from ._signature_annotation import signature_annotation
 
 logger = logging.getLogger(__name__)
 
@@ -119,6 +122,7 @@ def build_signature(
 
 def _choose_decomposition(
     schema: type[BaseModel],
+    field_meta: dict[str, FieldMeta],
     model_profile: str | None,
 ) -> Literal["per_group", "monolithic"]:
     """Pick a decomposition mode based on schema shape and live LM capabilities.
@@ -128,6 +132,9 @@ def _choose_decomposition(
     2. ``model_profile`` "large" or hosted-frontier AND the configured LM advertises
        ``supports_response_schema`` → monolithic.
     3. Otherwise: per_group if >25 fields or >4 groups, else monolithic.
+
+    Group counts come from ``field_meta`` (the Phase-2+ source of truth);
+    fields without a metadata entry are treated as one synthetic group.
     """
     if model_profile in _SMALL_MODEL_PROFILES:
         return "per_group"
@@ -140,14 +147,30 @@ def _choose_decomposition(
             logger.debug("could not consult dspy.settings.lm: %s", e)
 
     n_fields = len(schema.model_fields)
-    n_groups = len({field_group(fi) for fi in schema.model_fields.values()})
+    n_groups = len({
+        meta_field_group(field_meta, name)
+        for name in schema.model_fields
+    })
     if n_fields > 25 or n_groups > 4:
         return "per_group"
     return "monolithic"
 
 
+def _collect_custom_types_from_annotation(annotation: Any, out: dict[str, type]) -> None:
+    """Walk a (possibly rewritten) annotation, collecting BaseModel subclasses by name."""
+    import typing as _ty
+
+    if isinstance(annotation, type) and issubclass(annotation, BaseModel) and annotation is not BaseModel:
+        out.setdefault(annotation.__name__, annotation)
+        return
+    for arg in _ty.get_args(annotation):
+        _collect_custom_types_from_annotation(arg, out)
+
+
 def build_extraction_signatures(
     schema: type[BaseModel],
+    field_meta: dict[str, FieldMeta],
+    group_instructions_map: dict[str, str],
     *,
     decomposition: Literal["per_group", "monolithic", "auto"] = "auto",
     model_profile: str | None = None,
@@ -157,10 +180,14 @@ def build_extraction_signatures(
     Parameters
     ----------
     schema
-        A Pydantic case-model (e.g. ``BreastCancerCase``) whose fields are
-        tagged with :func:`GroupedField` and whose
-        ``_GROUP_INSTRUCTIONS: ClassVar[dict]`` carries per-group LM
-        instructions.
+        A Pydantic case-model (e.g. ``BreastCancerCase``).
+    field_meta
+        Per-field extraction metadata from
+        ``schemas.extraction.EXTRACTION_META[organ]["fields"]``. Provides
+        the LM-facing descriptions and the per-field ``group`` tag.
+    group_instructions_map
+        Per-group instruction strings (insertion order = extraction order),
+        from ``schemas.extraction.EXTRACTION_META[organ]["groups"]``.
     decomposition
         ``"per_group"``: one signature per group tag (small focused schemas).
         ``"monolithic"``: one signature with all fields (one LM call).
@@ -173,25 +200,38 @@ def build_extraction_signatures(
     """
     chosen: Literal["per_group", "monolithic"]
     if decomposition == "auto":
-        chosen = _choose_decomposition(schema, model_profile)
+        chosen = _choose_decomposition(schema, field_meta, model_profile)
     else:
         chosen = decomposition
 
-    custom_types = iter_custom_types(schema)
     schema_doc = (schema.__doc__ or schema.__name__).strip()
-    grouped = iter_fields_by_group(schema)
-    instr_map = group_instructions(schema)
-    order = group_order(schema)
     base = schema.__name__.replace("Case", "")  # e.g. "BreastCancer"
+
+    grouped_raw = meta_fields_by_group(schema, field_meta)
+    # Rewrite each field's annotation and collect rebuilt nested types.
+    grouped: dict[str, list[tuple[str, Any, FieldInfo]]] = {}
+    custom_types: dict[str, type] = {}
+    for g, items in grouped_raw.items():
+        rewritten: list[tuple[str, Any, FieldInfo]] = []
+        for name, ann, fi in items:
+            new_ann = signature_annotation(ann, field_meta=field_meta, prefix=name)
+            _collect_custom_types_from_annotation(new_ann, custom_types)
+            rewritten.append((name, new_ann, fi))
+        grouped[g] = rewritten
+    instr_map = dict(group_instructions_map)
+    order = meta_group_order(group_instructions_map, field_meta)
+
+    def _desc_for(name: str) -> str:
+        return meta_field_desc(field_meta, name)
 
     if chosen == "monolithic":
         out_fields: dict[str, tuple[Any, str]] = {}
         for g in order:
-            for name, ann, fi in grouped.get(g, []):
-                out_fields[name] = (ann, field_desc(fi))
-        # Fields under "<ungrouped>" still need to land somewhere.
-        for name, ann, fi in grouped.get("<ungrouped>", []):
-            out_fields.setdefault(name, (ann, field_desc(fi)))
+            for name, ann, _fi in grouped.get(g, []):
+                out_fields[name] = (ann, _desc_for(name))
+        # Fields without a metadata group still need to land somewhere.
+        for name, ann, _fi in grouped.get("<ungrouped>", []):
+            out_fields.setdefault(name, (ann, _desc_for(name)))
         sig = build_signature(
             name=f"{base}__monolithic",
             instructions=schema_doc,
@@ -215,11 +255,11 @@ def build_extraction_signatures(
         fields = grouped.get(g, [])
         if not fields:
             continue
-        out_fields: dict[str, tuple[Any, str]] = {}
-        for name, ann, fi in fields:
+        out_fields = {}
+        for name, ann, _fi in fields:
             if name in seen_field_names:
                 continue
-            out_fields[name] = (ann, field_desc(fi))
+            out_fields[name] = (ann, _desc_for(name))
             seen_field_names.add(name)
         if not out_fields:
             continue

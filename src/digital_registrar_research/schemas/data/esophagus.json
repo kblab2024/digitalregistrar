@@ -1,5 +1,21 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/esophagus.py + src/digital_registrar_research/schemas/extraction/esophagus.py + src/digital_registrar_research/schemas/aliases/esophagus.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "EsophagusHistology": {
+      "enum": [
+        "squamous_cell_carcinoma",
+        "adenocarcinoma",
+        "adenoid_cystic_carcinoma",
+        "mucoepidermoid_carcinoma",
+        "basaloid_squamous_cell_carcinoma",
+        "small_cell_carcinoma",
+        "large_cell_carcinoma",
+        "others",
+        "not_stated"
+      ],
+      "title": "EsophagusHistology",
+      "type": "string"
+    },
     "EsophagusLN": {
       "properties": {
         "examined": {
@@ -13,40 +29,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "regional_esophageal",
-                "regional_gastric",
-                "thoracic_1",
-                "thoracic_1r",
-                "thoracic_1l",
-                "thoracic_4",
-                "thoracic_4r",
-                "thoracic_4l",
-                "thoracic_7",
-                "thoracic_8u",
-                "thoracic_8m",
-                "thoracic_8l",
-                "thoracic_8",
-                "thoracic_9",
-                "thoracic_9r",
-                "thoracic_9l",
-                "thoracic_10",
-                "thoracic_10r",
-                "thoracic_10l",
-                "abdomen_106",
-                "abdomen_1",
-                "abdomen_2",
-                "abdomen_3",
-                "abdomen_4",
-                "abdomen_5",
-                "abdomen_6",
-                "abdomen_7",
-                "abdomen_8",
-                "abdomen_9",
-                "abdomen_10",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/EsophagusLNCategory"
             },
             {
               "type": "null"
@@ -76,6 +59,44 @@
       ],
       "title": "EsophagusLN",
       "type": "object"
+    },
+    "EsophagusLNCategory": {
+      "enum": [
+        "regional_esophageal",
+        "regional_gastric",
+        "thoracic_1",
+        "thoracic_1r",
+        "thoracic_1l",
+        "thoracic_4",
+        "thoracic_4r",
+        "thoracic_4l",
+        "thoracic_7",
+        "thoracic_8u",
+        "thoracic_8m",
+        "thoracic_8l",
+        "thoracic_8",
+        "thoracic_9",
+        "thoracic_9r",
+        "thoracic_9l",
+        "thoracic_10",
+        "thoracic_10r",
+        "thoracic_10l",
+        "abdomen_106",
+        "abdomen_1",
+        "abdomen_2",
+        "abdomen_3",
+        "abdomen_4",
+        "abdomen_5",
+        "abdomen_6",
+        "abdomen_7",
+        "abdomen_8",
+        "abdomen_9",
+        "abdomen_10",
+        "others",
+        "not_stated"
+      ],
+      "title": "EsophagusLNCategory",
+      "type": "string"
     },
     "EsophagusMargin": {
       "properties": {
@@ -107,15 +128,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "proximal",
-                "distal",
-                "radial",
-                "lateral",
-                "deep",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/EsophagusMarginSite"
             },
             {
               "type": "null"
@@ -135,6 +148,132 @@
       ],
       "title": "EsophagusMargin",
       "type": "object"
+    },
+    "EsophagusMarginSite": {
+      "enum": [
+        "proximal",
+        "distal",
+        "radial",
+        "lateral",
+        "deep",
+        "others",
+        "not_stated"
+      ],
+      "title": "EsophagusMarginSite",
+      "type": "string"
+    },
+    "EsophagusPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "n2",
+        "n3",
+        "not_stated"
+      ],
+      "title": "EsophagusPN",
+      "type": "string"
+    },
+    "EsophagusPT": {
+      "enum": [
+        "tx",
+        "t1a",
+        "t1b",
+        "t2",
+        "t3",
+        "t4a",
+        "t4b",
+        "not_stated"
+      ],
+      "title": "EsophagusPT",
+      "type": "string"
+    },
+    "EsophagusPrimarySite": {
+      "enum": [
+        "upper_third",
+        "middle_third",
+        "lower_third",
+        "gastroesophageal_junction",
+        "not_stated"
+      ],
+      "title": "EsophagusPrimarySite",
+      "type": "string"
+    },
+    "EsophagusProcedure": {
+      "enum": [
+        "endoscopic_resection",
+        "esophagectomy",
+        "esophagogastrectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "EsophagusProcedure",
+      "type": "string"
+    },
+    "EsophagusStageGroup": {
+      "enum": [
+        "stage0",
+        "stagei",
+        "stageia",
+        "stageib",
+        "stageic",
+        "stageiia",
+        "stageiib",
+        "stageiiia",
+        "stageiiib",
+        "stageiva",
+        "stageivb",
+        "not_stated"
+      ],
+      "title": "EsophagusStageGroup",
+      "type": "string"
+    },
+    "EsophagusSurgicalTechnique": {
+      "enum": [
+        "open",
+        "thoracoscopic",
+        "robotic",
+        "hybrid",
+        "endoscopic",
+        "others",
+        "not_stated"
+      ],
+      "title": "EsophagusSurgicalTechnique",
+      "type": "string"
+    },
+    "EsophagusTumorExtent": {
+      "enum": [
+        "mucosa",
+        "submucosa",
+        "muscularis_propria",
+        "adventitia",
+        "adjacent_structures",
+        "not_stated"
+      ],
+      "title": "EsophagusTumorExtent",
+      "type": "string"
+    },
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for esophagus cancer.",
@@ -157,13 +296,7 @@
     "cancer_primary_site": {
       "anyOf": [
         {
-          "enum": [
-            "upper_third",
-            "middle_third",
-            "lower_third",
-            "gastroesophageal_junction"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusPrimarySite"
         },
         {
           "type": "null"
@@ -228,17 +361,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "squamous_cell_carcinoma",
-            "adenocarcinoma",
-            "adenoid_cystic_carcinoma",
-            "mucoepidermoid_carcinoma",
-            "basaloid_squamous_cell_carcinoma",
-            "small_cell_carcinoma",
-            "large_cell_carcinoma",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusHistology"
         },
         {
           "type": "null"
@@ -316,12 +439,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PMCategory"
         },
         {
           "type": "null"
@@ -336,14 +454,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1",
-            "n2",
-            "n3"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusPN"
         },
         {
           "type": "null"
@@ -358,13 +469,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "endoscopic_resection",
-            "esophagectomy",
-            "esophagogastrectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusProcedure"
         },
         {
           "type": "null"
@@ -379,16 +484,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "t1a",
-            "t1b",
-            "t2",
-            "t3",
-            "t4a",
-            "t4b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusPT"
         },
         {
           "type": "null"
@@ -421,20 +517,7 @@
     "stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "i",
-            "ia",
-            "ib",
-            "ic",
-            "iia",
-            "iib",
-            "iiia",
-            "iiib",
-            "iva",
-            "ivb"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusStageGroup"
         },
         {
           "type": "null"
@@ -449,15 +532,7 @@
     "surgical_technique": {
       "anyOf": [
         {
-          "enum": [
-            "open",
-            "thoracoscopic",
-            "robotic",
-            "hybrid",
-            "endoscopic",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusSurgicalTechnique"
         },
         {
           "type": "null"
@@ -472,12 +547,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -507,14 +577,7 @@
     "tumor_extent": {
       "anyOf": [
         {
-          "enum": [
-            "mucosa",
-            "submucosa",
-            "muscularis_propria",
-            "adventitia",
-            "adjacent_structures"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/EsophagusTumorExtent"
         },
         {
           "type": "null"

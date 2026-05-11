@@ -1,5 +1,31 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/stomach.py + src/digital_registrar_research/schemas/extraction/stomach.py + src/digital_registrar_research/schemas/aliases/stomach.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "StomachHistology": {
+      "enum": [
+        "tubular_adenocarcinoma",
+        "poorly_cohesive_carcinoma",
+        "mixed_tubular_poorly_cohesive",
+        "mucinous_adenocarcinoma",
+        "mixed_mucinous_poorly_cohesive",
+        "hepatoid_carcinoma",
+        "others",
+        "not_stated"
+      ],
+      "title": "StomachHistology",
+      "type": "string"
+    },
     "StomachLN": {
       "properties": {
         "examined": {
@@ -13,24 +39,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "regional",
-                "regional_lesser_curv",
-                "regional_greater_curv",
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/StomachLNCategory"
             },
             {
               "type": "null"
@@ -60,6 +69,28 @@
       ],
       "title": "StomachLN",
       "type": "object"
+    },
+    "StomachLNCategory": {
+      "enum": [
+        "regional",
+        "regional_lesser_curv",
+        "regional_greater_curv",
+        "ln1",
+        "ln2",
+        "ln3",
+        "ln4",
+        "ln5",
+        "ln6",
+        "ln7",
+        "ln8",
+        "ln9",
+        "ln10",
+        "ln11",
+        "others",
+        "not_stated"
+      ],
+      "title": "StomachLNCategory",
+      "type": "string"
     },
     "StomachMargin": {
       "properties": {
@@ -91,15 +122,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "proximal",
-                "distal",
-                "radial",
-                "lateral",
-                "deep",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/StomachMarginSite"
             },
             {
               "type": "null"
@@ -119,6 +142,126 @@
       ],
       "title": "StomachMargin",
       "type": "object"
+    },
+    "StomachMarginSite": {
+      "enum": [
+        "proximal",
+        "distal",
+        "radial",
+        "lateral",
+        "deep",
+        "others",
+        "not_stated"
+      ],
+      "title": "StomachMarginSite",
+      "type": "string"
+    },
+    "StomachPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "n2",
+        "n3a",
+        "n3b",
+        "not_stated"
+      ],
+      "title": "StomachPN",
+      "type": "string"
+    },
+    "StomachPT": {
+      "enum": [
+        "tx",
+        "t1a",
+        "t1b",
+        "t2",
+        "t3",
+        "t4a",
+        "t4b",
+        "not_stated"
+      ],
+      "title": "StomachPT",
+      "type": "string"
+    },
+    "StomachPrimarySite": {
+      "enum": [
+        "cardia",
+        "fundus",
+        "body",
+        "antrum",
+        "pylorus",
+        "others",
+        "not_stated"
+      ],
+      "title": "StomachPrimarySite",
+      "type": "string"
+    },
+    "StomachProcedure": {
+      "enum": [
+        "endoscopic_resection",
+        "partial_gastrectomy",
+        "total_gastrectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "StomachProcedure",
+      "type": "string"
+    },
+    "StomachStageGroup": {
+      "enum": [
+        "stage0",
+        "stagei",
+        "stageii",
+        "stageiii",
+        "stageiv",
+        "stageia",
+        "stageib",
+        "stageiia",
+        "stageiib",
+        "stageiiia",
+        "stageiiib",
+        "stageiiic",
+        "not_stated"
+      ],
+      "title": "StomachStageGroup",
+      "type": "string"
+    },
+    "StomachSurgicalTechnique": {
+      "enum": [
+        "open",
+        "laparoscopic",
+        "robotic",
+        "hybrid",
+        "others",
+        "not_stated"
+      ],
+      "title": "StomachSurgicalTechnique",
+      "type": "string"
+    },
+    "StomachTumorExtent": {
+      "enum": [
+        "lamina_propria",
+        "muscularis_mucosae",
+        "submucosa",
+        "muscularis_propria",
+        "penetrate_subserosal_connective_tissue_no_serosa",
+        "invades_serosa_without_adjacent_structure_invasion",
+        "invades_adjacent_structures",
+        "not_stated"
+      ],
+      "title": "StomachTumorExtent",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for stomach cancer.",
@@ -141,15 +284,7 @@
     "cancer_primary_site": {
       "anyOf": [
         {
-          "enum": [
-            "cardia",
-            "fundus",
-            "body",
-            "antrum",
-            "pylorus",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachPrimarySite"
         },
         {
           "type": "null"
@@ -229,16 +364,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "tubular_adenocarcinoma",
-            "poorly_cohesive_carcinoma",
-            "mixed_tubular_poorly_cohesive",
-            "mucinous_adenocarcinoma",
-            "mixed_mucinous_poorly_cohesive",
-            "hepatoid_carcinoma",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachHistology"
         },
         {
           "type": "null"
@@ -316,12 +442,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PMCategory"
         },
         {
           "type": "null"
@@ -336,15 +457,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1",
-            "n2",
-            "n3a",
-            "n3b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachPN"
         },
         {
           "type": "null"
@@ -359,13 +472,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "endoscopic_resection",
-            "partial_gastrectomy",
-            "total_gastrectomy",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachProcedure"
         },
         {
           "type": "null"
@@ -380,16 +487,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "t1a",
-            "t1b",
-            "t2",
-            "t3",
-            "t4a",
-            "t4b"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachPT"
         },
         {
           "type": "null"
@@ -437,21 +535,7 @@
     "stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "i",
-            "ii",
-            "iii",
-            "iv",
-            "ia",
-            "ib",
-            "iia",
-            "iib",
-            "iiia",
-            "iiib",
-            "iiic"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachStageGroup"
         },
         {
           "type": "null"
@@ -466,14 +550,7 @@
     "surgical_technique": {
       "anyOf": [
         {
-          "enum": [
-            "open",
-            "laparoscopic",
-            "robotic",
-            "hybrid",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachSurgicalTechnique"
         },
         {
           "type": "null"
@@ -488,12 +565,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -523,16 +595,7 @@
     "tumor_extent": {
       "anyOf": [
         {
-          "enum": [
-            "lamina_propria",
-            "muscularis_mucosae",
-            "submucosa",
-            "muscularis_propria",
-            "penetrate_subserosal_connective_tissue_no_serosa",
-            "invades_serosa_without_adjacent_structure_invasion",
-            "invades_adjacent_structures"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/StomachTumorExtent"
         },
         {
           "type": "null"

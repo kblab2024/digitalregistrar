@@ -1,0 +1,58 @@
+# Surface-form aliases for lung organ.
+#
+# Maps canonical enum value (always lowercase, matching the LowerStrEnum
+# value) → list of strings the LM might see in pathology reports. Add new
+# variants here WITHOUT touching any Python code — the pipeline picks
+# them up on next process start. No JSON regen, no build step.
+#
+# Convention: list both the canonical form AND any conventional spellings
+# (legacy bare-number / bare-roman forms, all-caps biomarkers, dialect
+# variants) so the rendered prompt is self-contained.
+
+# --- Molecular biomarkers ------------------------------------------------
+# IHC clone names are domain knowledge: D5F3 (Roche/Ventana ALK clone),
+# 22C3 (Dako/Agilent PDL1 clone), SP263 (Ventana PDL1 clone).
+["biomarkers.biomarker_category"]
+alk  = ["alk", "ALK", "ALK D5F3", "Alk-lung", "anaplastic lymphoma kinase"]
+ros1 = ["ros1", "ROS1", "ROS-1", "c-ros1", "ROS1 IHC"]
+pdl1 = ["pdl1", "PDL1", "PD-L1", "PD L1", "22C3", "SP263"]
+
+# --- Lymph node stations -------------------------------------------------
+# Pathologists often write the bare number ("station 7", "level 7", "#7",
+# or just "7"). The legacy schema value was "7"; new canonical is "ln7".
+# Listing both keeps prior labeled data and natural-language reports
+# working at LM-recognition time.
+["regional_lymph_node.lymph_node_category"]
+ln1  = ["ln1",  "1",  "station 1",  "level 1"]
+ln2  = ["ln2",  "2",  "station 2",  "level 2"]
+ln3a = ["ln3a", "3a", "station 3a", "level 3a"]
+ln3p = ["ln3p", "3p", "station 3p", "level 3p"]
+ln4  = ["ln4",  "4",  "station 4",  "level 4"]
+ln5  = ["ln5",  "5",  "station 5",  "level 5"]
+ln6  = ["ln6",  "6",  "station 6",  "level 6"]
+ln7  = ["ln7",  "7",  "station 7",  "level 7",  "subcarinal"]
+ln8  = ["ln8",  "8",  "station 8",  "level 8"]
+ln9  = ["ln9",  "9",  "station 9",  "level 9"]
+ln10 = ["ln10", "10", "station 10", "level 10"]
+ln11 = ["ln11", "11", "station 11", "level 11"]
+ln12 = ["ln12", "12", "station 12", "level 12"]
+ln13 = ["ln13", "13", "station 13", "level 13"]
+ln14 = ["ln14", "14", "station 14", "level 14"]
+
+# --- Stage groups --------------------------------------------------------
+# Preserves the old bare-roman forms ("ia", "iiib") as recognizable
+# surface forms even though canonical is now "stageia", "stageiiib".
+["stage_group"]
+stage0    = ["stage0",    "stage 0",    "0"]
+stageia1  = ["stageia1",  "stage IA1",  "IA1",  "ia1"]
+stageia2  = ["stageia2",  "stage IA2",  "IA2",  "ia2"]
+stageia3  = ["stageia3",  "stage IA3",  "IA3",  "ia3"]
+stageib   = ["stageib",   "stage IB",   "IB",   "ib"]
+stageiia  = ["stageiia",  "stage IIA",  "IIA",  "iia"]
+stageiib  = ["stageiib",  "stage IIB",  "IIB",  "iib"]
+stageiiia = ["stageiiia", "stage IIIA", "IIIA", "iiia"]
+stageiiib = ["stageiiib", "stage IIIB", "IIIB", "iiib"]
+stageiiic = ["stageiiic", "stage IIIC", "IIIC", "iiic"]
+stageiva  = ["stageiva",  "stage IVA",  "IVA",  "iva"]
+stageivb  = ["stageivb",  "stage IVB",  "IVB",  "ivb"]
+stageivc  = ["stageivc",  "stage IVC",  "IVC",  "ivc"]

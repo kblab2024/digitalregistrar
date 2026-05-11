@@ -1,17 +1,12 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/lung.py + src/digital_registrar_research/schemas/extraction/lung.py + src/digital_registrar_research/schemas/aliases/lung.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
     "LungBiomarker": {
       "properties": {
         "biomarker_category": {
           "anyOf": [
             {
-              "enum": [
-                "ALK",
-                "ROS1",
-                "PDL1",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LungBiomarkerCategory"
             },
             {
               "type": "null"
@@ -58,20 +53,23 @@
       "title": "LungBiomarker",
       "type": "object"
     },
+    "LungBiomarkerCategory": {
+      "enum": [
+        "alk",
+        "ros1",
+        "pdl1",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungBiomarkerCategory",
+      "type": "string"
+    },
     "LungHistologicalPattern": {
       "properties": {
         "pattern_name": {
           "anyOf": [
             {
-              "enum": [
-                "acinar",
-                "lepidic",
-                "papillary",
-                "solid",
-                "micropapillary",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LungHistologicalPatternName"
             },
             {
               "type": "null"
@@ -98,6 +96,41 @@
       "title": "LungHistologicalPattern",
       "type": "object"
     },
+    "LungHistologicalPatternName": {
+      "enum": [
+        "acinar",
+        "lepidic",
+        "papillary",
+        "solid",
+        "micropapillary",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungHistologicalPatternName",
+      "type": "string"
+    },
+    "LungHistology": {
+      "enum": [
+        "adenocarcinoma",
+        "squamous_cell_carcinoma",
+        "adenosquamous_carcinoma",
+        "large_cell_carcinoma",
+        "large_cell_neuroendocrine_carcinoma",
+        "small_cell_carcinoma",
+        "carcinoid_tumor",
+        "sarcomatoid_carcinoma",
+        "pleomorphic_carcinoma",
+        "pulmonary_lymphoepithelioma_like_carcinoma",
+        "mucoepidermoid_carcinoma",
+        "salivary_gland_type_tumor",
+        "non_small_cell_carcinoma_not_specified",
+        "non_small_cell_carcinoma_with_neuroendocrine_features",
+        "other",
+        "not_stated"
+      ],
+      "title": "LungHistology",
+      "type": "string"
+    },
     "LungLN": {
       "properties": {
         "examined": {
@@ -111,26 +144,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "peribronchial",
-                "1",
-                "2",
-                "4",
-                "5",
-                "6",
-                "8",
-                "9",
-                "10",
-                "11",
-                "12",
-                "13",
-                "14",
-                "3a",
-                "3p",
-                "7",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LungLNCategory"
             },
             {
               "type": "null"
@@ -143,11 +157,7 @@
         "lymph_node_side": {
           "anyOf": [
             {
-              "enum": [
-                "right",
-                "left"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LymphNodeSideRL"
             },
             {
               "type": "null"
@@ -177,6 +187,30 @@
       ],
       "title": "LungLN",
       "type": "object"
+    },
+    "LungLNCategory": {
+      "enum": [
+        "peribronchial",
+        "ln1",
+        "ln2",
+        "ln4",
+        "ln5",
+        "ln6",
+        "ln8",
+        "ln9",
+        "ln10",
+        "ln11",
+        "ln12",
+        "ln13",
+        "ln14",
+        "ln3a",
+        "ln3p",
+        "ln7",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungLNCategory",
+      "type": "string"
     },
     "LungMargin": {
       "properties": {
@@ -208,14 +242,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "bronchial",
-                "vascular",
-                "parenchymal",
-                "chest_wall",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LungMarginSite"
             },
             {
               "type": "null"
@@ -235,6 +262,163 @@
       ],
       "title": "LungMargin",
       "type": "object"
+    },
+    "LungMarginSite": {
+      "enum": [
+        "bronchial",
+        "vascular",
+        "parenchymal",
+        "chest_wall",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungMarginSite",
+      "type": "string"
+    },
+    "LungPM": {
+      "enum": [
+        "mx",
+        "m0",
+        "m1a",
+        "m1b",
+        "m1c",
+        "not_stated"
+      ],
+      "title": "LungPM",
+      "type": "string"
+    },
+    "LungPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "n2",
+        "n3",
+        "not_stated"
+      ],
+      "title": "LungPN",
+      "type": "string"
+    },
+    "LungPT": {
+      "enum": [
+        "tx",
+        "tis",
+        "t1mi",
+        "t1a",
+        "t1b",
+        "t1c",
+        "t2a",
+        "t2b",
+        "t3",
+        "t4",
+        "not_stated"
+      ],
+      "title": "LungPT",
+      "type": "string"
+    },
+    "LungPrimarySite": {
+      "enum": [
+        "upper_lobe",
+        "middle_lobe",
+        "lower_lobe",
+        "main_bronchus",
+        "bronchus_intermedius",
+        "bronchus_lobar",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungPrimarySite",
+      "type": "string"
+    },
+    "LungProcedure": {
+      "enum": [
+        "wedge_resection",
+        "segmentectomy",
+        "lobectomy",
+        "completion_lobectomy",
+        "sleeve_lobectomy",
+        "bilobectomy",
+        "pneumonectomy",
+        "major_airway_resection",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungProcedure",
+      "type": "string"
+    },
+    "LungSideness": {
+      "enum": [
+        "right",
+        "left",
+        "midline",
+        "not_stated"
+      ],
+      "title": "LungSideness",
+      "type": "string"
+    },
+    "LungStageGroup": {
+      "enum": [
+        "stage0",
+        "stageia1",
+        "stageia2",
+        "stageia3",
+        "stageib",
+        "stageiia",
+        "stageiib",
+        "stageiiia",
+        "stageiiib",
+        "stageiiic",
+        "stageiva",
+        "stageivb",
+        "stageivc",
+        "not_stated"
+      ],
+      "title": "LungStageGroup",
+      "type": "string"
+    },
+    "LungSurgicalTechnique": {
+      "enum": [
+        "open",
+        "thoracoscopic",
+        "robotic",
+        "hybrid",
+        "others",
+        "not_stated"
+      ],
+      "title": "LungSurgicalTechnique",
+      "type": "string"
+    },
+    "LungTumorFocality": {
+      "enum": [
+        "single_focus",
+        "separate_in_same_lobe_t3",
+        "separate_nodule_in_ipsilateral_t4",
+        "separate_nodule_in_contralateral_m1a",
+        "not_stated"
+      ],
+      "title": "LungTumorFocality",
+      "type": "string"
+    },
+    "LymphNodeSideRL": {
+      "description": "Right/left only — used by lung (no midline lymph nodes by anatomy).",
+      "enum": [
+        "right",
+        "left",
+        "not_stated"
+      ],
+      "title": "LymphNodeSideRL",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for lung cancer.",
@@ -275,16 +459,7 @@
     "cancer_primary_site": {
       "anyOf": [
         {
-          "enum": [
-            "upper_lobe",
-            "middle_lobe",
-            "lower_lobe",
-            "main_bronchus",
-            "bronchus_intermedius",
-            "bronchus_lobar",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungPrimarySite"
         },
         {
           "type": "null"
@@ -377,24 +552,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "adenocarcinoma",
-            "squamous_cell_carcinoma",
-            "adenosquamous_carcinoma",
-            "large_cell_carcinoma",
-            "large_cell_neuroendocrine_carcinoma",
-            "small_cell_carcinoma",
-            "carcinoid_tumor",
-            "sarcomatoid_carcinoma",
-            "pleomorphic_carcinoma",
-            "pulmonary_lymphoepithelioma_like_carcinoma",
-            "mucoepidermoid_carcinoma",
-            "salivary_gland_type_tumor",
-            "non_small_cell_carcinoma_not_specified",
-            "non_small_cell_carcinoma_with_neuroendocrine_features",
-            "other"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungHistology"
         },
         {
           "type": "null"
@@ -472,14 +630,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1a",
-            "m1b",
-            "m1c"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungPM"
         },
         {
           "type": "null"
@@ -494,14 +645,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1",
-            "n2",
-            "n3"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungPN"
         },
         {
           "type": "null"
@@ -516,18 +660,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "wedge_resection",
-            "segmentectomy",
-            "lobectomy",
-            "completion_lobectomy",
-            "sleeve_lobectomy",
-            "bilobectomy",
-            "pneumonectomy",
-            "major_airway_resection",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungProcedure"
         },
         {
           "type": "null"
@@ -542,19 +675,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "tis",
-            "t1mi",
-            "t1a",
-            "t1b",
-            "t1c",
-            "t2a",
-            "t2b",
-            "t3",
-            "t4"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungPT"
         },
         {
           "type": "null"
@@ -587,12 +708,7 @@
     "sideness": {
       "anyOf": [
         {
-          "enum": [
-            "right",
-            "left",
-            "midline"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungSideness"
         },
         {
           "type": "null"
@@ -622,22 +738,7 @@
     "stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "ia1",
-            "ia2",
-            "ia3",
-            "ib",
-            "iia",
-            "iib",
-            "iiia",
-            "iiib",
-            "iiic",
-            "iva",
-            "ivb",
-            "ivc"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungStageGroup"
         },
         {
           "type": "null"
@@ -652,14 +753,7 @@
     "surgical_technique": {
       "anyOf": [
         {
-          "enum": [
-            "open",
-            "thoracoscopic",
-            "robotic",
-            "hybrid",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungSurgicalTechnique"
         },
         {
           "type": "null"
@@ -674,12 +768,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
@@ -709,13 +798,7 @@
     "tumor_focality": {
       "anyOf": [
         {
-          "enum": [
-            "single_focus",
-            "separate_in_same_lobe_t3",
-            "separate_nodule_in_ipsilateral_t4",
-            "separate_nodule_in_contralateral_m1a"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/LungTumorFocality"
         },
         {
           "type": "null"

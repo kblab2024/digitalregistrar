@@ -3,12 +3,22 @@
 These mirror the shared signatures defined in `models/common.py`:
 - `is_cancer` — the router that decides excision eligibility and cancer category
 - `ReportJsonize` — the first-pass structuring step that produces a rough JSON
+
+The ``cancer_category`` Literal is built dynamically from the
+auto-discovered Layer-1 registry: the set of permitted values is
+``sorted(CASE_MODELS.keys()) + ["others"]``. Adding a new organ file
+to ``schemas/pydantic/`` automatically extends the routing vocabulary
+— no manual edit of this file is needed.
 """
 from __future__ import annotations
 
 from typing import Literal
 
 from pydantic import BaseModel, Field
+
+from ._registry import discover_case_models
+
+_ORGAN_KEYS: tuple[str, ...] = tuple(sorted(discover_case_models().keys())) + ("others",)
 
 
 class IsCancerCase(BaseModel):
@@ -22,11 +32,12 @@ class IsCancerCase(BaseModel):
             "no viable tumor remains after excision."
         ),
     )
-    cancer_category: Literal["stomach", "colorectal", "breast", "esophagus", "lung", "prostate", "thyroid", "pancreas", "cervix", "liver", "others"] | None = Field(
+    cancer_category: Literal[_ORGAN_KEYS] | None = Field(
         None,
         description=(
-            "Which organ the primary cancer arises from. Ten standard organs are "
-            "implemented; anything outside the list is 'others'."
+            "Which organ the primary cancer arises from. The implemented organs "
+            "are auto-discovered from `schemas/pydantic/`; anything outside the "
+            "list is 'others'."
         ),
     )
     cancer_category_others_description: str | None = Field(

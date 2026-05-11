@@ -1,5 +1,45 @@
 {
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar_research/schemas/pydantic/cervix.py + src/digital_registrar_research/schemas/extraction/cervix.py + src/digital_registrar_research/schemas/aliases/cervix.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
   "$defs": {
+    "CervixDOINumber": {
+      "enum": [
+        "less_than_3",
+        "three_to_five",
+        "greater_than_5",
+        "not_stated"
+      ],
+      "title": "CervixDOINumber",
+      "type": "string"
+    },
+    "CervixDOIThreeTier": {
+      "enum": [
+        "inner_third",
+        "middle_third",
+        "outer_third",
+        "not_stated"
+      ],
+      "title": "CervixDOIThreeTier",
+      "type": "string"
+    },
+    "CervixHistology": {
+      "enum": [
+        "squamous_cell_carcinoma_hpv_associated",
+        "squamous_cell_carcinoma_hpv_dependaent",
+        "squamous_cell_carcinoma_nos",
+        "adenocarcinoma_hpv_associated",
+        "adenocarcinoma_hpv_independent",
+        "adenocarcinoma_nos",
+        "adenosquamous_carcinoma",
+        "neuroendocrine_carcinoma",
+        "glassy_cell_carcinoma",
+        "small_cell_carcinoma",
+        "large_cell_carcinoma",
+        "others",
+        "not_stated"
+      ],
+      "title": "CervixHistology",
+      "type": "string"
+    },
     "CervixLN": {
       "properties": {
         "examined": {
@@ -13,17 +53,7 @@
         "lymph_node_category": {
           "anyOf": [
             {
-              "enum": [
-                "pelvic",
-                "para_aortic",
-                "internal_iliac",
-                "obturator",
-                "external_iliac",
-                "common_iliac",
-                "parametrial",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/CervixLNCategory"
             },
             {
               "type": "null"
@@ -36,12 +66,7 @@
         "lymph_node_side": {
           "anyOf": [
             {
-              "enum": [
-                "right",
-                "left",
-                "midline"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/LymphNodeSide"
             },
             {
               "type": "null"
@@ -71,6 +96,21 @@
       ],
       "title": "CervixLN",
       "type": "object"
+    },
+    "CervixLNCategory": {
+      "enum": [
+        "pelvic",
+        "para_aortic",
+        "internal_iliac",
+        "obturator",
+        "external_iliac",
+        "common_iliac",
+        "parametrial",
+        "others",
+        "not_stated"
+      ],
+      "title": "CervixLNCategory",
+      "type": "string"
     },
     "CervixMargin": {
       "properties": {
@@ -102,14 +142,7 @@
         "margin_category": {
           "anyOf": [
             {
-              "enum": [
-                "ectocervical",
-                "endocervical",
-                "radial_circumferential",
-                "vaginal_cuff",
-                "others"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/CervixMarginSite"
             },
             {
               "type": "null"
@@ -129,6 +162,139 @@
       ],
       "title": "CervixMargin",
       "type": "object"
+    },
+    "CervixMarginSite": {
+      "enum": [
+        "ectocervical",
+        "endocervical",
+        "radial_circumferential",
+        "vaginal_cuff",
+        "others",
+        "not_stated"
+      ],
+      "title": "CervixMarginSite",
+      "type": "string"
+    },
+    "CervixPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1mi",
+        "n1a",
+        "n2mi",
+        "n2a",
+        "not_stated"
+      ],
+      "title": "CervixPN",
+      "type": "string"
+    },
+    "CervixPT": {
+      "enum": [
+        "tx",
+        "t1a1",
+        "t1a2",
+        "t1b1",
+        "t1b2",
+        "t1b3",
+        "t2a1",
+        "t2a2",
+        "t2b",
+        "t3a",
+        "t3b",
+        "t4",
+        "not_stated"
+      ],
+      "title": "CervixPT",
+      "type": "string"
+    },
+    "CervixPrimarySite": {
+      "enum": [
+        "clock_12_3",
+        "clock_3_6",
+        "clock_6_9",
+        "clock_9_12",
+        "not_stated"
+      ],
+      "title": "CervixPrimarySite",
+      "type": "string"
+    },
+    "CervixProcedure": {
+      "enum": [
+        "radical_hysterectomy",
+        "total_hysterectomy_bso",
+        "simple_hysterectomy",
+        "extenteration",
+        "others",
+        "not_stated"
+      ],
+      "title": "CervixProcedure",
+      "type": "string"
+    },
+    "CervixStageGroup": {
+      "enum": [
+        "stage0",
+        "stageia1",
+        "stageia2",
+        "stageib1",
+        "stageib2",
+        "stageib3",
+        "stageiia1",
+        "stageiia2",
+        "stageiib",
+        "stageiiia",
+        "stageiiib",
+        "stageiiic1",
+        "stageiiic2",
+        "stageiva",
+        "stageivb",
+        "not_stated"
+      ],
+      "title": "CervixStageGroup",
+      "type": "string"
+    },
+    "CervixSurgicalTechnique": {
+      "enum": [
+        "open",
+        "laparoscopic",
+        "vaginal",
+        "others",
+        "not_stated"
+      ],
+      "title": "CervixSurgicalTechnique",
+      "type": "string"
+    },
+    "LymphNodeSide": {
+      "description": "Standard ipsilateral/contralateral/midline side designation.",
+      "enum": [
+        "right",
+        "left",
+        "midline",
+        "not_stated"
+      ],
+      "title": "LymphNodeSide",
+      "type": "string"
+    },
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
     }
   },
   "description": "Canonical extracted case record for cervix cancer.",
@@ -151,13 +317,7 @@
     "cancer_primary_site": {
       "anyOf": [
         {
-          "enum": [
-            "12_3_clock",
-            "3_6_clock",
-            "6_9_clock",
-            "9_12_clock"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixPrimarySite"
         },
         {
           "type": "null"
@@ -172,12 +332,7 @@
     "depth_of_invasion_number": {
       "anyOf": [
         {
-          "enum": [
-            "less_than_3",
-            "3_to_5",
-            "greater_than_5"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixDOINumber"
         },
         {
           "type": "null"
@@ -192,12 +347,7 @@
     "depth_of_invasion_three_tier": {
       "anyOf": [
         {
-          "enum": [
-            "inner_third",
-            "middle_third",
-            "outer_third"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixDOIThreeTier"
         },
         {
           "type": "null"
@@ -262,21 +412,7 @@
     "histology": {
       "anyOf": [
         {
-          "enum": [
-            "squamous_cell_carcinoma_hpv_associated",
-            "squamous_cell_carcinoma_hpv_dependaent",
-            "squamous_cell_carcinoma_nos",
-            "adenocarcinoma_hpv_associated",
-            "adenocarcinoma_hpv_independent",
-            "adenocarcinoma_nos",
-            "adenosquamous_carcinoma",
-            "neuroendocrine_carcinoma",
-            "glassy_cell_carcinoma",
-            "small_cell_carcinoma",
-            "large_cell_carcinoma",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixHistology"
         },
         {
           "type": "null"
@@ -324,12 +460,7 @@
     "pm_category": {
       "anyOf": [
         {
-          "enum": [
-            "mx",
-            "m0",
-            "m1"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/PMCategory"
         },
         {
           "type": "null"
@@ -344,15 +475,7 @@
     "pn_category": {
       "anyOf": [
         {
-          "enum": [
-            "nx",
-            "n0",
-            "n1mi",
-            "n1a",
-            "n2mi",
-            "n2a"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixPN"
         },
         {
           "type": "null"
@@ -367,14 +490,7 @@
     "procedure": {
       "anyOf": [
         {
-          "enum": [
-            "radical_hysterectomy",
-            "total_hysterectomy_bso",
-            "simple_hysterectomy",
-            "extenteration",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixProcedure"
         },
         {
           "type": "null"
@@ -389,21 +505,7 @@
     "pt_category": {
       "anyOf": [
         {
-          "enum": [
-            "tx",
-            "t1a1",
-            "t1a2",
-            "t1b1",
-            "t1b2",
-            "t1b3",
-            "t2a1",
-            "t2a2",
-            "t2b",
-            "t3a",
-            "t3b",
-            "t4"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixPT"
         },
         {
           "type": "null"
@@ -436,24 +538,7 @@
     "stage_group": {
       "anyOf": [
         {
-          "enum": [
-            "0",
-            "ia1",
-            "ia2",
-            "ib1",
-            "ib2",
-            "ib3",
-            "iia1",
-            "iia2",
-            "iib",
-            "iiia",
-            "iiib",
-            "iiic1",
-            "iiic2",
-            "iva",
-            "ivb"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixStageGroup"
         },
         {
           "type": "null"
@@ -468,13 +553,7 @@
     "surgical_technique": {
       "anyOf": [
         {
-          "enum": [
-            "open",
-            "laparoscopic",
-            "vaginal",
-            "others"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/CervixSurgicalTechnique"
         },
         {
           "type": "null"
@@ -489,12 +568,7 @@
     "tnm_descriptor": {
       "anyOf": [
         {
-          "enum": [
-            "y",
-            "r",
-            "m"
-          ],
-          "type": "string"
+          "$ref": "#/$defs/TNMDescriptor"
         },
         {
           "type": "null"
