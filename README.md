@@ -1,8 +1,10 @@
 # Digital Registrar — Research
 
-> Research stack for **The Digital Registrar**: the extraction pipeline, the annotation UI, the comparison benchmarks, and the ablation study. One `pyproject.toml`, one import root.
+> **Status: beta.** This is the next-generation Digital Registrar stack: the extraction pipeline, the annotation UI, the comparison benchmarks, and the ablation study. One `pyproject.toml`, one import root.
 
-For the slim, production-facing extractor (what non-academic users typically install), see the standalone [`digitalregistrar`](../digitalregistrar) repo. This package **vendors** that pipeline and adds the research apparatus around it.
+> ⚠️ **Beta — successor to `digitalregistrar`.** `drr-next` is intended to replace the slim, production-facing [`digitalregistrar`](../digitalregistrar) once the research apparatus stabilises and the v2 schema-driven pipeline is declared GA. Until then, `digitalregistrar` remains the recommended install for non-academic users; this repo is where the pipeline, schemas, and tooling are actively evolving. Expect breaking changes between minor versions.
+
+When `drr-next` reaches GA, the slim `digitalregistrar` package will be re-cut from this tree (extras-stripped) rather than maintained as a parallel codebase.
 
 ## Install
 
