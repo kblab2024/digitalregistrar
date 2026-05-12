@@ -39,9 +39,7 @@ Public API:
 from __future__ import annotations
 
 import math
-import os
 from collections.abc import Sequence
-from typing import Any
 
 import numpy as np
 from scipy import stats as sstats
@@ -712,8 +710,6 @@ def bootstrap_kappa_ci(
     if n_minus <= 0:
         return BootstrapResult(theta_hat, theta_hat, theta_hat, boot, method)
     # Per-i: subtract that obs from the running totals.
-    a_counts_i = a_counts_full[a_codes]   # marginal count at this obs's a-cat
-    b_counts_i = b_counts_full[b_codes]
     matches_i = (a_codes == b_codes).astype(np.float64)
     a_counts_jack = a_counts_full[None, :].repeat(n, axis=0)
     a_counts_jack[np.arange(n), a_codes] -= 1.0

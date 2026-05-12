@@ -361,7 +361,7 @@ def write_case_json(paths: AblationPaths, run_name: str, organ: str,
 
 
 def _utc_now_iso() -> str:
-    return dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return dt.datetime.now(dt.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _git_sha() -> str | None:
@@ -501,7 +501,7 @@ def update_cell_manifest(paths: AblationPaths, run_name: str,
     manifest["model_slug"] = paths.model_slug
     manifest["model_alias"] = model_alias
     manifest.setdefault("created_at",
-                        dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d"))
+                        dt.datetime.now(dt.UTC).strftime("%Y-%m-%d"))
     if decoding is not None:
         manifest["config_hash"] = _config_hash(
             model_list.get(model_alias, model_alias), decoding)

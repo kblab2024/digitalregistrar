@@ -17,15 +17,14 @@ import pytest
 from digital_registrar_research.benchmarks.eval.stats import (
     accuracy_flip_rate,
     agresti_coull_ci,
+    bh_fdr,
     bland_altman,
     cascade_funnel,
-    clopper_pearson_ci,
     cochran_q,
     cohens_kappa,
     conditional_accuracy_grid,
     cronbach_alpha,
     holm,
-    bh_fdr,
     icc_2_1,
     icc_3_k,
     jackknife_ci,
@@ -36,12 +35,10 @@ from digital_registrar_research.benchmarks.eval.stats import (
     mcnemar,
     pick_ci,
     spearman_brown,
-    spearman_rho,
     stuart_maxwell,
     weighted_kappa,
     wilson_ci,
 )
-
 
 # --- CI selectors -------------------------------------------------------
 
@@ -113,7 +110,6 @@ def test_cochran_q_three_methods_diff_low_p():
     """Cochran's Q tests whether column proportions differ. Construct
     methods with markedly different success rates: A and B are 80%
     correct; C is 20% correct."""
-    n_cases = 100
     a = np.array([1] * 80 + [0] * 20)
     b = a.copy()
     c = np.array([1] * 20 + [0] * 80)

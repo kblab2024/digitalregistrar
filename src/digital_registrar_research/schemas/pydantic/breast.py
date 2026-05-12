@@ -33,7 +33,6 @@ from ._case_builder import (
 )
 from ._enums import LowerStrEnum, LymphNodeSide, PMCategory, TNMDescriptor
 
-
 # --- Per-organ closed vocabularies ----------------------------------------
 
 

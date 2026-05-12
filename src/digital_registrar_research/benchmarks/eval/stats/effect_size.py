@@ -23,8 +23,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import numpy as np
-from scipy import stats as sstats
-
 
 # Re-exports from the legacy stats_extra module so callers have one
 # import surface. The legacy module stays for backwards compat but is
@@ -32,8 +30,8 @@ from scipy import stats as sstats
 
 def _legacy():
     """Lazy import to avoid coupling to scripts/ at module load time."""
-    import sys
     import importlib.util
+    import sys
     from pathlib import Path
     if "scripts.eval._common.stats_extra" in sys.modules:
         return sys.modules["scripts.eval._common.stats_extra"]
@@ -100,7 +98,7 @@ def matthews_corrcoef(y_true: Sequence, y_pred: Sequence) -> float:
               if t is not None and p is not None]
     if not paired:
         return float("nan")
-    y_t, y_p = zip(*paired)
+    y_t, y_p = zip(*paired, strict=True)
     return float(_mcc(list(y_t), list(y_p)))
 
 
@@ -111,7 +109,7 @@ def balanced_accuracy(y_true: Sequence, y_pred: Sequence) -> float:
               if t is not None and p is not None]
     if not paired:
         return float("nan")
-    y_t, y_p = zip(*paired)
+    y_t, y_p = zip(*paired, strict=True)
     return float(balanced_accuracy_score(list(y_t), list(y_p)))
 
 
@@ -134,7 +132,7 @@ def cohens_kappa(
               if t is not None and p is not None]
     if not paired:
         return float("nan")
-    y_t, y_p = zip(*paired)
+    y_t, y_p = zip(*paired, strict=True)
     if labels is not None:
         return float(cohen_kappa_score(list(y_t), list(y_p),
                                         labels=list(labels)))
@@ -161,7 +159,7 @@ def weighted_kappa(
               if t is not None and p is not None]
     if not paired:
         return float("nan")
-    y_t, y_p = zip(*paired)
+    y_t, y_p = zip(*paired, strict=True)
     return float(cohen_kappa_score(
         list(y_t), list(y_p),
         weights=weights,

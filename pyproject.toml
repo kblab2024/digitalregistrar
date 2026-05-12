@@ -33,7 +33,7 @@ annotation  = ["streamlit>=1.35"]
 benchmarks  = ["scikit-learn", "torch", "transformers", "openai", "regex", "matplotlib", "seaborn", "scipy", "statsmodels"]
 ablations   = ["jsonschema", "openai", "scipy", "statsmodels", "pyyaml"]
 schema-gui  = ["streamlit>=1.35", "pandas", "ruff"]
-dev         = ["pytest>=8", "ruff", "mypy", "scipy", "statsmodels", "jsonschema", "pyyaml"]
+dev         = ["pytest>=8", "ruff", "mypy", "scipy", "statsmodels", "jsonschema", "pyyaml", "scikit-learn", "pyarrow"]
 all         = ["digital-registrar-research[annotation,benchmarks,ablations,schema-gui,dev]"]
 
 [project.scripts]
@@ -67,6 +67,9 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B"]
 ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

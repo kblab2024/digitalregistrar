@@ -133,7 +133,6 @@ def test_agree_disagree_pabak_full_disagreement_is_minus_one():
     pairs = agree_disagree_pairs(cases, ann_a="A", ann_b="B")
     pairs_categorical_only = [p for p in pairs if p.a in (0, 1)]
     # Filter to the two fixture fields whose values are guaranteed to disagree.
-    field_names = {p.case_id.split("::", 1)[1] for p in pairs}
     pairs_target = [
         p for p in pairs_categorical_only
         if p.case_id.split("::", 1)[1]

@@ -17,7 +17,7 @@ build time.
 """
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, create_model
 
@@ -35,10 +35,10 @@ def make_margin_type(
     come from the extraction-metadata layer.
     """
     fields: dict[str, Any] = {
-        "margin_category": (Optional[category_type], Field(None)),
+        "margin_category": (category_type | None, Field(None)),
         "margin_involved": (bool, ...),
-        "distance":        (Optional[int], Field(None)),
-        "description":     (Optional[str], None),
+        "distance":        (int | None, Field(None)),
+        "description":     (str | None, None),
     }
     return create_model(name, __base__=BaseModel, **fields)
 
@@ -58,12 +58,12 @@ def make_ln_type(
     """
     fields: dict[str, Any] = {}
     if side_type is not None:
-        fields["lymph_node_side"] = (Optional[side_type], Field(None))
+        fields["lymph_node_side"] = (side_type | None, Field(None))
     if category_type is not None:
-        fields["lymph_node_category"] = (Optional[category_type], Field(None))
+        fields["lymph_node_category"] = (category_type | None, Field(None))
     fields["involved"] = (int, ...)
     fields["examined"] = (int, ...)
-    fields["station_name"] = (Optional[str], Field(None))
+    fields["station_name"] = (str | None, Field(None))
     return create_model(name, __base__=BaseModel, **fields)
 
 

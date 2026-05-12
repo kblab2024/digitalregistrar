@@ -23,7 +23,7 @@ from typing import Literal
 import dspy
 from pydantic import ValidationError
 
-from .models.common import autoconf_dspy, model_list
+from .models.common import autoconf_dspy
 from .schemas import CASE_MODELS
 from .schemas.extraction import EXTRACTION_META
 from .signatures.factory import (

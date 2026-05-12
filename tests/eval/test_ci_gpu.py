@@ -22,7 +22,6 @@ import pytest
 
 from digital_registrar_research.benchmarks.eval import ci, ci_gpu
 
-
 _HAS_TORCH: bool
 try:  # pragma: no cover - environment probe
     import torch as _torch
@@ -141,7 +140,7 @@ def test_bootstrap_weighted_mean_cpu_matches_lambda() -> None:
     seed = 5
     alpha = 0.05
 
-    records = list(zip(range(n), correct.astype(int), attempted.astype(bool)))
+    records = list(zip(range(n), correct.astype(int), attempted.astype(bool), strict=True))
     expected = ci.bootstrap_ci(
         records,
         lambda xs: (
@@ -215,27 +214,27 @@ def test_paired_bootstrap_diff_shape_mismatch_raises() -> None:
 def test_independent_bootstrap_diff_matches_handrolled_loop() -> None:
     """Match the existing scripts/eval/cross_dataset/_per_field_delta loop."""
     rng_seed_data = np.random.default_rng(0)
-    l = (rng_seed_data.random(140) < 0.7).astype(np.float64)
+    left = (rng_seed_data.random(140) < 0.7).astype(np.float64)
     r = (rng_seed_data.random(110) < 0.5).astype(np.float64)
     n_boot = 300
     seed = 17
 
     # Reference: the original cross_dataset loop.
     rng = np.random.default_rng(seed)
-    min_n = min(l.size, r.size)
+    min_n = min(left.size, r.size)
     ref_boot = np.empty(n_boot, dtype=float)
     for i in range(n_boot):
-        idx_l = rng.integers(0, l.size, size=min_n)
+        idx_l = rng.integers(0, left.size, size=min_n)
         idx_r = rng.integers(0, r.size, size=min_n)
-        ref_boot[i] = float(l[idx_l].mean() - r[idx_r].mean())
+        ref_boot[i] = float(left[idx_l].mean() - r[idx_r].mean())
     ref_lo = float(np.quantile(ref_boot, 0.025))
     ref_hi = float(np.quantile(ref_boot, 0.975))
 
     got = ci_gpu.independent_bootstrap_diff(
-        l, r, n_boot=n_boot, alpha=0.05,
+        left, r, n_boot=n_boot, alpha=0.05,
         random_state=seed, device="cpu",
     )
-    assert got.point == pytest.approx(float(l.mean() - r.mean()), abs=1e-15)
+    assert got.point == pytest.approx(float(left.mean() - r.mean()), abs=1e-15)
     assert got.lo == pytest.approx(ref_lo, abs=1e-12)
     assert got.hi == pytest.approx(ref_hi, abs=1e-12)
 
@@ -248,7 +247,7 @@ def _kappa_reference(a: list, b: list) -> float:
         return float("nan")
     n = len(a)
     cats = set(a) | set(b)
-    p_o = sum(1 for x, y in zip(a, b) if x == y) / n
+    p_o = sum(1 for x, y in zip(a, b, strict=True) if x == y) / n
     p_e = 0.0
     from collections import Counter
     fa, fb = Counter(a), Counter(b)
