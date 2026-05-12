@@ -32,8 +32,9 @@ dependencies = [
 annotation  = ["streamlit>=1.35"]
 benchmarks  = ["scikit-learn", "torch", "transformers", "openai", "regex", "matplotlib", "seaborn", "scipy", "statsmodels"]
 ablations   = ["jsonschema", "openai", "scipy", "statsmodels", "pyyaml"]
+schema-gui  = ["streamlit>=1.35", "pandas", "ruff"]
 dev         = ["pytest>=8", "ruff", "mypy", "scipy", "statsmodels", "jsonschema", "pyyaml", "scikit-learn", "pyarrow"]
-all         = ["digital-registrar-research[annotation,benchmarks,ablations,dev]"]
+all         = ["digital-registrar-research[annotation,benchmarks,ablations,schema-gui,dev]"]
 
 [project.scripts]
 registrar-pipeline  = "digital_registrar_research.runner:main"
@@ -43,6 +44,7 @@ registrar-annotate-dummy     = "digital_registrar_research.annotation.app_canoni
 registrar-benchmark = "digital_registrar_research.benchmarks.eval.run_all:main"
 registrar-ablate    = "digital_registrar_research.ablations.eval.run_ablations:main"
 registrar-schemas   = "digital_registrar_research.schemas.generate:main"
+registrar-schema-gui = "digital_registrar_research.schema_gui.app:main_cli"
 
 [project.urls]
 Homepage = "https://github.com/kblab2024/digital-registrar-research"
