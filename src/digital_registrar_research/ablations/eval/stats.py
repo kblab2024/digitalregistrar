@@ -38,7 +38,6 @@ import yaml
 from ...benchmarks.eval.ci import (
     bootstrap_ci,
     mcnemar_test,
-    paired_bootstrap_diff,
     wilson_ci,
 )
 from ...benchmarks.eval.multirun import (

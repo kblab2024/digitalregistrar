@@ -33,17 +33,10 @@ deprecated, but new code should depend on this package surface.
 """
 from __future__ import annotations
 
-from .result import TestResult
-from .thresholds import (
-    HEADLINE_ACCURACY_DELTA_THRESHOLD,
-    HEADLINE_F1_DELTA_THRESHOLD,
-    KAPPA_SUBSTANTIAL,
-    KAPPA_NEAR_PERFECT,
-    FAMILYWISE_ALPHA,
-    FDR_ALPHA,
-    POWER_FLAG_THRESHOLD,
-    LANDIS_KOCH_BANDS,
-    kappa_band,
+from .cascade_diag import (
+    attrition_propensity,
+    cascade_funnel,
+    conditional_accuracy_grid,
 )
 
 # Re-export the public surface so reductions can do `from
@@ -61,14 +54,12 @@ from .ci import (
     two_source_bootstrap_ci,
     wilson_ci,
 )
-from .paired import (
-    bhapkar,
-    cochran_q,
-    friedman,
-    mcnemar,
-    nemenyi_posthoc,
-    paired_bootstrap_delta,
-    stuart_maxwell,
+from .concordance import (
+    bland_altman,
+    count_mae,
+    lin_ccc,
+    mape,
+    spearman_rho,
 )
 from .effect_size import (
     balanced_accuracy,
@@ -80,6 +71,12 @@ from .effect_size import (
     matthews_corrcoef,
     weighted_kappa,
 )
+from .heterogeneity import (
+    forest_plot_csv,
+    i_squared,
+    interaction_test,
+    q_test_heterogeneity,
+)
 from .multiple_comparisons import (
     adjust_pvalues,
     bh_fdr,
@@ -87,6 +84,15 @@ from .multiple_comparisons import (
     holm,
     permutation_omnibus,
     sidak,
+)
+from .paired import (
+    bhapkar,
+    cochran_q,
+    friedman,
+    mcnemar,
+    nemenyi_posthoc,
+    paired_bootstrap_delta,
+    stuart_maxwell,
 )
 from .reliability import (
     accuracy_flip_rate,
@@ -97,23 +103,17 @@ from .reliability import (
     per_case_run_sd,
     spearman_brown,
 )
-from .heterogeneity import (
-    forest_plot_csv,
-    i_squared,
-    interaction_test,
-    q_test_heterogeneity,
-)
-from .concordance import (
-    bland_altman,
-    count_mae,
-    lin_ccc,
-    mape,
-    spearman_rho,
-)
-from .cascade_diag import (
-    attrition_propensity,
-    cascade_funnel,
-    conditional_accuracy_grid,
+from .result import TestResult
+from .thresholds import (
+    FAMILYWISE_ALPHA,
+    FDR_ALPHA,
+    HEADLINE_ACCURACY_DELTA_THRESHOLD,
+    HEADLINE_F1_DELTA_THRESHOLD,
+    KAPPA_NEAR_PERFECT,
+    KAPPA_SUBSTANTIAL,
+    LANDIS_KOCH_BANDS,
+    POWER_FLAG_THRESHOLD,
+    kappa_band,
 )
 
 __all__ = [

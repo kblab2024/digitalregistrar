@@ -6,14 +6,10 @@ plus the cross-layer parity check in ``schemas/extraction/__init__.py``.
 """
 from __future__ import annotations
 
-from typing import get_args, get_origin
-from typing import Union
+from typing import Union, get_args, get_origin
 
-import pytest
-
-from digital_registrar_research.schemas.pydantic import CASE_MODELS, IsCancerCase
 from digital_registrar_research.schemas.extraction import EXTRACTION_META
-
+from digital_registrar_research.schemas.pydantic import CASE_MODELS, IsCancerCase
 
 EXPECTED_ORGANS = {
     "breast", "cervix", "colorectal", "esophagus", "liver",

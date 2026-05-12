@@ -22,7 +22,6 @@ from collections.abc import Sequence
 
 import numpy as np
 import pandas as pd
-from scipy import stats as sstats
 
 
 def cascade_funnel(
@@ -129,7 +128,6 @@ def conditional_accuracy_grid(
     c_rows = atomic[atomic[stage_col] == "C"].copy()
     c_rows["correct_num"] = pd.to_numeric(c_rows[correct_col], errors="coerce")
 
-    n_total_cases = atomic[case_col].nunique()
     rows: list[dict] = []
     for field, sub in c_rows.groupby(field_col):
         valid = sub.dropna(subset=["correct_num"])

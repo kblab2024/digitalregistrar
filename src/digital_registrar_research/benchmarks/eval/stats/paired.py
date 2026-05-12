@@ -39,7 +39,6 @@ from scipy import stats as sstats
 from ..ci import mcnemar_test as _mcnemar_test, paired_bootstrap_diff
 from .result import TestResult
 
-
 # --- McNemar ---------------------------------------------------------------
 
 def mcnemar(

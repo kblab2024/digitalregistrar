@@ -6,25 +6,22 @@ invariants on the outputs.
 """
 from __future__ import annotations
 
-from pathlib import Path
-
 import pandas as pd
 import pytest
 
 from digital_registrar_research.ablations.eval.canonical_stats import (
-    run_canonical_stats,
     _failure_modes,
     _headline,
+    _low_performer_diagnostics,
+    _modularity_advantage,
     _per_field,
     _per_organ,
     _seed_consistency,
-    _modularity_advantage,
-    _low_performer_diagnostics,
+    run_canonical_stats,
 )
 from digital_registrar_research.benchmarks.eval.scope import (
     STATS_EXCLUDED_FIELDS,
 )
-
 
 # ---------------------------------------------------------------------------
 # Synthetic atomic builder
@@ -288,8 +285,7 @@ def test_run_canonical_stats_handles_empty_atomic(tmp_path):
         "attempted", "gold_present", "case_status", "case_flags",
         "field_status", "field_error_detail",
     ])
-    out = run_canonical_stats(empty, modular_method="modular",
-                              out_dir=tmp_path)
+    run_canonical_stats(empty, modular_method="modular", out_dir=tmp_path)
     # All CSVs created (even if empty).
     for name in ("headline.csv", "failure_modes.csv",
                  "canonical_stats_report.md"):

@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import typing as _t
 from dataclasses import dataclass
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, create_model
 from pydantic.fields import FieldInfo
@@ -193,20 +193,20 @@ class StagingSpec:
         f = lambda: Field(default=None)  # noqa: E731
 
         if self.include_tnm_descriptor:
-            out.append(("tnm_descriptor", Optional[self.tnm_descriptor], f()))
+            out.append(("tnm_descriptor", self.tnm_descriptor | None, f()))
 
-        out.append(("pt_category", Optional[self.pt], f()))
-        out.append(("pn_category", Optional[self.pn], f()))
-        out.append(("pm_category", Optional[self.pm], f()))
+        out.append(("pt_category", self.pt | None, f()))
+        out.append(("pn_category", self.pn | None, f()))
+        out.append(("pm_category", self.pm | None, f()))
 
         for fname, spec in self.stage_groups.items():
             # Spec is the type itself (StrEnum / Literal); legacy tuple
             # form (type, custom_desc) is no longer accepted — descriptions
             # belong in the metadata module.
-            out.append((fname, Optional[spec], f()))
+            out.append((fname, spec | None, f()))
 
         if self.include_ajcc_version:
-            out.append(("ajcc_version", Optional[int], f()))
+            out.append(("ajcc_version", int | None, f()))
 
         return out
 
@@ -223,15 +223,15 @@ def make_biomarker_type(
 ) -> type[BaseModel]:
     """Build a clean ``<Organ>Biomarker`` ``BaseModel`` (no descriptions)."""
     fields: dict[str, Any] = {
-        "biomarker_category": (Optional[categories], Field(None)),
+        "biomarker_category": (categories | None, Field(None)),
     }
     fields["expression"] = (
-        (bool, ...) if expression_required else (Optional[bool], Field(None))
+        (bool, ...) if expression_required else (bool | None, Field(None))
     )
-    fields["percentage"] = (Optional[int], Field(None))
+    fields["percentage"] = (int | None, Field(None))
     if has_score:
-        fields["score"] = (Optional[Literal[0, 1, 2, 3]], Field(None))
-    fields["biomarker_name"] = (Optional[str], Field(None))
+        fields["score"] = (Literal[0, 1, 2, 3] | None, Field(None))
+    fields["biomarker_name"] = (str | None, Field(None))
     return create_model(name, __base__=BaseModel, **fields)
 
 

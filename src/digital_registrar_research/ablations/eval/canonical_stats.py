@@ -38,14 +38,12 @@ import platform
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import pandas as pd
 
 from ...benchmarks.eval.ci import (
     mcnemar_test,
-    paired_bootstrap_diff,
     wilson_ci,
 )
 from ...benchmarks.eval.scope import STATS_EXCLUDED_FIELDS
@@ -384,8 +382,7 @@ def _per_field(atomic: pd.DataFrame, modular_method: str,
                         a_v = a[mask]
                         b_v = b[mask]
                         if a_v.size:
-                            from digital_registrar_research.benchmarks.eval \
-                                import ci_gpu
+                            from digital_registrar_research.benchmarks.eval import ci_gpu
                             pb = ci_gpu.paired_bootstrap_diff(
                                 a_v, b_v, device=device,
                             )

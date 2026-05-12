@@ -26,7 +26,6 @@ from digital_registrar_research.benchmarks.eval.nested_metrics import (
     score_lymph_nodes,
 )
 from digital_registrar_research.benchmarks.eval.scope import (
-    BIOMARKER_WHITELIST,
     BREAST_BIOMARKERS,
     EVAL_EXCLUDED_FIELDS,
     EVAL_EXCLUDED_NESTED_INNER_KEYS,
@@ -34,7 +33,6 @@ from digital_registrar_research.benchmarks.eval.scope import (
     biomarkers_for_organ,
     get_organ_scoreable_fields,
 )
-
 
 # --- Scope structures --------------------------------------------------
 
@@ -379,6 +377,7 @@ def test_chapter3_reducers_consume_nested_rows():
     and must return non-empty frames with the expected columns.
     """
     import pandas as pd
+
     from scripts.eval._common.outcome import CaseLoad
     from scripts.eval.cascade.reductions import (
         chapter3_biomarker_per_category,
@@ -387,7 +386,8 @@ def test_chapter3_reducers_consume_nested_rows():
         chapter3_per_field_overall,
     )
     from scripts.eval.cascade.run_cascade import (
-        _emit_nested_rows, _emit_stage_c_rows,
+        _emit_nested_rows,
+        _emit_stage_c_rows,
     )
 
     base = {
@@ -469,9 +469,11 @@ def _ln_breast_gold():
 def _build_two_case_nested_fixture():
     """Build (atomic_df, nested_df) for two cases — perfect match + a wrong one."""
     import pandas as pd
+
     from scripts.eval._common.outcome import CaseLoad
     from scripts.eval.cascade.run_cascade import (
-        _emit_nested_rows, _emit_stage_c_rows,
+        _emit_nested_rows,
+        _emit_stage_c_rows,
     )
 
     base_perfect = {
@@ -652,8 +654,10 @@ def test_chapter4_chapter5_multirun_emits_when_two_runs_present():
     """Build a fake two-run atomic with attempted nested rows, confirm
     multirun returns sensible columns."""
     import pandas as pd
+
     from scripts.eval.cascade.nested_reductions import (
-        chapter4_margins_multirun, chapter5_lymph_nodes_multirun,
+        chapter4_margins_multirun,
+        chapter5_lymph_nodes_multirun,
     )
     base = {
         "method": "llm", "model": "test", "annotator": "gold",
