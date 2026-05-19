@@ -18,13 +18,14 @@ Extras are split by concern — install only what you need:
 
 | Extra | What you get |
 |---|---|
-| `[annotation]` | Streamlit UI (`streamlit`) |
+| `[annotation]` | Streamlit annotation UI (`streamlit`) |
+| `[schema-gui]` | Streamlit schema editor + inference GUI (`streamlit`, `pandas`, `ruff`) — covers both `registrar-schema-gui` and `registrar-infer-gui` |
 | `[benchmarks]` | GPT-4 / ClinicalBERT / rule-based baselines (`torch`, `transformers`, `openai`, `scikit-learn`, …) |
 | `[ablations]` | Raw-JSON baseline (`jsonschema`) |
 | `[dev]`        | `pytest`, `ruff`, `mypy` |
 | `[all]`        | All of the above |
 
-The core install (no extras) gives you the DSPy extraction pipeline plus the canonical Pydantic schemas.
+The core install (no extras) gives you the DSPy extraction pipeline, the canonical Pydantic schemas, and the `tnmhelper`-backed staging service. `tnmhelper` ships as a vendored wheel under [vendor/](vendor/) and is resolved automatically via `[tool.uv.sources]`; see [vendor/README.md](vendor/README.md) for rebuild instructions.
 
 After cloning, install the local pre-commit hook so lint errors are caught before they hit CI:
 
@@ -45,6 +46,9 @@ drr-next/
 │   │   ├── aliases/    ← canonical → surface forms TOML (Layer 3)
 │   │   └── data/*.json ← auto-generated; never edit
 │   ├── annotation/                                   # Streamlit doctor-review UI
+│   ├── schema_gui/                                   # Streamlit 3-layer schema editor (registrar-schema-gui)
+│   ├── inference_gui/                                # Streamlit pipeline-inference GUI (registrar-infer-gui)
+│   ├── staging/                                      # tnmhelper-backed AJCC TNM staging service
 │   ├── benchmarks/                                   # rule / ClinicalBERT / LLM baselines + eval harness
 │   ├── ablations/                                    # modular vs monolithic × DSPy vs raw-JSON grid
 │   ├── models/, util/, paths.py                      # support modules
@@ -65,7 +69,8 @@ drr-next/
 ├── results/                                          # benchmark output skeleton (.parquet fixtures + .gitkeep)
 ├── examples/dummy/                                   # runnable skeleton; data/results gitignored
 ├── obfuscator/                                       # standalone synthetic-data subpkg (own pyproject.toml)
-└── packaging/                                        # build dispatcher + end-user run launchers
+├── packaging/                                        # build dispatcher + end-user run launchers
+└── vendor/                                           # vendored wheels (tnmhelper); see vendor/README.md
 ```
 
 ## Console scripts
@@ -78,6 +83,8 @@ registrar-annotate-dummy                                          # launches aga
 registrar-benchmark                                               # aggregates baseline comparisons
 registrar-ablate                                                  # runs ablation grid
 registrar-schemas                                                 # regenerates JSON from Pydantic (use --check in CI)
+registrar-schema-gui                                              # Streamlit editor for the 3-layer per-organ schema (port 8501)
+registrar-infer-gui                                               # Streamlit GUI for interactive pipeline inference (port 8502)
 ```
 
 ## Documentation
@@ -90,6 +97,9 @@ registrar-schemas                                                 # regenerates 
 | DSPy deep dive — strict-schema protocol, roadmap | [docs/architecture/dspy_deep_dive.md](docs/architecture/dspy_deep_dive.md) |
 | DSPy ↔ Ollama model compatibility (frozen audit) | [docs/architecture/dspy_ollama_model_compatibility.md](docs/architecture/dspy_ollama_model_compatibility.md) |
 | Annotation UI | [docs/workflows/annotation.md](docs/workflows/annotation.md) |
+| Schema editor GUI (`registrar-schema-gui`) | [src/digital_registrar_research/schema_gui/README.md](src/digital_registrar_research/schema_gui/README.md) |
+| Pipeline inference GUI (`registrar-infer-gui`) | [src/digital_registrar_research/inference_gui/README.md](src/digital_registrar_research/inference_gui/README.md) |
+| AJCC TNM staging service (`tnmhelper` wrap) | [docs/architecture/staging.md](docs/architecture/staging.md) |
 | 2026-04 experiment protocol | [docs/workflows/experiment_protocol.md](docs/workflows/experiment_protocol.md) |
 | Branching strategy (12-branch model) | [docs/workflows/branching_strategy.md](docs/workflows/branching_strategy.md) |
 | Obfuscated workspace (PHI-free debug copy) | [docs/workflows/obfuscation.md](docs/workflows/obfuscation.md) |
@@ -98,7 +108,7 @@ registrar-schemas                                                 # regenerates 
 | Cascade evaluation pipeline | [docs/eval/index.md](docs/eval/index.md) |
 | Datasets, layout, naming conventions | [docs/reference/data.md](docs/reference/data.md) |
 | Statistical methods (cascade + ablation) | [docs/reference/stat_methods.md](docs/reference/stat_methods.md) |
-| Schema-editor GUI blueprint | [docs/reference/schema_gui_blueprint.md](docs/reference/schema_gui_blueprint.md) |
+| Schema-editor GUI — original blueprint (design history) | [docs/reference/schema_gui_blueprint.md](docs/reference/schema_gui_blueprint.md) |
 | Literature review | [docs/reference/literature_review.md](docs/reference/literature_review.md) |
 
 ## Evaluation pipeline

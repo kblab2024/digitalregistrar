@@ -1,6 +1,6 @@
 # Digital Registrar — Research
 
-> Last updated: 2026-05-11 · Reflects: `d11d072`
+> Last updated: 2026-05-20 · Reflects: `a4552f6`
 
 Research stack for **The Digital Registrar** — a schema-driven, model-agnostic
 pipeline for cancer-registry extraction from pathology reports. One import
@@ -16,6 +16,9 @@ drr-next/
 │   ├── signatures/                                     # DSPy signature factory
 │   ├── schemas/                                        # 3-layer source-of-truth
 │   ├── annotation/                                     # Streamlit review UI
+│   ├── schema_gui/                                     # Streamlit 3-layer schema editor
+│   ├── inference_gui/                                  # Streamlit pipeline-inference GUI
+│   ├── staging/                                        # tnmhelper-backed AJCC TNM staging service
 │   ├── benchmarks/                                     # baselines + harness
 │   ├── ablations/                                      # ablation grid runners
 │   ├── models/, util/, paths.py                        # support modules
@@ -30,7 +33,8 @@ drr-next/
 ├── configs/, data/, results/                           # canonical layout
 ├── examples/dummy/                                     # runnable skeleton
 ├── obfuscator/                                         # standalone synthetic-data subpkg
-└── packaging/                                          # build & launch dispatchers
+├── packaging/                                          # build & launch dispatchers
+└── vendor/                                             # vendored wheels (tnmhelper)
 ```
 
 ## Where to read what
@@ -42,6 +46,9 @@ drr-next/
 | Why DSPy + gpt-oss:20b works; roadmap status | [architecture/dspy_deep_dive.md](architecture/dspy_deep_dive.md) |
 | DSPy compatibility across local models | [architecture/dspy_ollama_model_compatibility.md](architecture/dspy_ollama_model_compatibility.md) |
 | Annotation UI workflows | [workflows/annotation.md](workflows/annotation.md) |
+| Schema editor GUI (`registrar-schema-gui`) | [../src/digital_registrar_research/schema_gui/README.md](../src/digital_registrar_research/schema_gui/README.md) |
+| Pipeline inference GUI (`registrar-infer-gui`) | [../src/digital_registrar_research/inference_gui/README.md](../src/digital_registrar_research/inference_gui/README.md) |
+| AJCC TNM staging service (`tnmhelper` wrap) | [architecture/staging.md](architecture/staging.md) |
 | 2026-04 experiment protocol & status | [workflows/experiment_protocol.md](workflows/experiment_protocol.md) |
 | 12-branch working model | [workflows/branching_strategy.md](workflows/branching_strategy.md) |
 | Obfuscated workspace (PHI-free debug copy) | [workflows/obfuscation.md](workflows/obfuscation.md) |
@@ -50,7 +57,7 @@ drr-next/
 | Cascade evaluation methodology | [eval/index.md](eval/index.md) |
 | Datasets, layout, naming conventions | [reference/data.md](reference/data.md) |
 | Statistical methods (cascade + ablation) | [reference/stat_methods.md](reference/stat_methods.md) |
-| Schema-editor GUI blueprint (not yet built) | [reference/schema_gui_blueprint.md](reference/schema_gui_blueprint.md) |
+| Schema-editor GUI — original blueprint (design history) | [reference/schema_gui_blueprint.md](reference/schema_gui_blueprint.md) |
 | Literature review | [reference/literature_review.md](reference/literature_review.md) |
 
 ## Quick start

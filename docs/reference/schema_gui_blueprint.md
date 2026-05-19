@@ -2,10 +2,16 @@
 
 > Last updated: 2026-05-11 · Reflects: `d11d072`
 >
-> Status: blueprint only. Not implemented. Roadmap: TBD — implementation
-> begins when a clinician collaborator commits to hand-editing schemas
-> on a recurring basis. The Pydantic + `registrar-schemas` flow remains
-> the canonical authoring path until then.
+> **Status: implemented.** The GUI lives at
+> [../../src/digital_registrar_research/schema_gui/](../../src/digital_registrar_research/schema_gui/) —
+> see that module's [README](../../src/digital_registrar_research/schema_gui/README.md)
+> for current behavior, save flow, and known limitations. Launch with
+> `pip install -e .[schema-gui]` then `registrar-schema-gui`.
+>
+> This document is preserved as the original pre-implementation blueprint;
+> specifics below (UX flow, validation rules, hand-off plan) may differ
+> from the shipped GUI. The Pydantic + `registrar-schemas` flow remains the
+> low-level authoring path that the GUI sits on top of.
 
 ## Why
 
