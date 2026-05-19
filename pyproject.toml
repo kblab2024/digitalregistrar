@@ -26,6 +26,7 @@ dependencies = [
   "pydantic>=2",
   "numpy",
   "pandas",
+  "tnmhelper",
 ]
 
 [project.optional-dependencies]
@@ -60,6 +61,10 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "digital_registrar_research.schemas" = ["data/*.json", "aliases/*.toml", "_templates/*.tmpl"]
+"digital_registrar_research.staging" = ["data/*.zip"]
+
+[tool.uv.sources]
+tnmhelper = { path = "vendor/tnmhelper-0.1.0-py3-none-any.whl" }
 
 [tool.ruff]
 line-length = 120
