@@ -2,7 +2,7 @@
 #
 # TCGA and CMUH number their organs differently (historical artifact of the
 # data ingest pipelines). Loaded by:
-#   src/digital_registrar_research/benchmarks/organs.py
+#   src/digital_registrar/benchmarks/organs.py
 # and re-exposed for eval scripts via:
 #   scripts/eval/_common/stratify.py
 # Every site that converts organ_n <-> organ_name reads from here. Do not

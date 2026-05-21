@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from digital_registrar_research.benchmarks.eval.completeness import (
+from digital_registrar.eval.completeness import (
     aggregate_missingness,
     out_of_vocab_rate,
     refusal_calibration,

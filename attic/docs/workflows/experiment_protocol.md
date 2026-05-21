@@ -39,7 +39,7 @@ Total: ~40+ artifacts per case, fully tracked by folder convention.
 
 ### Q1 — How accurate is each method against gold?
 - **Output**: `results/evaluation/{dataset}/accuracy/by_method.csv`, `per_field.csv`, `per_organ.csv`, `per_fieldtype.csv`
-- **Unit of analysis**: case × field, scored by `score_case` in [`metrics.py`](../../src/digital_registrar_research/benchmarks/eval/metrics.py)
+- **Unit of analysis**: case × field, scored by `score_case` in [`metrics.py`](../../src/digital_registrar/benchmarks/eval/metrics.py)
 - **CI**: case-level bootstrap (n=2000), run-level bootstrap over the 10 LLM runs, and a total-CI combining both
 
 ### Q2 — How consistent are LLM runs?
@@ -74,7 +74,7 @@ These cannot change without bumping `experiment_id`:
 3. Prompt template hash (`prompts/gpt_oss_pathology_v1.jinja` — stored in
    `configs/experiments/multirun_{model}.yaml`).
 4. Schema scope — `FAIR_SCOPE ∪ {margins, regional_lymph_node, breast biomarkers}` from
-   [`scope.py`](../../src/digital_registrar_research/benchmarks/eval/scope.py).
+   [`scope.py`](../../src/digital_registrar/benchmarks/eval/scope.py).
 5. Acceptance thresholds: `parse_error_rate_max = 0.05`, `missing_case_rate_max = 0.01`.
 6. Annotator identity + mode assignment (fixed in `configs/annotators/annotators.yaml`).
 

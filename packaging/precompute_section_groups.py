@@ -21,8 +21,8 @@ def main() -> None:
         sys.exit(2)
     out_path = Path(sys.argv[1])
 
-    from digital_registrar_research.models.modellist import organmodels
-    from digital_registrar_research.schemas.pydantic import _builder
+    from digital_registrar.models.modellist import organmodels
+    from digital_registrar.schemas.pydantic import _builder
 
     module_globals = sys.modules[_builder.__name__].__dict__
 

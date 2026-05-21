@@ -83,7 +83,7 @@ The atomic `correctness_table.parquet` is what the side-by-side comparison consu
 
 ## Per-organ scope
 
-`non_nested` pulls the field list **per organ** from `digital_registrar_research.benchmarks.eval.scope.get_organ_scoreable_fields(organ)` plus `cancer_category` and `cancer_excision_report`. That gives ~25–30 fields per organ rather than the 12 in the legacy `FAIR_SCOPE`. Methods are scored against the right scope automatically — there's no need to pass an explicit `--scope`.
+`non_nested` pulls the field list **per organ** from `digital_registrar.eval.scope.get_organ_scoreable_fields(organ)` plus `cancer_category` and `cancer_excision_report`. That gives ~25–30 fields per organ rather than the 12 in the legacy `FAIR_SCOPE`. Methods are scored against the right scope automatically — there's no need to pass an explicit `--scope`.
 
 ## Filtering tricks
 

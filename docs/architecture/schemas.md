@@ -11,26 +11,26 @@ concordance is enforced in CI.
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ LAYER 1 — Pydantic shape                                                 │
-│   src/digital_registrar_research/schemas/pydantic/<organ>.py             │
+│   src/digital_registrar/schemas/pydantic/<organ>.py             │
 │   ✱ canonical enum values + types + groups                               │
 │   ✱ consumed at inference time by pipeline_factory.py                    │
 └──────────────────────────────────────────────────────────────────────────┘
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ LAYER 2 — Extraction metadata                                            │
-│   src/digital_registrar_research/schemas/extraction/<organ>.py           │
+│   src/digital_registrar/schemas/extraction/<organ>.py           │
 │   ✱ per-field `desc` + `group`, plus GROUP_INSTRUCTIONS                  │
 │   ✱ loaded once, cached in EXTRACTION_META                               │
 └──────────────────────────────────────────────────────────────────────────┘
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ LAYER 3 — Aliases (TOML, domain-expert-editable)                         │
-│   src/digital_registrar_research/schemas/aliases/<organ>.toml            │
+│   src/digital_registrar/schemas/aliases/<organ>.toml            │
 │   ✱ canonical enum value → list of surface-form strings                  │
 │   ✱ merged into value_hints by _build_organ_meta()                       │
 │   ✱ NO Python edit required to add a new surface form                    │
 └──────────────────────────────────────────────────────────────────────────┘
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ GENERATED — JSON schema                                                  │
-│   src/digital_registrar_research/schemas/data/<organ>.json               │
+│   src/digital_registrar/schemas/data/<organ>.json               │
 │   ✱ written by `registrar-schemas`; AUTO-GENERATED, DO NOT EDIT          │
 │   ✱ consumed by the annotation UI and the raw-JSON ablation runner       │
 │   ✱ NOT used by the main inference pipeline                              │
@@ -115,7 +115,7 @@ generation; the second feeds the factory. `field_desc()` reads
 Surgical margins and lymph nodes share boilerplate across all ten
 organs — only the *category vocabulary* (and, for LN, whether a side
 field exists) varies. The shared fields live in
-[`schemas/pydantic/_common_factories.py`](../../src/digital_registrar_research/schemas/pydantic/_common_factories.py).
+[`schemas/pydantic/_common_factories.py`](../../src/digital_registrar/schemas/pydantic/_common_factories.py).
 
 The schema author writes ONLY the organ-specific category Literal. The
 `@auto_expand_recurring` class decorator detects fields tagged with
@@ -155,7 +155,7 @@ group is a set of flat fields — `MarginField` doesn't apply there.
 ## Public API
 
 ```python
-from digital_registrar_research.schemas import (
+from digital_registrar.schemas import (
     list_organs,            # ['breast', 'cervix', 'colorectal', 'esophagus',
                             #  'liver', 'lung', 'pancreas', 'prostate', 'stomach', 'thyroid']
     load_pydantic_model,    # organ -> type[BaseModel]
@@ -171,7 +171,7 @@ print(case.model_dump_json(exclude_none=True))
 The 10 `<Organ>CancerCase` classes import directly too:
 
 ```python
-from digital_registrar_research.schemas.pydantic import (
+from digital_registrar.schemas.pydantic import (
     LungCancerCase, BreastCancerCase,
 )
 ```
@@ -179,7 +179,7 @@ from digital_registrar_research.schemas.pydantic import (
 Schema-authoring helpers are re-exported from the same module:
 
 ```python
-from digital_registrar_research.schemas.pydantic import (
+from digital_registrar.schemas.pydantic import (
     GroupedField, DEFAULT_GROUP_INSTRUCTION,
     iter_fields_by_group, group_order, group_instructions,
 )
@@ -233,7 +233,7 @@ pins this so the inconsistency can't propagate further.
    existing organ; if new nested types are needed, add them to
    `_common_types.py` first).
 2. Register the new class in
-   [`schemas/pydantic/__init__.py`](../../src/digital_registrar_research/schemas/pydantic/__init__.py)'s
+   [`schemas/pydantic/__init__.py`](../../src/digital_registrar/schemas/pydantic/__init__.py)'s
    `CASE_MODELS` dict.
 3. Run `registrar-schemas` to generate `schemas/data/<organ>.json`.
 4. Run `pytest tests/schemas/ tests/pipeline/test_v2_parity.py`.

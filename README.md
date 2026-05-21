@@ -1,139 +1,121 @@
-# Digital Registrar — Research
+# Digital Registrar
 
-> **Status: beta.** This is the next-generation Digital Registrar stack: the extraction pipeline, the annotation UI, the comparison benchmarks, and the ablation study. One `pyproject.toml`, one import root.
+> **A schema-first framework for multi-cancer, privacy-preserving pathology abstraction via local LLMs.**
 
-> ⚠️ **Beta — successor to `digitalregistrar`.** `drr-next` is intended to replace the slim, production-facing [`digitalregistrar`](../digitalregistrar) once the research apparatus stabilises and the v2 schema-driven pipeline is declared GA. Until then, `digitalregistrar` remains the recommended install for non-academic users; this repo is where the pipeline, schemas, and tooling are actively evolving. Expect breaking changes between minor versions.
+[![Preprint](https://img.shields.io/badge/medRxiv-10.1101%2F2025.10.21.25338475-blue)](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11+-brightgreen)](https://www.python.org/downloads/)
 
-When `drr-next` reaches GA, the slim `digitalregistrar` package will be re-cut from this tree (extras-stripped) rather than maintained as a parallel codebase.
+Digital Registrar transforms free-text surgical pathology reports into machine-readable registry records using a College of American Pathologists (CAP)-aligned clinical ontology, encoded as strictly-typed DSPy signatures. The system covers **10 major cancer types across 193 registry fields** — including complex variable-length structures like lymph-node groups and surgical margins — and is **model-agnostic**: any local LLM can serve as the inference engine. Designed for on-premise deployment on a single 48 GB GPU, it keeps sensitive clinical text inside the institution.
 
-## Install
+## Highlights
 
-```bash
-git clone <this-repo> drr-next
-cd drr-next
-pip install -e .[all]
-```
+- **Schema-first architecture** — the clinical ontology is the durable contribution; LLMs are interchangeable engines.
+- **CAP-aligned, registry-grade** — 10 cancer types, 193 fields, validated against gold-standard human annotations.
+- **Privacy-preserving by design** — local LLMs only, single 48 GB GPU, no cloud round-trip required.
+- **Validated generalizability** — **94.3 %** mean exact-match on 893 internal reports; **92.4 %** on the external TCGA cohort of 150 reports ([preprint](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8)).
 
-Extras are split by concern — install only what you need:
+## Quickstart (end users)
 
-| Extra | What you get |
-|---|---|
-| `[annotation]` | Streamlit annotation UI (`streamlit`) |
-| `[schema-gui]` | Streamlit schema editor + inference GUI (`streamlit`, `pandas`, `ruff`) — covers both `registrar-schema-gui` and `registrar-infer-gui` |
-| `[benchmarks]` | GPT-4 / ClinicalBERT / rule-based baselines (`torch`, `transformers`, `openai`, `scikit-learn`, …) |
-| `[ablations]` | Raw-JSON baseline (`jsonschema`) |
-| `[dev]`        | `pytest`, `ruff`, `mypy` |
-| `[all]`        | All of the above |
-
-The core install (no extras) gives you the DSPy extraction pipeline, the canonical Pydantic schemas, and the `tnmhelper`-backed staging service. `tnmhelper` ships as a vendored wheel under [vendor/](vendor/) and is resolved automatically via `[tool.uv.sources]`; see [vendor/README.md](vendor/README.md) for rebuild instructions.
-
-After cloning, install the local pre-commit hook so lint errors are caught before they hit CI:
+The toolkit ships as four pip-installable packages. Pick the apps you need:
 
 ```bash
-bash scripts/repo/install_git_hooks.sh
+# Inference GUI — paste a report, see the structured extraction
+pip install digital-registrar-gui
+registrar-infer-gui                 # opens http://localhost:8502
+
+# Annotation tool — review pipeline output against gold
+pip install digital-registrar-annotator
+registrar-annotate-workspace
+
+# Schema editor — curate the CAP-aligned per-organ schema
+pip install digital-registrar-schema-editor
+registrar-schema-gui
+
+# Core only (CLI + Python API) — for pipelines, scripts, and downstream tools
+pip install digital-registrar
+registrar-pipeline --input <folder>
 ```
 
-## Repo layout
+Each app depends on `digital-registrar` (the core), so installing any of the apps brings the pipeline along automatically.
+
+## Audience
+
+Built for **cancer registrars, pathology informatics teams, and clinical researchers** who need registry-grade structured extraction from narrative pathology reports without sending PHI off-premise.
+
+## Repository layout
 
 ```
 drr-next/
-├── src/digital_registrar_research/
-│   ├── pipeline.py, pipeline_factory.py, runner.py   # DSPy extraction (v1 + v2 factory + batch runner)
-│   ├── signatures/factory.py                         # dspy.Signature built from Pydantic case-models
-│   ├── schemas/                                      # 3-layer source-of-truth (see docs/architecture/schemas.md)
-│   │   ├── pydantic/   ← shape (Layer 1)
-│   │   ├── extraction/ ← per-field desc + group (Layer 2)
-│   │   ├── aliases/    ← canonical → surface forms TOML (Layer 3)
-│   │   └── data/*.json ← auto-generated; never edit
-│   ├── annotation/                                   # Streamlit doctor-review UI
-│   ├── schema_gui/                                   # Streamlit 3-layer schema editor (registrar-schema-gui)
-│   ├── inference_gui/                                # Streamlit pipeline-inference GUI (registrar-infer-gui)
-│   ├── staging/                                      # tnmhelper-backed AJCC TNM staging service
-│   ├── benchmarks/                                   # rule / ClinicalBERT / LLM baselines + eval harness
-│   ├── ablations/                                    # modular vs monolithic × DSPy vs raw-JSON grid
-│   ├── models/, util/, paths.py                      # support modules
-│   └── _legacy/                                      # archived modules, off active import path
-├── scripts/                                          # CLIs and run-time helpers
-│   ├── _helpers/   ← _config_loader.py, _run_id.py
-│   ├── _legacy/    ← archived scripts (eval_*, run_dspy_*, bootstrap_schema_v2.py, pathhelper*)
-│   ├── ablations/, annotation/, baselines/, data/
-│   ├── eval/       ← unified cascade eval CLI
-│   ├── pipeline/, repo/
-├── tests/                                            # mirrors src/
-│   ├── _legacy/    ← collected only on opt-in
-│   ├── ablations/, annotation/, baselines/, benchmarks/, eval/, pipeline/, schemas/
-│   └── fixtures/reference/                           # TCGA reference set used by --folder reference
-├── docs/                                             # see Documentation below
-├── configs/                                          # eval endpoints, organ codes, per-model decoding
-├── data/tcga_annotation_20251117/                    # tracked ground-truth annotations
-├── results/                                          # benchmark output skeleton (.parquet fixtures + .gitkeep)
-├── examples/dummy/                                   # runnable skeleton; data/results gitignored
-├── obfuscator/                                       # standalone synthetic-data subpkg (own pyproject.toml)
-├── packaging/                                        # build dispatcher + end-user run launchers
-└── vendor/                                           # vendored wheels (tnmhelper); see vendor/README.md
+├── src/digital_registrar/      ← THE core (pipeline, schemas, signatures, eval, paths)
+├── apps/
+│   ├── infer-gui/              ← digital-registrar-gui (Streamlit inference)
+│   ├── schema-editor/          ← digital-registrar-schema-editor
+│   └── annotator/              ← digital-registrar-annotator
+├── attic/                      ← research scaffolding (benchmarks, ablations, baselines, obfuscator)
+├── packaging/                  ← release pipeline (PyInstaller, Docker, hosted demo)
+├── workspace/                  ← gitignored runtime data (data, results, runs)
+├── examples/                   ← small read-only fixtures
+├── tests/                      ← core tests
+└── docs/                       ← architecture, API, eval, release
 ```
 
-## Console scripts
+## Dev install (cloners)
 
 ```bash
-registrar-pipeline   --input data/tcga_dataset_20251117/tcga1     # batch extraction
-registrar-annotate                                                # launches Streamlit UI (legacy layout)
-registrar-annotate-workspace                                      # launches against workspace/
-registrar-annotate-dummy                                          # launches against examples/dummy/
-registrar-benchmark                                               # aggregates baseline comparisons
-registrar-ablate                                                  # runs ablation grid
-registrar-schemas                                                 # regenerates JSON from Pydantic (use --check in CI)
-registrar-schema-gui                                              # Streamlit editor for the 3-layer per-organ schema (port 8501)
-registrar-infer-gui                                               # Streamlit GUI for interactive pipeline inference (port 8502)
+git clone https://github.com/kblab2024/digitalregistrar.git drr-next
+cd drr-next
+make install-dev      # installs core + 3 apps + dev tooling
+make test             # core + app test suites
+make lint             # ruff
 ```
+
+`make install-dev` installs the vendored `tnmhelper` wheel first, then `pip install -e .` (core), then `pip install -e apps/<each>` for the three downstream apps. Anyone with `pip` can clone and install in one command — no `uv` required.
+
+## Public Python API
+
+```python
+from digital_registrar import (
+    run_pipeline, setup_pipeline,                  # extraction
+    load_pydantic_model, load_json_schema,         # schemas
+    list_organs, CASE_MODELS, build_case_model,
+    build_extraction_signatures, ExtractionStep,   # signatures
+    field_metrics, nested_field_metrics,           # eval
+    pairwise_compare, completeness, score_case,
+    WORKSPACE_ROOT, workspace_root, results_root,  # paths
+)
+```
+
+See [docs/api.md](docs/api.md) for the full reference.
 
 ## Documentation
 
-| Topic | Doc |
+| Topic | Where |
 |---|---|
-| Repo overview & quick links | [docs/index.md](docs/index.md) |
-| Extraction pipeline (v1 legacy + v2 factory) | [docs/architecture/pipeline.md](docs/architecture/pipeline.md) |
-| Schema architecture (3-layer source-of-truth) | [docs/architecture/schemas.md](docs/architecture/schemas.md) |
-| DSPy deep dive — strict-schema protocol, roadmap | [docs/architecture/dspy_deep_dive.md](docs/architecture/dspy_deep_dive.md) |
-| DSPy ↔ Ollama model compatibility (frozen audit) | [docs/architecture/dspy_ollama_model_compatibility.md](docs/architecture/dspy_ollama_model_compatibility.md) |
-| Annotation UI | [docs/workflows/annotation.md](docs/workflows/annotation.md) |
-| Schema editor GUI (`registrar-schema-gui`) | [src/digital_registrar_research/schema_gui/README.md](src/digital_registrar_research/schema_gui/README.md) |
-| Pipeline inference GUI (`registrar-infer-gui`) | [src/digital_registrar_research/inference_gui/README.md](src/digital_registrar_research/inference_gui/README.md) |
-| AJCC TNM staging service (`tnmhelper` wrap) | [docs/architecture/staging.md](docs/architecture/staging.md) |
-| 2026-04 experiment protocol | [docs/workflows/experiment_protocol.md](docs/workflows/experiment_protocol.md) |
-| Branching strategy (12-branch model) | [docs/workflows/branching_strategy.md](docs/workflows/branching_strategy.md) |
-| Obfuscated workspace (PHI-free debug copy) | [docs/workflows/obfuscation.md](docs/workflows/obfuscation.md) |
-| Benchmarks — quickstart + 6-chapter tutorial | [docs/benchmarks/00_overview.md](docs/benchmarks/00_overview.md) |
-| Ablation suite — full reference + rationale | [docs/ablations/index.md](docs/ablations/index.md) |
-| Cascade evaluation pipeline | [docs/eval/index.md](docs/eval/index.md) |
-| Datasets, layout, naming conventions | [docs/reference/data.md](docs/reference/data.md) |
-| Statistical methods (cascade + ablation) | [docs/reference/stat_methods.md](docs/reference/stat_methods.md) |
-| Schema-editor GUI — original blueprint (design history) | [docs/reference/schema_gui_blueprint.md](docs/reference/schema_gui_blueprint.md) |
-| Literature review | [docs/reference/literature_review.md](docs/reference/literature_review.md) |
+| Pipeline architecture (v1 legacy, v2 factory) | [docs/architecture/pipeline.md](docs/architecture/pipeline.md) |
+| Three-layer schema architecture | [docs/architecture/schemas.md](docs/architecture/schemas.md) |
+| AJCC TNM staging via `tnmhelper` | [docs/architecture/staging.md](docs/architecture/staging.md) |
+| DSPy deep dive | [docs/architecture/dspy_deep_dive.md](docs/architecture/dspy_deep_dive.md) |
+| Annotation workflow | [docs/workflows/annotation.md](docs/workflows/annotation.md) |
+| Eval (prediction vs annotation) | [docs/eval/index.md](docs/eval/index.md) |
+| Public Python API | [docs/api.md](docs/api.md) |
+| Release pipeline (PyPI / hosted demo / bundles / Docker) | [docs/release.md](docs/release.md) |
+| Research scaffolding (benchmarks, ablations, obfuscator) | [attic/README.md](attic/README.md) |
 
-## Evaluation pipeline
+## Releasing
 
-The `scripts/eval/` tree exposes a unified subcommand CLI:
+The project supports three distribution paths for layman users (see [docs/release.md](docs/release.md)):
 
-```bash
-python -m scripts.eval.cli cascade       --root examples/dummy --dataset cmuh --model gpt_oss_20b --annotator gold --out <out>
-python -m scripts.eval.cli iaa           --root examples/dummy --dataset cmuh --annotators gold nhc_with_preann nhc_without_preann kpc_with_preann kpc_without_preann --out <out>
-python -m scripts.eval.cli completeness  --root examples/dummy --dataset cmuh --methods llm:gpt_oss_20b clinicalbert:v2_finetuned rule_based: --annotator gold --out <out>
-python -m scripts.eval.cli diagnostics   --cascade-out <...> --iaa-out <...> --out <out>
-python -m scripts.eval.cli cross_dataset --left <cmuh_out> --right <tcga_out> --out <out>
-python -m scripts.eval.cli headline      --cascade-out <...> --iaa-out <...> --out <out>
-```
-
-All eval subcommands also accept `--obfustrated` as an alternative to `--root` — points reads/writes at the schema-conformant synthetic copy `workspace_obfustrated/` produced by `python scripts/data/obfuscate_workspace.py`. Useful for debugging eval logic without touching PHI; see [docs/workflows/obfuscation.md](docs/workflows/obfuscation.md). Existing `--root examples/dummy` / `--root workspace` invocations are unchanged.
-
-Every subcommand also accepts `--device {auto,cpu,cuda,mps}` (default `cpu`) to route the bootstrap-CI / McNemar / Cohen's-κ / Fleiss-κ machinery onto a GPU. Use `--device mps` on Apple Silicon, `--device cuda` on a CUDA workstation, or `--device auto` for cross-machine scripts. The original CPU implementation in `ci.py` is preserved as the safety net (default behavior). See [docs/eval/gpu_acceleration.md](docs/eval/gpu_acceleration.md).
-
-See [docs/eval/recipes.md](docs/eval/recipes.md) for the full recipe book and [docs/eval/methods_citations.md](docs/eval/methods_citations.md) for paper-ready statistical-method citations.
+- **PyPI** — `pip install digital-registrar-gui` for Python users.
+- **Hosted Streamlit demo** — public URL for paper reviewers / casual visitors. Safety checklist in [docs/release.md](docs/release.md).
+- **Native bundles + Docker** — `.dmg` / `.exe` / Docker images for non-technical end users, built via `make bundle` and `make docker-build`.
 
 ## Citation
 
-See [`CITATION.cff`](CITATION.cff).
+If you use the Digital Registrar in your research, please cite:
+
+> Chow N-H, Chang H, Chen H-K, et al. *Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs.* medRxiv 2026. doi: [10.1101/2025.10.21.25338475](https://doi.org/10.1101/2025.10.21.25338475)
+
+(Preprint; the citation will be updated to the published-journal version when available. Machine-readable metadata in [CITATION.cff](CITATION.cff).)
 
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT — see [LICENSE](LICENSE).

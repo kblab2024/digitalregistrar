@@ -1,5 +1,5 @@
 # Cell → axis mapping used by the ablation stats module
-# (src/digital_registrar_research/ablations/eval/stats.py).
+# (src/digital_registrar/ablations/eval/stats.py).
 #
 # Multiple-comparisons families are formed per (axis, endpoint_tier).
 # Within a primary-tier family, p-values get Holm-Bonferroni correction

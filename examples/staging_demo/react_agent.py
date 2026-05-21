@@ -1,7 +1,7 @@
 """Demo: DSPy ReAct agent driving STAGING_TOOLS.
 
 Builds a single-call ``dspy.ReAct`` module wired with the two tools
-exposed by ``digital_registrar_research.staging``:
+exposed by ``digital_registrar.staging``:
 
   - ``cancer_observable_schema`` — look up what observations the engine
     expects for an (organ, edition) pair.
@@ -20,8 +20,8 @@ from __future__ import annotations
 
 import dspy
 
-from digital_registrar_research.models.common import autoconf_dspy
-from digital_registrar_research.staging import STAGING_TOOLS
+from digital_registrar.models.common import autoconf_dspy
+from digital_registrar.staging import STAGING_TOOLS
 
 MODEL = "gpt"  # ollama_chat/gpt-oss:20b — see models/common.py for the catalogue
 

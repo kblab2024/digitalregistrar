@@ -111,7 +111,7 @@ OpenAI counterpart of the Ollama runner — drives the same loose-JSON `pipeline
 OPENAI_API_KEY=sk-...
 ```
 
-The loader at [`util.secrets.load_openai_key`](../../src/digital_registrar_research/util/secrets.py) reads from this path (or from `$OPENAI_API_KEY` if already exported). Both locations are outside the repository tree, so the key cannot be committed or shipped in a tarball.
+The loader at [`util.secrets.load_openai_key`](../../src/digital_registrar/util/secrets.py) reads from this path (or from `$OPENAI_API_KEY` if already exported). Both locations are outside the repository tree, so the key cannot be committed or shipped in a tarball.
 
 ```bash
 # Single run (one seed, full TCGA)

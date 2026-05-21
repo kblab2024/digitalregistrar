@@ -25,7 +25,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))
 
 import run_inference_smoke as legacy  # noqa: E402
 
-from digital_registrar_research.pipeline_factory import (  # noqa: E402
+from digital_registrar.pipeline_factory import (  # noqa: E402
     run_cancer_pipeline_v2,
     setup_pipeline_v2,
 )

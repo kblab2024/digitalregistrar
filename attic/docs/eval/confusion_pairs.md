@@ -12,7 +12,7 @@ But if the model outputs "T4" when gold says "T1", that's a real, large error.
 
 ## Curated semantic-neighbor list
 
-Defined in [src/digital_registrar_research/benchmarks/eval/semantic_neighbors.py](../../src/digital_registrar_research/benchmarks/eval/semantic_neighbors.py). Each pair has:
+Defined in [src/digital_registrar/benchmarks/eval/semantic_neighbors.py](../../src/digital_registrar/benchmarks/eval/semantic_neighbors.py). Each pair has:
 
 - `field` — the field where the confusion is plausible.
 - `a`, `b` — the two interchangeable values.

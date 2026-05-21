@@ -1,88 +1,55 @@
-# Digital Registrar — Research
+# Digital Registrar — documentation
 
-> Last updated: 2026-05-20 · Reflects: `a4552f6`
+> Software companion to: Chow N-H, Chang H, Chen H-K, et al. *Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs.* medRxiv 2026. [doi: 10.1101/2025.10.21.25338475](https://doi.org/10.1101/2025.10.21.25338475)
 
-Research stack for **The Digital Registrar** — a schema-driven, model-agnostic
-pipeline for cancer-registry extraction from pathology reports. One import
-root, one `pyproject.toml`, four research concerns around the slim production
-extractor (vendored under `src/digital_registrar_research/`).
+The toolkit ships as **four pip-installable packages** plus an `attic/` of research scaffolding kept for reproducibility but not maintained.
 
 ## Repo layout
 
 ```
 drr-next/
-├── src/digital_registrar_research/
-│   ├── pipeline.py + pipeline_factory.py + runner.py   # extraction (v1 + v2)
-│   ├── signatures/                                     # DSPy signature factory
-│   ├── schemas/                                        # 3-layer source-of-truth
-│   ├── annotation/                                     # Streamlit review UI
-│   ├── schema_gui/                                     # Streamlit 3-layer schema editor
-│   ├── inference_gui/                                  # Streamlit pipeline-inference GUI
-│   ├── staging/                                        # tnmhelper-backed AJCC TNM staging service
-│   ├── benchmarks/                                     # baselines + harness
-│   ├── ablations/                                      # ablation grid runners
-│   ├── models/, util/, paths.py                        # support modules
-│   └── _legacy/                                        # archived, off import path
-├── scripts/                                            # CLIs + run-time helpers
-│   ├── _helpers/, _legacy/
-│   ├── ablations/, annotation/, baselines/, data/
-│   ├── eval/    ── unified cascade eval CLI
-│   ├── pipeline/, repo/
-├── tests/                                              # mirrors src/ tree
-├── docs/                                               # this directory
-├── configs/, data/, results/                           # canonical layout
-├── examples/dummy/                                     # runnable skeleton
-├── obfuscator/                                         # standalone synthetic-data subpkg
-├── packaging/                                          # build & launch dispatchers
-└── vendor/                                             # vendored wheels (tnmhelper)
+├── src/digital_registrar/      ← THE core (pipeline, schemas, signatures, eval, paths)
+├── apps/
+│   ├── infer-gui/              ← digital-registrar-gui
+│   ├── schema-editor/          ← digital-registrar-schema-editor
+│   └── annotator/              ← digital-registrar-annotator
+├── attic/                      ← class III/IV: benchmarks, ablations, baselines, obfuscator
+├── packaging/                  ← PyPI / hosted demo / PyInstaller / Docker
+├── workspace/                  ← gitignored runtime data
+├── examples/                   ← small read-only fixtures
+├── tests/                      ← core tests
+├── vendor/                     ← tnmhelper wheel
+└── docs/                       ← this directory
 ```
 
 ## Where to read what
 
-| Concern | Doc |
+| You want to … | Read |
 |---|---|
-| Extraction engines (v1 legacy + v2 factory + runner) | [architecture/pipeline.md](architecture/pipeline.md) |
-| Canonical schema architecture (pydantic / extraction / aliases) | [architecture/schemas.md](architecture/schemas.md) |
-| Why DSPy + gpt-oss:20b works; roadmap status | [architecture/dspy_deep_dive.md](architecture/dspy_deep_dive.md) |
-| DSPy compatibility across local models | [architecture/dspy_ollama_model_compatibility.md](architecture/dspy_ollama_model_compatibility.md) |
-| Annotation UI workflows | [workflows/annotation.md](workflows/annotation.md) |
-| Schema editor GUI (`registrar-schema-gui`) | [../src/digital_registrar_research/schema_gui/README.md](../src/digital_registrar_research/schema_gui/README.md) |
-| Pipeline inference GUI (`registrar-infer-gui`) | [../src/digital_registrar_research/inference_gui/README.md](../src/digital_registrar_research/inference_gui/README.md) |
-| AJCC TNM staging service (`tnmhelper` wrap) | [architecture/staging.md](architecture/staging.md) |
-| 2026-04 experiment protocol & status | [workflows/experiment_protocol.md](workflows/experiment_protocol.md) |
-| 12-branch working model | [workflows/branching_strategy.md](workflows/branching_strategy.md) |
-| Obfuscated workspace (PHI-free debug copy) | [workflows/obfuscation.md](workflows/obfuscation.md) |
-| Comparison benchmarks (LLM / ClinicalBERT / rules) | [benchmarks/00_overview.md](benchmarks/00_overview.md) |
-| Ablation suite & design rationale | [ablations/index.md](ablations/index.md) |
-| Cascade evaluation methodology | [eval/index.md](eval/index.md) |
-| Datasets, layout, naming conventions | [reference/data.md](reference/data.md) |
-| Statistical methods (cascade + ablation) | [reference/stat_methods.md](reference/stat_methods.md) |
-| Schema-editor GUI — original blueprint (design history) | [reference/schema_gui_blueprint.md](reference/schema_gui_blueprint.md) |
-| Literature review | [reference/literature_review.md](reference/literature_review.md) |
+| Install and try the inference GUI | [../README.md](../README.md) (Quickstart) |
+| Understand the public Python API | [api.md](api.md) |
+| Understand the v1 / v2 pipeline | [architecture/pipeline.md](architecture/pipeline.md) |
+| Understand the 3-layer schema | [architecture/schemas.md](architecture/schemas.md) |
+| Understand AJCC TNM staging via `tnmhelper` | [architecture/staging.md](architecture/staging.md) |
+| Run regular eval (prediction vs annotation) | [eval/index.md](eval/index.md) |
+| Use the annotation tool | [workflows/annotation.md](workflows/annotation.md) |
+| Configure the schema editor | [reference/schema_gui_blueprint.md](reference/schema_gui_blueprint.md) |
+| Release to PyPI / hosted demo / Docker / bundle | [release.md](release.md) |
+| Find paper-time scaffolding (IAA, ablations, baselines) | [../attic/README.md](../attic/README.md) and [../attic/docs/](../attic/docs/) |
 
-## Quick start
+## Class hierarchy
 
-```bash
-git clone <this-repo> drr-next
-cd drr-next
-pip install -e .[all]
-pytest -q                                  # 458 tests collected
-registrar-schemas --check                  # Pydantic ↔ JSON parity check
-registrar-annotate                         # launch the annotation UI
-```
+The codebase is organised in four classes of importance, mirrored in the directory layout:
 
-## Why this exists
+- **Class I — main**: pipeline (CLI + Python API), inference GUI, supporting infrastructure (schemas, signatures, staging, eval).
+- **Class II — nice-to-have**: schema editor, annotation tool.
+- **Class III — keep but tucked away**: benchmarks (in `attic/` but installable separately).
+- **Class IV — near-retirement**: ablations, baselines, obfuscator, paper-specific eval scripts, legacy modules (all in `attic/`).
 
-The slim [`digitalregistrar`](https://github.com/kblab2024/digitalregistrar)
-package is the pip-installable extractor most non-academic users want. This
-research package **vendors** that pipeline at `src/digital_registrar_research/`
-and adds the surrounding research apparatus — schemas as a canonical
-source-of-truth, an annotation UI, comparison baselines, an ablation grid,
-and a cascade-style evaluation pipeline — under one import root.
+Class I + II are the four published PyPI packages. Class III + IV live under `attic/` as a single `drr-attic` package, installed only when you need to reproduce paper-time experiments.
 
-Concretely the consolidation:
+## Quick links
 
-1. One `pyproject.toml` with extras (`[annotation]`, `[benchmarks]`, `[ablations]`, `[dev]`, `[all]`) — no more sibling-repo `sys.path.insert` glue.
-2. Pydantic case-models are the single source of truth; JSON schemas regenerate via `registrar-schemas`; concordance enforced in CI.
-3. TCGA gold annotations are co-located (`data/tcga_annotation_20251117/`) so benchmarks and ablations run out of the box.
-4. Archived material lives at `src/digital_registrar_research/_legacy/` and `scripts/_legacy/`, off the active import path and out of CI.
+- Paper: [medRxiv preprint](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8)
+- Repo: [github.com/kblab2024/digitalregistrar](https://github.com/kblab2024/digitalregistrar)
+- Citation: [../CITATION.cff](../CITATION.cff)

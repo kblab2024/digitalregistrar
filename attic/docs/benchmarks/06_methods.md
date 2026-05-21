@@ -4,7 +4,7 @@ Detailed description, scope, and known limitations of each baseline.
 
 ## Rule-based
 
-**Module:** `digital_registrar_research.benchmarks.baselines.rules`
+**Module:** `drr_attic.benchmarks.baselines.rules`
 **Runner:** `scripts/baselines/run_rule.py`
 **Code size:** ~900 LOC, pure Python (no torch / transformers / DSPy).
 
@@ -36,7 +36,7 @@ A **deterministic, per-organ regex + lexicon extractor**. For each report it:
 
 ## ClinicalBERT
 
-**Modules:** `digital_registrar_research.benchmarks.baselines.clinicalbert_cls` + `clinicalbert_qa`
+**Modules:** `drr_attic.benchmarks.baselines.clinicalbert_cls` + `clinicalbert_qa`
 **Runners:** `scripts/baselines/train_bert.py`, `scripts/baselines/run_bert.py`
 **Foundation model:** `emilyalsentzer/Bio_ClinicalBERT` (110M params).
 

@@ -14,22 +14,22 @@ shape.
 
 | Engine | Module | Source-of-truth | Selection |
 |---|---|---|---|
-| `legacy`  | [`pipeline.py`](../../src/digital_registrar_research/pipeline.py) | Hand-written `dspy.Signature` per subsection in [`models/<organ>.py`](../../src/digital_registrar_research/models/) | Default |
-| `factory` | [`pipeline_factory.py`](../../src/digital_registrar_research/pipeline_factory.py) | Pydantic case-models in [`schemas/pydantic/<organ>.py`](../../src/digital_registrar_research/schemas/pydantic/) compiled via the [signature factory](../../src/digital_registrar_research/signatures/factory.py) | `--engine factory` |
+| `legacy`  | [`pipeline.py`](../../src/digital_registrar/pipeline.py) | Hand-written `dspy.Signature` per subsection in [`models/<organ>.py`](../../src/digital_registrar/models/) | Default |
+| `factory` | [`pipeline_factory.py`](../../src/digital_registrar/pipeline_factory.py) | Pydantic case-models in [`schemas/pydantic/<organ>.py`](../../src/digital_registrar/schemas/pydantic/) compiled via the [signature factory](../../src/digital_registrar/signatures/factory.py) | `--engine factory` |
 
 The factory engine adds a new cancer type from **one** Pydantic file — the
 router's `cancer_category` Literal is auto-derived from `CASE_MODELS`. No
 manual edits to the router.
 
 Two earlier variants (`pipeline_dspy_strict.py`, `pipeline_structured.py`)
-are preserved at [`src/digital_registrar_research/_legacy/`](../../src/digital_registrar_research/_legacy/),
+are preserved at [`src/digital_registrar/_legacy/`](../../src/digital_registrar/_legacy/),
 off the active import path. They are not reachable through `runner.py` or
 any console script. See `_legacy/README.md` for the rationale.
 
 ## Layout
 
 ```
-src/digital_registrar_research/
+src/digital_registrar/
 ├── pipeline.py                 # legacy: CancerPipeline (dspy.Module)
 ├── pipeline_factory.py         # v2: CancerPipelineV2 (schema-driven)
 ├── runner.py                   # batch entry point — `registrar-pipeline` CLI
@@ -121,7 +121,7 @@ must run first.
 Programmatically (factory engine):
 
 ```python
-from digital_registrar_research.pipeline_factory import (
+from digital_registrar.pipeline_factory import (
     setup_pipeline_v2, run_cancer_pipeline_v2,
 )
 setup_pipeline_v2("gpt")
@@ -151,7 +151,7 @@ model / decomposition):
 registrar-infer-gui              # Streamlit GUI, defaults to port 8502
 ```
 
-See [../../src/digital_registrar_research/inference_gui/README.md](../../src/digital_registrar_research/inference_gui/README.md)
+See [../../src/digital_registrar/inference_gui/README.md](../../src/digital_registrar/inference_gui/README.md)
 for sidebar semantics and output paths. The GUI uses the same
 `run_cancer_pipeline_v2` / `run_cancer_pipeline` entry points as the CLI,
 so its `runs/run_<timestamp>/<stem>_output.json` outputs are interchangeable
@@ -164,7 +164,7 @@ historical legacy wrappers are at `scripts/_legacy/`.
 
 ## Backbones supported
 
-[`models.common.model_list`](../../src/digital_registrar_research/models/common.py)
+[`models.common.model_list`](../../src/digital_registrar/models/common.py)
 ships with Ollama and OpenAI-compatible entries:
 
 ```
@@ -196,7 +196,7 @@ LiteLLM bridge automatically.
 - **Replace the LM backbone** — extend `model_list` in
   `models/common.py`. Both engines share this.
 - **Build a custom decomposition strategy** — extend
-  [`_choose_decomposition`](../../src/digital_registrar_research/signatures/factory.py)
+  [`_choose_decomposition`](../../src/digital_registrar/signatures/factory.py)
   in the factory.
 
 ## Where to make changes (legacy engine)
@@ -207,7 +207,7 @@ engine picks up new types via `CASE_MODELS` once promoted there.
 
 ## Available: staging service
 
-`digital_registrar_research.staging` exposes the vendored `tnmhelper`
+`digital_registrar.staging` exposes the vendored `tnmhelper`
 engine through two surfaces — plain callables (`stage_from_observations`
 et al.) and a `dspy.ReAct`-compatible tool list (`STAGING_TOOLS`). It is
 **not invoked by the pipeline today**; the module ships as a building

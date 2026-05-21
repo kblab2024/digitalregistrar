@@ -24,18 +24,18 @@ from enum import Enum
 import pytest
 from pydantic import BaseModel
 
-from digital_registrar_research.schemas import (
+from digital_registrar.schemas import (
     CASE_MODELS,
     list_organs,
     load_json_schema,
     load_pydantic_model,
 )
-from digital_registrar_research.schemas.extraction import EXTRACTION_META
-from digital_registrar_research.schemas.extraction._resolve import (
+from digital_registrar.schemas.extraction import EXTRACTION_META
+from digital_registrar.schemas.extraction._resolve import (
     field_group as meta_field_group,
     group_order as meta_group_order,
 )
-from digital_registrar_research.schemas.generate import _render_model
+from digital_registrar.schemas.generate import _render_model
 
 ORGANS = list_organs()
 
@@ -46,7 +46,7 @@ def test_organ_registry_matches_modellist():
     Soft-fails when ``organmodels`` has been retired (post-v2-cleanup PR).
     """
     try:
-        from digital_registrar_research.models.modellist import organmodels
+        from digital_registrar.models.modellist import organmodels
     except ImportError:  # legacy retired — that's fine.
         pytest.skip("organmodels retired; v2 registry is canonical.")
         return
@@ -63,7 +63,7 @@ def test_pydantic_to_json_parity(organ):
     on_disk = load_json_schema(organ)
     fresh = json.loads(_render_model(organ, load_pydantic_model(organ)))
     assert on_disk == fresh, (
-        f"Drift in {organ}.json. Run `python -m digital_registrar_research.schemas.generate`."
+        f"Drift in {organ}.json. Run `python -m digital_registrar.schemas.generate`."
     )
 
 
@@ -138,7 +138,7 @@ def test_group_order_is_deterministic(organ):
 
 def test_router_literal_matches_registry():
     """The factory-built router's ``cancer_category`` Literal == sorted(CASE_MODELS) + ['others']."""
-    from digital_registrar_research.signatures import build_router_signature
+    from digital_registrar.signatures import build_router_signature
 
     sig = build_router_signature()
     ann = sig.model_fields["cancer_category"].annotation
@@ -153,7 +153,7 @@ def test_router_literal_matches_registry():
 
 def test_jsonize_literal_excludes_others():
     """Legacy asymmetry preserved: ``ReportJsonize`` Literal MUST NOT include 'others'."""
-    from digital_registrar_research.signatures import build_jsonize_signature
+    from digital_registrar.signatures import build_jsonize_signature
 
     sig = build_jsonize_signature()
     ann = sig.model_fields["cancer_category"].annotation

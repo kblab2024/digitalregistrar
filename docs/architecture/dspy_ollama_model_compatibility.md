@@ -55,7 +55,7 @@ choose from.
 
 ## 1. What we actually found in your code
 
-Reference file: [`models/common.py`](d:\localcode\digital-registrar-research-inference\digital-registrar-research\src\digital_registrar_research\models\common.py#L46-L55)
+Reference file: [`models/common.py`](d:\localcode\digital-registrar-research-inference\digital-registrar-research\src\digital_registrar\models\common.py#L46-L55)
 
 ```python
 MODEL_PROFILES = {

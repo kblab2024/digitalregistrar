@@ -2,7 +2,7 @@
 
 > Last updated: 2026-05-20 · Reflects: `a4552f6`
 
-`digital_registrar_research.staging` wraps the vendored
+`digital_registrar.staging` wraps the vendored
 [`tnmhelper`](../../vendor/) wheel to make deterministic AJCC TNM
 staging available inside this repo. Two surfaces are exposed: a set of
 plain callables for direct invocation, and a list of `dspy.Tool`
@@ -42,17 +42,17 @@ tnmhelper (vendored wheel, no DSPy awareness)
      │  organs() · editions_for() · observable_schema() ·
      │  derive_tnm() · stage_from_observations() · stage()
      ▼
-digital_registrar_research.staging.adapter
+digital_registrar.staging.adapter
      │  - configures tnmhelper to read the packaged zip on first call
      │  - re-exports the Layer-3 API verbatim
      │  - adds set_data_source_override() / active_data_source()
      │    introspection hooks for tests
      ▼
-digital_registrar_research.staging.tools
+digital_registrar.staging.tools
      │  - dspy.Tool wrappers: stage_from_observations_tool,
      │    observable_schema_tool
      ▼
-digital_registrar_research.staging.STAGING_TOOLS   (list)
+digital_registrar.staging.STAGING_TOOLS   (list)
 ```
 
 `staging.adapter` is the *only* place that calls
@@ -67,7 +67,7 @@ should be wired into a pipeline — that is a downstream decision.
 ### Plain-callable surface — direct invocation, no LM in the loop
 
 ```python
-from digital_registrar_research.staging import (
+from digital_registrar.staging import (
     observable_schema, stage_from_observations,
 )
 
@@ -90,7 +90,7 @@ under a new AJCC edition.
 
 ```python
 import dspy
-from digital_registrar_research.staging import STAGING_TOOLS
+from digital_registrar.staging import STAGING_TOOLS
 
 class StageFromReport(dspy.Signature):
     """Derive the AJCC TNM stage from a pathology report.
@@ -117,9 +117,9 @@ an agent** — the surface exists; the application does not.
 | Concern | Where |
 |---|---|
 | Wheel | [`vendor/tnmhelper-0.1.0-py3-none-any.whl`](../../vendor/tnmhelper-0.1.0-py3-none-any.whl) |
-| Data bundle (ships in this package) | [`src/digital_registrar_research/staging/data/tnmhelper_data.zip`](../../src/digital_registrar_research/staging/data/tnmhelper_data.zip) |
+| Data bundle (ships in this package) | [`src/digital_registrar/staging/data/tnmhelper_data.zip`](../../src/digital_registrar/staging/data/tnmhelper_data.zip) |
 | Package-data declaration | `[tool.setuptools.package-data]` in [pyproject.toml](../../pyproject.toml) (line 64) |
-| Data-source pointer | `tnmhelper.set_data_source(...)`, called once by `_ensure_configured` in [adapter.py](../../src/digital_registrar_research/staging/adapter.py) |
+| Data-source pointer | `tnmhelper.set_data_source(...)`, called once by `_ensure_configured` in [adapter.py](../../src/digital_registrar/staging/adapter.py) |
 | Test override | `set_data_source_override(path)` accepts a zip or directory |
 | Introspection | `active_data_source()` returns the resolved path, or `None` until first use |
 
@@ -132,7 +132,7 @@ Coverage tracks `tnmhelper` upstream. Inspect what is currently
 available with:
 
 ```python
-from digital_registrar_research.staging import organs, editions_for
+from digital_registrar.staging import organs, editions_for
 
 organs()
 for organ in organs():
@@ -150,7 +150,7 @@ Hard-coded lists in docs drift fast; defer to the runtime API.
   owns the schema. Re-export is a no-op (`staging.adapter` returns
   whatever `tnmhelper` returns).
 - **Change the LM-facing tool description**: edit
-  [tools.py](../../src/digital_registrar_research/staging/tools.py).
+  [tools.py](../../src/digital_registrar/staging/tools.py).
   The string in `dspy.Tool(desc=...)` is what the ReAct planner reads;
   the function signature it wraps is unchanged.
 

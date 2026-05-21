@@ -1,0 +1,41 @@
+[project]
+name = "digital-registrar-schema-editor"
+version = "0.2.0"
+description = "Streamlit editor for the Digital Registrar three-layer per-organ schema."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+  { name = "Han Chang" },
+  { name = "Kai-Po Chang" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+  "digital-registrar",
+  "streamlit>=1.35",
+  "pandas",
+  "ruff",
+]
+
+[project.scripts]
+registrar-schema-gui = "digital_registrar_schema_editor.app:main_cli"
+
+[project.urls]
+Homepage = "https://github.com/kblab2024/digitalregistrar"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.setuptools.package-data]
+"digital_registrar_schema_editor" = ["templates/*"]

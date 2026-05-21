@@ -69,7 +69,7 @@ ckpts/
 /packaging/dist/
 
 # Annotation tool — per-deployment annotator list (rebuilt from DEFAULTS)
-src/digital_registrar_research/annotation/annotators.json
+apps/annotator/src/digital_registrar_annotator/annotators.json
 
 # Local configs — machine-specific, never pushed
 configs/local/*

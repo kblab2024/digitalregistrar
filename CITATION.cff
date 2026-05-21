@@ -1,29 +1,82 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
-title: "Digital Registrar — Research"
-abstract: >-
-  Research stack for The Digital Registrar — a model-agnostic, resource-efficient
-  AI framework for comprehensive cancer surveillance from pathology reports.
-  Bundles the DSPy extraction pipeline, a doctor-facing annotation UI, a
-  reproducible benchmark against GPT-4 / ClinicalBERT / rule-based extraction,
-  and an ablation study of modular vs monolithic signatures.
-authors:
-  - family-names: "Chen"
-    given-names: "Hong-Kai (Walther)"
-    affiliation: "Med NLP Lab, China Medical University"
-  - family-names: "Tzeng"
-    given-names: "Po-Yen"
-    affiliation: "Med NLP Lab, China Medical University"
-  - family-names: "Chang"
-    given-names: "Kai-Po"
-    affiliation: "Med NLP Lab, China Medical University"
-version: "0.1.0"
-date-released: "2026-04-22"
+message: "If you use this software, please cite the accompanying preprint."
+title: "Digital Registrar"
+abstract: >
+  A schema-first framework for multi-cancer, privacy-preserving pathology
+  abstraction via local LLMs. Implements a CAP-aligned clinical ontology as
+  strictly-typed DSPy signatures spanning 10 cancer types and 193 registry
+  fields.
+type: software
+version: "0.2.0"
+date-released: "2026-05-22"
 license: MIT
-repository-code: "https://github.com/kblab2024/digital-registrar-research"
+repository-code: "https://github.com/kblab2024/digitalregistrar"
 keywords:
   - cancer registry
   - pathology
-  - NLP
+  - CAP-aligned
+  - schema-first
+  - privacy-preserving
+  - local LLM
   - DSPy
-  - clinical
+  - clinical NLP
+authors:
+  - family-names: Chow
+    given-names: Nan-Haw
+    affiliation: "Center for Precision Medicine, China Medical University Hospital"
+  - family-names: Chang
+    given-names: Han
+    affiliation: "School of Medicine, China Medical University"
+  - family-names: Chen
+    given-names: Hung-Kai
+    affiliation: "Department of Pathology, China Medical University Hospital"
+  - family-names: Lin
+    given-names: Chen-Yuan
+    affiliation: "School of Medicine, China Medical University"
+  - family-names: Liu
+    given-names: Ying-Lung
+    affiliation: "Signal1"
+  - family-names: Tseng
+    given-names: Po-Yen
+    affiliation: "Department of Computer Science and Information Engineering, National Taiwan University of Science and Technology"
+  - family-names: Shiu
+    given-names: Li-Ju
+    affiliation: "School of Medicine, China Medical University"
+  - family-names: Chu
+    given-names: Yen-Wei
+    affiliation: "Department of Foreign Languages and Literature, National Chi Nan University"
+  - family-names: Chung
+    given-names: Pau-Choo
+    affiliation: "Graduate Institute of Genomics and Bioinformatics, National Chung Hsing University"
+  - family-names: Chang
+    given-names: Kai-Po
+    affiliation: "Department of Electrical Engineering, National Cheng Kung University"
+preferred-citation:
+  type: article
+  title: "Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs"
+  doi: "10.1101/2025.10.21.25338475"
+  url: "https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8"
+  journal: "medRxiv"
+  year: 2026
+  notes: "TODO: replace with published journal citation when available."
+  authors:
+    - family-names: Chow
+      given-names: Nan-Haw
+    - family-names: Chang
+      given-names: Han
+    - family-names: Chen
+      given-names: Hung-Kai
+    - family-names: Lin
+      given-names: Chen-Yuan
+    - family-names: Liu
+      given-names: Ying-Lung
+    - family-names: Tseng
+      given-names: Po-Yen
+    - family-names: Shiu
+      given-names: Li-Ju
+    - family-names: Chu
+      given-names: Yen-Wei
+    - family-names: Chung
+      given-names: Pau-Choo
+    - family-names: Chang
+      given-names: Kai-Po

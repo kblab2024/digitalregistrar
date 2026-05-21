@@ -29,7 +29,7 @@ Each (gold, pred) item pair gets a similarity score:
 
 **Greedy bipartite assignment:** iteratively pick the (g, p) pair with the highest positive similarity, remove both from the pool, repeat. Quadratic but adequate for the ~1–10 items per case observed in this corpus.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.nested_metrics._greedy_match`. Library alternative for *optimal* assignment: `scipy.optimize.linear_sum_assignment` (Hungarian algorithm; Kuhn 1955) — not used here because the greedy approximation has matched the optimal in spot-checks and is simpler.
+**Implementation:** `digital_registrar.eval.nested_metrics._greedy_match`. Library alternative for *optimal* assignment: `scipy.optimize.linear_sum_assignment` (Hungarian algorithm; Kuhn 1955) — not used here because the greedy approximation has matched the optimal in spot-checks and is simpler.
 
 ## Item-level precision, recall, F1 (micro)
 
@@ -63,7 +63,7 @@ The gap is the **completeness penalty for nested fields** — see [completeness.
 
 These are *item-level* rates, distinct from *field-level* missingness (where the entire field key is absent from the prediction). Both are informative — high hallucination means the model is making things up; high miss means the model is undercounting.
 
-**Implementation:** in-house formulas; Wilson CI via `digital_registrar_research.benchmarks.eval.ci.wilson_ci`. Reference for Wilson: Wilson (1927).
+**Implementation:** in-house formulas; Wilson CI via `digital_registrar.eval.ci.wilson_ci`. Reference for Wilson: Wilson (1927).
 **Output:** `nested/per_field_per_organ.csv` (`hallucination_rate`, `miss_rate` and their CIs).
 
 ## Count MAE and count correlation

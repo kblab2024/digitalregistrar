@@ -28,11 +28,11 @@ from __future__ import annotations
 import json
 from pprint import pprint
 
-from digital_registrar_research.pipeline_factory import (
+from digital_registrar.pipeline_factory import (
     run_cancer_pipeline_v2,
     setup_pipeline_v2,
 )
-from digital_registrar_research.staging import (
+from digital_registrar.staging import (
     active_data_source,
     editions_for,
     observable_schema,

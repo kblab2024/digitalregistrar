@@ -21,7 +21,7 @@ bucket but no single overall Cohen's κ for an arbitrary pair;
   summary banner points readers to the existing `iaa/preann/`
   outputs for the causal Δκ-vs-gold and anchoring analyses.
 - **Library**:
-  `digital_registrar_research.benchmarks.eval.iaa_headline`.
+  `drr_attic.benchmarks.eval.iaa_headline`.
   Discovery helper (`_discover_cases_dir_layout`) lifted from
   `run_iaa.py` to `scripts/eval/iaa/_discovery.py` and shared.
 
@@ -65,7 +65,7 @@ extraction). Cascade attrition is recorded explicitly in
   `{msh2, msh6, pms2, mlh1}` (colorectal) are scored. All other
   biomarker entries are filtered from gold and prediction.
 - **Stat package**: a new module surface lives at
-  `digital_registrar_research.benchmarks.eval.stats` with cohens
+  `drr_attic.benchmarks.eval.stats` with cohens
   kappa, weighted kappa, Krippendorff alpha, ICC(2,1), ICC(3,k),
   Cronbach alpha, Stuart-Maxwell, Cochran's Q, Lin's CCC, Bland-Altman,
   cascade-funnel and conditional-accuracy diagnostics. See

@@ -119,7 +119,7 @@ python scripts/pipeline/run_factory_ollama_single.py --obfustrated --dataset tcg
 
 ### Library code
 
-If you import from `digital_registrar_research.paths`, set the env var to redirect at import time:
+If you import from `digital_registrar.paths`, set the env var to redirect at import time:
 
 ```bash
 DIGITAL_REGISTRAR_WORKSPACE=workspace_obfustrated python my_script.py
@@ -128,7 +128,7 @@ DIGITAL_REGISTRAR_WORKSPACE=workspace_obfustrated python my_script.py
 Or use the new helpers:
 
 ```python
-from digital_registrar_research.paths import workspace_root, results_root
+from digital_registrar.paths import workspace_root, results_root
 data = workspace_root("workspace_obfustrated") / "data" / "tcga" / "reports"
 ```
 

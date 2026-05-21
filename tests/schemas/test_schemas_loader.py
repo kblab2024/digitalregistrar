@@ -1,7 +1,7 @@
-"""Public API of `digital_registrar_research.schemas`."""
+"""Public API of `digital_registrar.schemas`."""
 import pytest
 
-from digital_registrar_research.schemas import (
+from digital_registrar.schemas import (
     CASE_MODELS,
     list_organs,
     load_json_schema,

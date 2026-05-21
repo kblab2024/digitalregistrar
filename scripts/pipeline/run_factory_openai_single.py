@@ -3,7 +3,7 @@
 
 Drop-in replacement for ``legacy/run_pipeline_openai_single.py``: same CLI
 shape and output tree. Differences mirror ``run_factory_ollama_single.py``:
-  * pipeline import is ``digital_registrar_research.pipeline_factory``;
+  * pipeline import is ``digital_registrar.pipeline_factory``;
   * extra flags ``--decomposition`` and ``--jsonize/--no-jsonize``;
   * manifest is tagged ``"pipeline": "factory"``.
 
@@ -27,7 +27,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))
 
 import run_pipeline_openai_single as legacy  # noqa: E402
 
-from digital_registrar_research.pipeline_factory import (  # noqa: E402
+from digital_registrar.pipeline_factory import (  # noqa: E402
     run_cancer_pipeline_v2,
     setup_pipeline_v2,
 )

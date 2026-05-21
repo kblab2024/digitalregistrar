@@ -1,117 +1,48 @@
-# `packaging/` — annotator bundle build matrix
+# `packaging/` — release pipeline scaffolding
 
-> Last updated: 2026-05-11 · Reflects: `d11d072`
+Build artifacts and configs for the three distribution paths. See [../docs/release.md](../docs/release.md) for the full release procedure (and the mandatory safe-practice checklist for the hosted demo).
 
-This directory builds the self-contained Digital Registrar Annotator
-distributable (Python + Streamlit + the annotation UI, frozen as a zip
-for Windows or a tar.gz for Unix/macOS). Recipients don't need Python
-installed.
+## Subdirs
 
-## Layout
+| Path | Purpose |
+|---|---|
+| `pyinstaller/` | PyInstaller `.spec` files for the three apps. |
+| `docker/` | Multi-stage `Dockerfile` per app. Build with `make docker-build`. |
+| `hosted-demo/` | Streamlit Community Cloud / Hugging Face Spaces entry point. **Safe-practice checklist required before going public** — see [../docs/release.md](../docs/release.md). |
+| `windows/` *(legacy)* | Pre-existing Windows annotator bundle (`build.py`, `.bat`, `.ps1`). Retained from the original `digital-registrar-research` distribution; update module paths from `digital_registrar_research.annotation` → `digital_registrar_annotator` before reuse. |
+| `precompute_section_groups.py` | Build-time codegen materialising per-organ section group metadata; consumed by the annotator parser. |
 
-```
-packaging/
-├── build.py                   ← canonical entry point (Python dispatcher)
-├── build_<os>_<mode>[_kpc].*  ← thin wrappers calling build.py
-├── _build_common.ps1          ← shared bundle logic (Windows host)
-├── _build_common.sh           ← shared bundle logic (Unix host)
-├── precompute_section_groups.py
-├── run_<target>_<lock>_<mode>[_kpc][_macos].*  ← end-user launchers shipped INSIDE the bundle
-└── dist/                      ← outputs land here (gitignored)
-```
-
-## Build the bundle
-
-Preferred (any host with Python):
+## Build commands
 
 ```bash
-python packaging/build.py --platform windows --annotators single
-python packaging/build.py --platform windows --annotators single_kpc
-python packaging/build.py --platform unix    --annotators multi
-python packaging/build.py --platform macos   --annotators single_kpc
+# Native bundles (must run on each target OS)
+make bundle
+
+# Docker images
+make docker-build
 ```
 
-Targets:
+## Three distribution paths
 
-| `--platform` | Host that can build | Bundle extension |
+| Path | Audience | Status |
 |---|---|---|
-| `windows`    | Windows or Unix     | `.zip` |
-| `unix`       | Windows or Unix     | `.tar.gz` |
-| `macos`      | macOS (or cross-build from Windows for Apple Silicon) | `.tar.gz` |
+| **A. PyPI** — `pip install digital-registrar-gui` | Python users | Wheels build cleanly; `release.yml` workflow scaffold below. |
+| **B. Hosted Streamlit demo** | Paper reviewers / casual visitors | `hosted-demo/streamlit_app.py` is a scaffold. Implement against the 5-layer safety checklist before going public. |
+| **C. PyInstaller + Docker** | Non-technical end users | `pyinstaller/*.spec` and `docker/*.Dockerfile` are scaffolds. Test on each target OS. |
 
-`--annotators` controls the annotator list baked into the bundle's
-`defaults.json`:
+## Adding a new app to the bundle pipeline
 
-| `--annotators` | Names baked in |
-|---|---|
-| `single`       | NHC only |
-| `single_kpc`   | KPC only |
-| `multi`        | NHC + KPC |
+1. Create `pyinstaller/<app>.spec` modelled on the existing specs.
+2. Create `docker/<app>.Dockerfile` modelled on existing Dockerfiles.
+3. Add a target to the `Makefile`.
+4. Wire into `.github/workflows/release.yml` so tagged releases build it automatically.
 
-Output lands at
-`packaging/dist/digital-registrar-annotator-<platform>-<annotators>.<ext>`.
+## Hosted demo (mandatory before sharing the URL)
 
-The legacy `.bat` / `.sh` wrappers (`build_windows_single.bat` etc.)
-are kept as thin shims that forward to `build.py` — convenient for
-double-clicking and for existing CI invocations.
+`hosted-demo/streamlit_app.py` is the Streamlit Cloud entry point. **Do not deploy until the five-layer safety checklist in [../docs/release.md](../docs/release.md) is satisfied**:
 
-## Run wrappers (shipped inside the bundle)
-
-The `run_*` files are end-user launchers packed into the bundle's
-zip/tarball. They live here so they're versioned alongside the build
-recipe. End users won't have Python on `PATH`, so these stay as native
-`.bat` / `.sh` scripts that point at the bundled Python interpreter
-inside the unpacked tree.
-
-Variant matrix:
-
-| Filename pattern | Data root | Locked? | Annotator set |
-|---|---|---|---|
-| `run_workspace_locked_<mode>[_kpc]`        | `workspace/` | yes | per-mode |
-| `run_dummy_unlocked_<mode>[_kpc][_macos]`  | `dummy/`     | no  | per-mode |
-
-`<mode>` is `single` or `multi`.
-
-## End-user instructions
-
-A copy of these instructions also ships in the bundle as `README.txt`:
-
-1. Unpack anywhere (e.g. Desktop). The folder is self-contained.
-2. Pick a launcher:
-   - `run` (production, locked) — annotates against `workspace/`.
-   - `run_demo` (demo, unlocked) — annotates against `dummy/`.
-3. First Windows launch may prompt about the firewall — choose "Allow access".
-4. Browser opens at `http://localhost:8501`.
-5. Pick the mode (`with_preann` / `without_preann`) and dataset in the sidebar, then annotate.
-6. Close the launcher window (or Ctrl+C) to stop the server.
-
-### Where to drop data
-
-```
-workspace/
-  with_preann/
-    data/<dataset>/
-      reports/<organ>/<case_id>.txt
-      preannotation/<model>/<organ>/<case_id>.json
-      annotations/<annotator>/<organ>/<case_id>.json
-  without_preann/
-    data/<dataset>/
-      reports/<organ>/<case_id>.txt
-      annotations/<annotator>/<organ>/<case_id>.json
-```
-
-The sibling `dummy/` folder shows the example file format.
-
-### Troubleshooting
-
-- **Browser didn't open** — go to `http://localhost:8501` manually.
-- **Port 8501 in use** — edit the launcher file, change
-  `--server.port=8501` to e.g. `8502`, run again.
-- **`run.bat` window flashes and closes** — open Command Prompt and
-  drag `run.bat` in to keep the window open and see the error.
-
-## System requirements
-
-- Windows 10 / 11 (64-bit) or Linux x86_64 or macOS Apple Silicon
-- ~200 MB disk space (Python + dependencies are bundled)
-- No Python installation needed by the recipient
+1. Secret management (dedicated key, hard cap, `.gitignore`).
+2. Cost guardrails (per-session caps, max_tokens, caching).
+3. Abuse protection (private app + email allowlist OR passcode).
+4. PHI / sensitive-input safeguards (banner, dummy examples, length cap, no input logging).
+5. Repo hygiene (no real-data imports, pinned deps, footer source link).

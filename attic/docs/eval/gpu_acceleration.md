@@ -3,7 +3,7 @@
 The eval pipeline's CI / hypothesis-testing primitives now have an opt-in
 GPU path (CUDA + MPS) for the loops that dominate wall-time on large evals.
 The original CPU code in
-[`ci.py`](../../src/digital_registrar_research/benchmarks/eval/ci.py) is
+[`ci.py`](../../src/digital_registrar/benchmarks/eval/ci.py) is
 preserved as the **safety net** — its outputs are unchanged unless you
 explicitly opt in.
 
@@ -101,7 +101,7 @@ If you need byte-identical safety-net behavior (e.g. to reproduce a
 historical run), call the underlying functions directly without a
 `device` kwarg — they default to `cpu` and the original
 `ci.bootstrap_ci`/`ci.mcnemar_test`/etc. paths remain reachable through
-`from digital_registrar_research.benchmarks.eval.ci import ...`.
+`from digital_registrar.eval.ci import ...`.
 
 ## Per-primitive coverage
 
@@ -164,13 +164,13 @@ historical run), call the underlying functions directly without a
 
 ## Where the original code lives
 
-[`src/digital_registrar_research/benchmarks/eval/ci.py`](../../src/digital_registrar_research/benchmarks/eval/ci.py)
+[`src/digital_registrar/benchmarks/eval/ci.py`](../../src/digital_registrar/benchmarks/eval/ci.py)
 is the canonical reference implementation for the bootstrap, McNemar,
 and Wilson primitives. It is **not** modified by the GPU work — it is
 the safety net that all `device="cpu"` callers fall back to (when they
 don't already route through `ci_gpu`'s vectorized-numpy path).
 
 For the GPU implementations, see
-[`src/digital_registrar_research/benchmarks/eval/ci_gpu.py`](../../src/digital_registrar_research/benchmarks/eval/ci_gpu.py).
+[`src/digital_registrar/benchmarks/eval/ci_gpu.py`](../../src/digital_registrar/benchmarks/eval/ci_gpu.py).
 The `pick_device(...)` helper there is the single source of truth for
 auto/cpu/cuda/mps resolution.

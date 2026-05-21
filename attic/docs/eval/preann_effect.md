@@ -40,7 +40,7 @@ A **positive** Δκ means preann *helped* the annotator agree with gold (good �
 
 The CI on Δκ uses **paired-bootstrap resampling** of case ids. Each bootstrap draw picks indices `i ∈ [0, n)` with replacement, then recomputes both κ's on the resampled records and takes the difference. This gives a CI on the *paired* difference, not on each κ independently.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.preann.paired_delta_kappa` using `sklearn.metrics.cohen_kappa_score` (Pedregosa et al., 2011).
+**Implementation:** `drr_attic.benchmarks.eval.preann.paired_delta_kappa` using `sklearn.metrics.cohen_kappa_score` (Pedregosa et al., 2011).
 **References:** Cohen, J. (1960, 1968) for κ; Efron, B. (1979) for the bootstrap; the paired-by-case design is standard in psychometric within-subjects analysis.
 **Output:** `iaa/preann/delta_kappa_per_field__<annotator>.csv`.
 
@@ -128,8 +128,8 @@ Stratified by whether the human's final answer matched gold. **Editing rate when
 
 ## Implementation summary
 
-All preann-effect metrics live in `src/digital_registrar_research/benchmarks/eval/preann.py` (unit-testable independently of the CLI). The orchestrator is `scripts/eval/iaa/preann_effect.py`. All paired metrics use `scripts/eval/_common/pairing.py:discover_paired_cases` to materialise the paired cohort.
+All preann-effect metrics live in `src/digital_registrar/benchmarks/eval/preann.py` (unit-testable independently of the CLI). The orchestrator is `scripts/eval/iaa/preann_effect.py`. All paired metrics use `scripts/eval/_common/pairing.py:discover_paired_cases` to materialise the paired cohort.
 
-Library citations: `sklearn.metrics.cohen_kappa_score` (Pedregosa et al., 2011), Wilson CI via `digital_registrar_research.benchmarks.eval.ci.wilson_ci`. Paired bootstrap is in-house — see `ci.paired_bootstrap_diff` for the canonical reference.
+Library citations: `sklearn.metrics.cohen_kappa_score` (Pedregosa et al., 2011), Wilson CI via `digital_registrar.eval.ci.wilson_ci`. Paired bootstrap is in-house — see `ci.paired_bootstrap_diff` for the canonical reference.
 
 For the full bibliography of κ, the bootstrap, and Wilson CI, see [methods_citations.md](methods_citations.md).

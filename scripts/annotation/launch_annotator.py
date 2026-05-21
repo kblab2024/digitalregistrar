@@ -8,7 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-APP = Path(__file__).resolve().parents[2] / "src" / "digital_registrar_research" / "annotation" / "app.py"
+APP = Path(__file__).resolve().parents[2] / "src" / "digital_registrar" / "annotation" / "app.py"
 
 if __name__ == "__main__":
     sys.exit(subprocess.call([sys.executable, "-m", "streamlit", "run", str(APP), *sys.argv[1:]]))

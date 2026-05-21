@@ -11,7 +11,7 @@
 | `list_of_literals` | `tumor_extent` (liver), `vascular_invasion` (liver), `involved_margin_list` (prostate) | Unordered set equality + set-F1 (TP/FP/FN on items) |
 | `nested_list` | `regional_lymph_node`, `margins`, `biomarkers` | Bipartite F1, hallucination/miss rate, count MAE |
 
-Single source of truth: `digital_registrar_research.benchmarks.eval.iaa.classify_field(field, organ)`. Per-organ taxonomy in `scope_organs.py`. The `list_of_literals` registry is in `scope_organs.ORGAN_LIST_OF_LITERALS` — distinct from `ORGAN_NESTED_LIST` (which is list-of-dicts).
+Single source of truth: `drr_attic.benchmarks.eval.iaa.classify_field(field, organ)`. Per-organ taxonomy in `scope_organs.py`. The `list_of_literals` registry is in `scope_organs.ORGAN_LIST_OF_LITERALS` — distinct from `ORGAN_NESTED_LIST` (which is list-of-dicts).
 
 **Note on organ-aware classification.** The same field name can be a different type in different organs. `tumor_extent` is `list_of_literals` for liver but `nominal` for esophagus and stomach (it's a single-string enum there). The classifier dispatches by `(field, organ)`, not field alone. Pass `organ=` to `classify_outcome` to get the right scoring path.
 
@@ -69,7 +69,7 @@ See [completeness.md](completeness.md). Quick reference:
 - **`ORDINAL_FIELDS`** — fields with natural ranking (grade, T/N/M categories, stage groups).
 - **`SPAN_FIELDS`** — integer span fields (the ClinicalBERT-QA head's domain).
 
-Defined in `src/digital_registrar_research/benchmarks/eval/scope.py` and `scope_organs.py`.
+Defined in `src/digital_registrar/benchmarks/eval/scope.py` and `scope_organs.py`.
 
 ## Annotators
 
@@ -93,7 +93,7 @@ Regex: `^run(\d+)(?:-([a-z0-9][a-z0-9-]*))?$`. See `scripts/_run_id.py` for pars
 
 ## Multi-primary
 
-A case is `multi_primary` if it describes more than one distinct tumor (bilateral breast, double primary lung, multifocal disease). Detection heuristics in `digital_registrar_research.benchmarks.eval.multi_primary`:
+A case is `multi_primary` if it describes more than one distinct tumor (bilateral breast, double primary lung, multifocal disease). Detection heuristics in `drr_attic.benchmarks.eval.multi_primary`:
 
 - `cancer_laterality == "bilateral"` → `multi_primary`.
 - `tumor_focality` ∈ {multifocal, multicentric, ...} → `multi_primary`.

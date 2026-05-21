@@ -12,7 +12,7 @@ For each metric we record:
 ## Confidence intervals
 
 ### Wilson score interval
-- **Implementation:** `digital_registrar_research.benchmarks.eval.ci.wilson_ci` (in-house, ~10 LOC matching the canonical formula). Library equivalent: `statsmodels.stats.proportion.proportion_confint(method="wilson")` (Seabold & Perktold, 2010).
+- **Implementation:** `digital_registrar.eval.ci.wilson_ci` (in-house, ~10 LOC matching the canonical formula). Library equivalent: `statsmodels.stats.proportion.proportion_confint(method="wilson")` (Seabold & Perktold, 2010).
 - **Reference:** Wilson, E. B. (1927). "Probable inference, the law of succession, and statistical inference." *JASA* 22 (158): 209–212.
 - **Used in:** every binary-rate column in `non_nested/per_field_overall.csv`, `non_nested/per_field_by_organ.csv`, `nested/nested_missingness.csv`, `completeness/per_method_*.csv`, `iaa/preann/convergence_to_preann*.csv`.
 
@@ -227,6 +227,6 @@ When citing the libraries themselves in the paper:
 
 The Methods section should cite both the original methodological reference (e.g. Cohen 1960 for κ) AND the implementation library (e.g. scikit-learn). Example sentence:
 
-> Inter-annotator agreement was quantified with Cohen's κ (Cohen, 1960; weighted variant Cohen, 1968) computed via `sklearn.metrics.cohen_kappa_score` (Pedregosa et al., 2011). Bootstrap confidence intervals (n = 2000 replicates) used the bias-corrected accelerated method (Efron, 1987) implemented in `digital_registrar_research.benchmarks.eval.ci.bootstrap_ci`. Multiple-comparisons correction used the Holm-Bonferroni procedure (Holm, 1979) for primary endpoints (12 fields pre-registered in `configs/eval_endpoints.yaml`) and the Benjamini-Hochberg FDR (Benjamini & Hochberg, 1995) for secondary endpoints, both via `statsmodels.stats.multitest.multipletests` (Seabold & Perktold, 2010).
+> Inter-annotator agreement was quantified with Cohen's κ (Cohen, 1960; weighted variant Cohen, 1968) computed via `sklearn.metrics.cohen_kappa_score` (Pedregosa et al., 2011). Bootstrap confidence intervals (n = 2000 replicates) used the bias-corrected accelerated method (Efron, 1987) implemented in `digital_registrar.eval.ci.bootstrap_ci`. Multiple-comparisons correction used the Holm-Bonferroni procedure (Holm, 1979) for primary endpoints (12 fields pre-registered in `configs/eval_endpoints.yaml`) and the Benjamini-Hochberg FDR (Benjamini & Hochberg, 1995) for secondary endpoints, both via `statsmodels.stats.multitest.multipletests` (Seabold & Perktold, 2010).
 
 This pattern — original-paper citation followed by library-implementation citation — should appear for every metric reported.

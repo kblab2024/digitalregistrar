@@ -3,7 +3,7 @@
 
 The slim `digitalregistrar/` repo (sibling folder, untouched) is the
 production-facing package. The vendored copy under
-`src/digital_registrar_research/{pipeline.py, runner.py, models/, util/}`
+`src/digital_registrar/{pipeline.py, runner.py, models/, util/}`
 is the research tip-of-tree. This script prints a per-file diff so you can
 see what's drifted before backporting to the slim release.
 
@@ -20,7 +20,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SLIM = REPO_ROOT.parent / "digitalregistrar"
-RESEARCH_ROOT = REPO_ROOT / "src" / "digital_registrar_research"
+RESEARCH_ROOT = REPO_ROOT / "src" / "digital_registrar"
 
 VENDORED_PATHS = [
     Path("pipeline.py"),

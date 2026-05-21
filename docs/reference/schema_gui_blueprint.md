@@ -3,8 +3,8 @@
 > Last updated: 2026-05-11 · Reflects: `d11d072`
 >
 > **Status: implemented.** The GUI lives at
-> [../../src/digital_registrar_research/schema_gui/](../../src/digital_registrar_research/schema_gui/) —
-> see that module's [README](../../src/digital_registrar_research/schema_gui/README.md)
+> [../../src/digital_registrar/schema_gui/](../../src/digital_registrar/schema_gui/) —
+> see that module's [README](../../src/digital_registrar/schema_gui/README.md)
 > for current behavior, save flow, and known limitations. Launch with
 > `pip install -e .[schema-gui]` then `registrar-schema-gui`.
 >
@@ -60,7 +60,7 @@ Out of scope (future):
   `ast.parse(...)` → walk `ClassDef` → `AnnAssign` to recover field
   declarations. Write back via a Jinja-style template (one
   `GroupedField(...)` per field, plus the `_GROUP_INSTRUCTIONS` dict).
-- **`subprocess`** to invoke `python -m digital_registrar_research.schemas.generate`
+- **`subprocess`** to invoke `python -m digital_registrar.schemas.generate`
   on save, refreshing `schemas/data/<organ>.json` from the new Pydantic.
 - **`black` + `ruff format`** post-write so the generated file lands
   exactly the way `pre-commit` would format it (no spurious diffs).
@@ -98,7 +98,7 @@ Out of scope (future):
    2. Render the source file to a temporary path.
    3. Run `black` + `ruff` on the temp path.
    4. Move the temp file over `schemas/pydantic/<organ>.py` atomically.
-   5. Run `python -m digital_registrar_research.schemas.generate` to
+   5. Run `python -m digital_registrar.schemas.generate` to
       refresh `schemas/data/<organ>.json`.
    6. Re-run `pytest tests/test_schema_concordance.py
       tests/pipeline/test_v2_parity.py` and surface failures inline.

@@ -3,7 +3,7 @@
 
 Drop-in replacement for ``legacy/run_dspy_ollama_single.py``: same CLI shape,
 same output tree, same manifest fields. Differences:
-  * pipeline import is :mod:`digital_registrar_research.pipeline_factory`;
+  * pipeline import is :mod:`digital_registrar.pipeline_factory`;
   * two extra CLI flags expose the factory's decomposition + jsonize knobs:
       ``--decomposition {per_group,monolithic,auto}``  (default: ``auto``)
       ``--jsonize`` / ``--no-jsonize``                  (default: ``--no-jsonize``)
@@ -33,7 +33,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts" / "pipeline" / "legacy"))
 # Reuse the heavy machinery from the legacy single-run script.
 import run_dspy_ollama_single as legacy  # noqa: E402
 
-from digital_registrar_research.pipeline_factory import (  # noqa: E402
+from digital_registrar.pipeline_factory import (  # noqa: E402
     run_cancer_pipeline_v2,
     setup_pipeline_v2,
 )

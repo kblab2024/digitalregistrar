@@ -17,9 +17,9 @@ For each (field, organ) we report **three** confidence intervals on accuracy:
 In the writeup, the *total CI* is what answers "if I redeploy this model on a new patient cohort, what range of accuracy should I expect?" — the run CI alone underestimates the answer because it ignores case-level noise.
 
 **Implementation:**
-- Case CI via `digital_registrar_research.benchmarks.eval.ci.bootstrap_ci(method="bca")` (Efron 1987).
-- Run CI via `digital_registrar_research.benchmarks.eval.ci.t_ci`, wrapping `scipy.stats.t.interval`.
-- Total CI via `digital_registrar_research.benchmarks.eval.multirun._glmm_marginal_accuracy` using `statsmodels.genmod.bayes_mixed_glm.BinomialBayesMixedGLM` (Seabold & Perktold, 2010); falls back to `ci.two_source_bootstrap_ci` when the GLMM fails.
+- Case CI via `digital_registrar.eval.ci.bootstrap_ci(method="bca")` (Efron 1987).
+- Run CI via `digital_registrar.eval.ci.t_ci`, wrapping `scipy.stats.t.interval`.
+- Total CI via `drr_attic.benchmarks.eval.multirun._glmm_marginal_accuracy` using `statsmodels.genmod.bayes_mixed_glm.BinomialBayesMixedGLM` (Seabold & Perktold, 2010); falls back to `ci.two_source_bootstrap_ci` when the GLMM fails.
 
 **Output columns** in `non_nested/per_field_overall.csv`:
 - `attempted_acc_boot_lo/hi` — case CI on attempted accuracy.
@@ -81,7 +81,7 @@ For each case, take the most-common prediction across runs. Ensemble outputs are
 - **Continuous (int) fields:** median.
 - **Nested lists:** union by primary key, requiring majority support (≥ ⌈K/2⌉ runs) before including an item.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.multirun.majority_vote_ensemble`.
+**Implementation:** `drr_attic.benchmarks.eval.multirun.majority_vote_ensemble`.
 **Output:** `ensemble_predictions/`, `ensemble_by_case.csv`.
 
 ## Ensemble-vs-single Δ

@@ -1,0 +1,38 @@
+[project]
+name = "digital-registrar-gui"
+version = "0.2.0"
+description = "Streamlit inference GUI for the Digital Registrar pipeline."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+  { name = "Han Chang" },
+  { name = "Kai-Po Chang" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Healthcare Industry",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+  "digital-registrar",
+  "streamlit>=1.35",
+]
+
+[project.scripts]
+registrar-infer-gui = "digital_registrar_gui.app:main_cli"
+
+[project.urls]
+Homepage = "https://github.com/kblab2024/digitalregistrar"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+[tool.setuptools.packages.find]
+where = ["src"]

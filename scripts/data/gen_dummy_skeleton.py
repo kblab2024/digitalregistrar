@@ -60,17 +60,17 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Make the in-repo `src/` importable for `from digital_registrar_research...`.
+# Make the in-repo `src/` importable for `from digital_registrar...`.
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from digital_registrar_research.benchmarks import organs as _organs  # noqa: E402
+from drr_attic.benchmarks import organs as _organs  # noqa: E402
 
 # ---- Constants --------------------------------------------------------------
 
 DATASETS = list(_organs.all_datasets())
 # Union of all organ names across datasets — matches CASE_MODELS in
-# src/digital_registrar_research/schemas/pydantic/__init__.py.
+# src/digital_registrar/schemas/pydantic/__init__.py.
 ALL_ORGANS = list(_organs.union_organs())
 LLM_MODELS = ["gpt_oss_20b", "gemma4_30b", "qwen3_30b", "gemma4_e2b"]
 BERT_MODELS = ["v1_baseline", "v2_finetuned"]
@@ -1136,7 +1136,7 @@ def build_rule_based(root: Path, dataset: str, organs_map: dict[str, str],
         "method": "rule_based",
         "dataset": dataset,
         "n_cases": n_total,
-        "implementation": "src/digital_registrar_research/benchmarks/baselines/rules.py",
+        "implementation": "src/digital_registrar/benchmarks/baselines/rules.py",
         "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     })
 
@@ -1172,7 +1172,7 @@ def build_configs(root: Path, organs_per_dataset: dict[str, dict[str, str]],
     write_yaml(cfg / "models" / "rule_based.yaml", {
         "name": "rule_based",
         "family": "rule_based",
-        "module": "digital_registrar_research.benchmarks.baselines.rules",
+        "module": "drr_attic.benchmarks.baselines.rules",
     })
 
     write_yaml(cfg / "annotators" / "annotators.yaml", {

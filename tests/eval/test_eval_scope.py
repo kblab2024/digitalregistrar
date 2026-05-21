@@ -1,5 +1,5 @@
 """Sanity tests for the canonical scoring scope (FAIR_SCOPE whitelist)."""
-from digital_registrar_research.benchmarks.eval import scope
+from drr_attic.benchmarks.eval import scope
 
 
 def test_fair_scope_defined_and_nonempty():

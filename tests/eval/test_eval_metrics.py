@@ -1,5 +1,5 @@
 """Smoke tests for the canonical eval/metrics module (importable, callable)."""
-from digital_registrar_research.benchmarks.eval import metrics
+from drr_attic.benchmarks.eval import metrics
 
 
 def test_metrics_module_exposes_aggregate_and_summary():
@@ -9,5 +9,5 @@ def test_metrics_module_exposes_aggregate_and_summary():
 
 def test_metrics_imports_scope_constants():
     """metrics.py uses scope constants — both should resolve at import time."""
-    from digital_registrar_research.benchmarks.eval import scope
+    from drr_attic.benchmarks.eval import scope
     assert hasattr(scope, "FAIR_SCOPE") or hasattr(scope, "CATEGORICAL_FIELDS")

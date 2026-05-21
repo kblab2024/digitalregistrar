@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-APP = REPO_ROOT / "src" / "digital_registrar_research" / "annotation" / "app_canonical.py"
+APP = REPO_ROOT / "src" / "digital_registrar" / "annotation" / "app_canonical.py"
 
 if __name__ == "__main__":
     env = os.environ.copy()

@@ -2,17 +2,17 @@
 
 > Last updated: 2026-05-11 · Reflects: `d11d072`
 
-This doc is the **postmortem-turned-roadmap** companion to [dspy_ollama_model_compatibility.md](dspy_ollama_model_compatibility.md). The compatibility doc explained *why* DSPy was failing on Gemma / Qwen and quietly succeeding on `gpt-oss:20b`. This one starts from the confirmed fact that the protocol in [`_legacy/pipeline_dspy_strict.py`](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py) — `litellm.register_model(...supports_response_schema=True)` + `dspy.adapters.JSONAdapter` + `dspy.ChainOfThought` per signature — works, and then unpacks (a) what each piece is doing on the wire, (b) the parts of DSPy this repo has not yet used, and (c) a phased plan for what to build next.
+This doc is the **postmortem-turned-roadmap** companion to [dspy_ollama_model_compatibility.md](dspy_ollama_model_compatibility.md). The compatibility doc explained *why* DSPy was failing on Gemma / Qwen and quietly succeeding on `gpt-oss:20b`. This one starts from the confirmed fact that the protocol in [`_legacy/pipeline_dspy_strict.py`](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py) — `litellm.register_model(...supports_response_schema=True)` + `dspy.adapters.JSONAdapter` + `dspy.ChainOfThought` per signature — works, and then unpacks (a) what each piece is doing on the wire, (b) the parts of DSPy this repo has not yet used, and (c) a phased plan for what to build next.
 
 Pinned versions referenced throughout: **DSPy 3.2.1**, **Ollama ≥ 0.5**, **LiteLLM** as bundled by DSPy 3.2.
 
 > **Status (2026-05).** The production extraction path runs through
-> [`runner.py`](../../../src/digital_registrar_research/runner.py), which
-> wires both the legacy [`pipeline.py`](../../../src/digital_registrar_research/pipeline.py)
-> and the v2 schema-driven [`pipeline_factory.py`](../../../src/digital_registrar_research/pipeline_factory.py).
+> [`runner.py`](../../../src/digital_registrar/runner.py), which
+> wires both the legacy [`pipeline.py`](../../../src/digital_registrar/pipeline.py)
+> and the v2 schema-driven [`pipeline_factory.py`](../../../src/digital_registrar/pipeline_factory.py).
 > The strict/structured variants discussed extensively below
 > (`pipeline_dspy_strict.py`, `pipeline_structured.py`) are preserved
-> at [`src/digital_registrar_research/_legacy/`](../../../src/digital_registrar_research/_legacy/)
+> at [`src/digital_registrar/_legacy/`](../../../src/digital_registrar/_legacy/)
 > for reproducibility but are off the active import path. They remain
 > the cleanest single-file reference for the strict-schema protocol —
 > read them when you want to understand the wire-level machinery the
@@ -22,7 +22,7 @@ Pinned versions referenced throughout: **DSPy 3.2.1**, **Ollama ≥ 0.5**, **Lit
 
 ## 0. Reading order
 
-1. [pipeline_dspy_strict.py](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py) — the working pipeline. Read its module docstring first.
+1. [pipeline_dspy_strict.py](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py) — the working pipeline. Read its module docstring first.
 2. [dspy_ollama_model_compatibility.md](dspy_ollama_model_compatibility.md) §§1–4 — the prequel; explains the four layers (adapter, model post-training, runtime, tokenizer) that have to line up.
 3. This doc, §1 onward.
 
@@ -53,7 +53,7 @@ Each one fixes one specific failure mode that the compatibility doc traced. Remo
 
 ### 1.2 `supports_response_schema` — the LiteLLM flag dance
 
-The key sites in [pipeline_dspy_strict.py](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py):
+The key sites in [pipeline_dspy_strict.py](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py):
 
 ```python
 # pipeline_dspy_strict.py:85-106
@@ -78,7 +78,7 @@ There are two non-obvious traps here, both worth absorbing because they recur ev
 **Verifying the flip actually took.** Run one of the smoke scripts with LiteLLM's debug logging turned on:
 
 ```bash
-LITELLM_LOG=DEBUG python -m digital_registrar_research._legacy.pipeline_dspy_strict 2>&1 \
+LITELLM_LOG=DEBUG python -m drr_attic.legacy.pipeline_dspy_strict 2>&1 \
   | grep -c "'type': 'json_schema'"
 ```
 
@@ -113,7 +113,7 @@ This is correct and intentional. The per-organ extractors that follow declare st
 
 ### 1.4 ChainOfThought inside strict schema
 
-[pipeline_dspy_strict.py:151-152, 213](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py#L151) wraps every signature in `dspy.ChainOfThought`. What this does in the JSONAdapter regime is subtle and worth understanding deeply, because it's the part most people miss when they try to reproduce this protocol:
+[pipeline_dspy_strict.py:151-152, 213](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py#L151) wraps every signature in `dspy.ChainOfThought`. What this does in the JSONAdapter regime is subtle and worth understanding deeply, because it's the part most people miss when they try to reproduce this protocol:
 
 - A `dspy.ChainOfThought(sig)` programmatically appends a `reasoning: str` output field at the **front** of the signature's outputs.
 - JSONAdapter compiles this into the JSON schema with the reasoning property listed first.
@@ -124,7 +124,7 @@ Why does this matter when the schema is already enforcing valid output? Because 
 
 The reasoning prefix gives the model up to several hundred tokens of attention-conditioning on the input *before* the first masked sampling step. Empirically (and consistent with the wider CoT literature), this raises accuracy on enum-heavy fields substantially. It's not a DSPy quirk; it's the same effect ChainOfThought has everywhere, applied inside a schema-constrained envelope where there is no other way to get reasoning out.
 
-The post-processing strip at [pipeline_dspy_strict.py:223](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py#L223) removes the `reasoning` key from the final dict so that `cancer_data` is byte-compatible with the original `CancerPipeline.forward()` shape — the eval pipeline ingests both without modification:
+The post-processing strip at [pipeline_dspy_strict.py:223](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py#L223) removes the `reasoning` key from the final dict so that `cancer_data` is byte-compatible with the original `CancerPipeline.forward()` shape — the eval pipeline ingests both without modification:
 
 ```python
 organ_data.pop("reasoning", None)
@@ -136,10 +136,10 @@ If you're tempted to keep the reasoning trace for analysis, put it in a sidecar 
 ### 1.5 Dynamic signature construction (v2 factory)
 
 The v2 schema-driven pipeline (
-[`pipeline_factory.py`](../../src/digital_registrar_research/pipeline_factory.py))
+[`pipeline_factory.py`](../../src/digital_registrar/pipeline_factory.py))
 does not declare its `dspy.Signature` subclasses statically. They're built
 at construction time from Pydantic case-models by the factory in
-[`signatures/factory.py`](../../src/digital_registrar_research/signatures/factory.py)
+[`signatures/factory.py`](../../src/digital_registrar/signatures/factory.py)
 using DSPy's runtime constructor:
 
 ```python
@@ -170,7 +170,7 @@ predictor = dspy.Predict(sig)
 - Without `custom_types`, the factory would be limited to `Literal`,
   primitives, and `list[primitive]`. The factory walks every nested
   `BaseModel` in the schema annotations (via
-  [`iter_custom_types`](../../src/digital_registrar_research/schemas/pydantic/_factory_helpers.py))
+  [`iter_custom_types`](../../src/digital_registrar/schemas/pydantic/_factory_helpers.py))
   and passes them as a dict.
 
 #### How v2 relates to the strict-protocol pieces in §1.1
@@ -185,7 +185,7 @@ The factory is orthogonal to the JSONAdapter / `supports_response_schema`
   meaningfully improving Literal-field accuracy on this corpus. If a
   weaker model needs it, swap `dspy.Predict` for `dspy.ChainOfThought`
   in
-  [`_get_extractors`](../../src/digital_registrar_research/pipeline_factory.py)
+  [`_get_extractors`](../../src/digital_registrar/pipeline_factory.py)
   — the factory output is signature-agnostic.
 - `_legacy/pipeline_structured.py` and `_legacy/pipeline_dspy_strict.py`
   (the variants this doc was originally written about) are preserved
@@ -220,7 +220,7 @@ The protocol in §1 only uses the *runtime* layer of DSPy — adapter + module +
 
 ### 2.1 `dspy.Module` composition
 
-The repo already uses `dspy.Module` correctly: [DspyStrictCancerPipeline](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py#L140) subclasses it and composes `ChainOfThought` predictors as attributes. What it doesn't yet use is **nested-module reuse and parameterization**. Because every `dspy.ChainOfThought(...)` attribute on a Module is itself a parameter, when you compile the parent module the optimizer can produce per-attribute demonstrations and instructions that are saved together as one program JSON.
+The repo already uses `dspy.Module` correctly: [DspyStrictCancerPipeline](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py#L140) subclasses it and composes `ChainOfThought` predictors as attributes. What it doesn't yet use is **nested-module reuse and parameterization**. Because every `dspy.ChainOfThought(...)` attribute on a Module is itself a parameter, when you compile the parent module the optimizer can produce per-attribute demonstrations and instructions that are saved together as one program JSON.
 
 ```python
 # Current style - one organ analyzer instantiated per call, fresh each time
@@ -305,8 +305,8 @@ ex = dspy.Example(
 The cascade three-chapter eval (`scripts/eval/cascade/compare_runs.py`) is *already* a metric — it produces per-case verdicts. The work to turn it into something a teleprompter can optimize against is small:
 
 ```python
-from digital_registrar_research.benchmarks.eval.metrics import field_correct
-from digital_registrar_research.benchmarks.eval.scope import FAIR_SCOPE
+from digital_registrar.eval.metrics import field_correct
+from digital_registrar.eval.scope import FAIR_SCOPE
 
 def cascade_metric(example, pred, trace=None) -> float:
     """Per-example field-accuracy score; mirrors compile_dspy._compile_metric
@@ -398,7 +398,7 @@ Phased, rough cost in person-weeks, dependency arrows where they matter.
 Three small changes that close the observability gaps the compatibility doc flagged:
 
 1. **Adapter-assertion test.** After `setup_pipeline_dspy_strict`, assert `isinstance(dspy.settings.adapter, JSONAdapter)` and assert that `litellm.supports_response_schema(model_id) is True`. If either fails, raise immediately. This catches the "bare-key registration silently ignored" failure mode without anyone having to grep `LITELLM_LOG=DEBUG`. Add as a unit test in `tests/`.
-2. **Surface parse failures.** [pipeline_dspy_strict.py:225-227](../../../src/digital_registrar_research/_legacy/pipeline_dspy_strict.py#L225) currently does `except Exception as e: logger.error(...); continue`. Replace with a structured sidecar: every organ_data dict gets a `_parse_status: "ok" | "parse_failed" | "empty"` key, and the failure message goes into `_parse_error`. The cascade compare_runs step can then split scoring by parse status, so "model got it wrong" and "model crashed" don't get conflated.
+2. **Surface parse failures.** [pipeline_dspy_strict.py:225-227](../../../src/digital_registrar/_legacy/pipeline_dspy_strict.py#L225) currently does `except Exception as e: logger.error(...); continue`. Replace with a structured sidecar: every organ_data dict gets a `_parse_status: "ok" | "parse_failed" | "empty"` key, and the failure message goes into `_parse_error`. The cascade compare_runs step can then split scoring by parse status, so "model got it wrong" and "model crashed" don't get conflated.
 3. **Adapter telemetry.** Once per run, emit `print(f"[dspy] active adapter = {type(dspy.settings.adapter).__name__}")` and add the value as a column in the cascade run artifact (`cascade_atomic.parquet`). When you A/B compare runs months from now, you'll know which adapter was active without re-reading code.
 
 **Exit criterion:** A run with the litellm flag override removed fails fast at startup instead of silently producing degraded output.
@@ -421,7 +421,7 @@ This is where the payoff starts. Steps:
 
 The cancer registrar checklist has many cross-field constraints that Pydantic can't express in a single field. A starter list, all from the breast model:
 
-- **Margin coupling:** if `margin_involved` is True, `distance` must be 0. ([models/breast.py:22-26](../../src/digital_registrar_research/models/breast.py#L22))
+- **Margin coupling:** if `margin_involved` is True, `distance` must be 0. ([models/breast.py:22-26](../../src/digital_registrar/models/breast.py#L22))
 - **Staging consistency:** if `pn_category` is `n0`, `extranodal_extension` cannot be True; if `regional_lymph_node` has all `involved=0`, `pn_category` should be `n0`.
 - **Biomarker mutual-exclusion on Her-2:** `expression` and `score` should not both be set on the same `BreastBiomarker` row (the field descriptions already say this, but nothing enforces it).
 - **DCIS gating:** if `dcis_present` is False, `dcis_size` / `dcis_grade` / `dcis_comedo_necrosis` must all be None.
@@ -477,7 +477,7 @@ dspy.configure(lm=dspy.LM("ollama_chat/gpt-oss:20b",
                           api_base="http://localhost:11434",
                           api_key="", model_type="chat"))
 
-from digital_registrar_research.models.breast import BreastCancerNonnested
+from digital_registrar.models.breast import BreastCancerNonnested
 
 predictor = dspy.Predict(BreastCancerNonnested)
 result = predictor(report=paragraphs, report_jsonized={})
@@ -525,7 +525,7 @@ This is the protocol the user just confirmed works on `gpt-oss:20b`.
 
 ```python
 import dspy
-from digital_registrar_research.benchmarks.eval.metrics import field_correct
+from digital_registrar.eval.metrics import field_correct
 
 def metric(ex, pred, trace=None):
     return float(field_correct(ex.gold, dict(pred), "histology") or 0.0)
@@ -563,7 +563,7 @@ Cookbook-style, mirrors [eval/comparing_runs.md](../eval/comparing_runs.md).
 
 ```bash
 LITELLM_LOG=DEBUG python - <<'PY' 2>&1 | grep -c "'type': 'json_schema'"
-from digital_registrar_research._legacy.pipeline_dspy_strict import (
+from drr_attic.legacy.pipeline_dspy_strict import (
     setup_pipeline_dspy_strict, run_cancer_pipeline_dspy_strict,
 )
 setup_pipeline_dspy_strict("gptoss")
@@ -578,7 +578,7 @@ PY
 ### Recipe 2 — see what DSPy actually sent the model
 
 ```python
-from digital_registrar_research._legacy.pipeline_dspy_strict import (
+from drr_attic.legacy.pipeline_dspy_strict import (
     setup_pipeline_dspy_strict, run_cancer_pipeline_dspy_strict,
 )
 import dspy

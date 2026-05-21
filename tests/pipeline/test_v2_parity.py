@@ -12,9 +12,9 @@ import typing as _t
 
 import pytest
 
-from digital_registrar_research.schemas.extraction import EXTRACTION_META
-from digital_registrar_research.schemas.pydantic import CASE_MODELS
-from digital_registrar_research.signatures import (
+from digital_registrar.schemas.extraction import EXTRACTION_META
+from digital_registrar.schemas.pydantic import CASE_MODELS
+from digital_registrar.signatures import (
     ExtractionStep,
     build_extraction_signatures,
     build_jsonize_signature,
@@ -112,7 +112,7 @@ def test_pipeline_v2_constructs_without_lm():
     first use, so construction must succeed even before
     ``setup_pipeline_v2(model_name)`` is called.
     """
-    from digital_registrar_research.pipeline_factory import CancerPipelineV2
+    from digital_registrar.pipeline_factory import CancerPipelineV2
 
     p = CancerPipelineV2()
     assert p.router is not None
@@ -133,7 +133,7 @@ def test_v2_smoke_runs_on_fixture():
     Requires a reachable Ollama daemon with gpt-oss:20b pulled. Skipped by
     default to keep ``pytest -x`` cheap.
     """
-    from digital_registrar_research.pipeline_factory import (
+    from digital_registrar.pipeline_factory import (
         run_cancer_pipeline_v2,
         setup_pipeline_v2,
     )

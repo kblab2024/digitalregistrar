@@ -88,7 +88,7 @@ components stay the same across all cells:
 ### Schema source of truth
 
 The raw-JSON runner in Cell C loads its per-organ JSON schemas via
-`digital_registrar_research.schemas.load_json_schema(organ)` — the
+`digital_registrar.schemas.load_json_schema(organ)` — the
 **same** JSON the annotation UI consumes, generated from the **same**
 Pydantic case-models the DSPy pipeline targets. Agreement between
 Cells A/B/C therefore reflects only model and framework behaviour,
@@ -130,7 +130,7 @@ All cell-runner wrappers also accept `--obfustrated` and
 alphabetical ordering. The mapping lives in
 [`configs/organ_code.yaml`](../../configs/organ_code.yaml) and is
 loaded by
-[`benchmarks.organs`](../../src/digital_registrar_research/benchmarks/organs.py):
+[`benchmarks.organs`](../../src/digital_registrar/benchmarks/organs.py):
 
 | folder | TCGA          | CMUH       |
 |--------|---------------|------------|
@@ -169,7 +169,7 @@ runner: `ollama_chat/gpt-oss:20b` → `gpt_oss_20b`.
 
 Run before any multi-day grid:
 
-1. `python -c "from digital_registrar_research.benchmarks.organs import dataset_organs; print(dataset_organs('tcga'))"` — confirm the loader sees the YAML.
+1. `python -c "from drr_attic.benchmarks.organs import dataset_organs; print(dataset_organs('tcga'))"` — confirm the loader sees the YAML.
 2. `ls {folder}/data/{dataset}/reports/` — folder names must be numeric and match the table for your dataset.
 3. Run a single cell with `--limit 1 --trace-dspy --verbose` and read the printed summary line — it ends with `NOT_CANCER=… UNKNOWN_ORGAN=… DOWNSTREAM=…`. If `DOWNSTREAM=0` the runner never invoked the organ-specific predictor — check `_dspy_trace.jsonl` for prompts and responses.
 4. Run `scripts/ablations/run_grid.py --config <smoke-yaml>` — pre-flight validation rejects typos in `cell:` / `model:` and missing artifacts before the first cell starts.
@@ -191,7 +191,7 @@ printed summary line.
 ### Source-tree map
 
 ```
-src/digital_registrar_research/ablations/
+src/digital_registrar/ablations/
 ├── runners/
 │   ├── _base.py              # canonical args, path resolution, run loop
 │   ├── reuse_baseline.py     # Cell A — copy pipeline outputs into ablations tree
@@ -349,7 +349,7 @@ is catastrophic. Every ablation kickoff goes through smoke first.
   aggregator's directory glob ignores it.
 - **Fail loud** — any cell exception propagates; exit code ≠ 0.
 - **Round-trip the aggregator** — smoke calls
-  `digital_registrar_research.ablations.eval.run_ablations.main()`
+  `drr_attic.ablations.eval.run_ablations.main()`
   with `--results-root <smoke dir>` and asserts
   `ablation_summary.csv` is non-empty before returning success.
 - **Wall-time target**: ≤ 10 minutes for grid-wide smoke.
@@ -383,7 +383,7 @@ python scripts/ablations/run_grid_smoke.py \
 
 Extend [`scripts/repo/install_git_hooks.sh`](../../scripts/repo/install_git_hooks.sh)
 to run the grid-wide smoke when files under
-`src/digital_registrar_research/ablations/` change. Ten minutes of
+`src/digital_registrar/ablations/` change. Ten minutes of
 pre-push insurance against pushing a broken cell that wastes a
 multi-day sweep.
 
@@ -436,7 +436,7 @@ python scripts/ablations/run_cell_c5.py --folder examples/dummy --dataset tcga -
 
 When `--with-stats` is on (default for any non-smoke results-root) the
 aggregator calls
-[`ablations.eval.stats.run_all`](../../src/digital_registrar_research/ablations/eval/stats.py)
+[`ablations.eval.stats.run_all`](../../src/digital_registrar/ablations/eval/stats.py)
 to emit the full statistics pack:
 
 | File | Contents |
@@ -491,11 +491,11 @@ The OFAT factorial in Grid 2 is reported as supplementary depth.
   (≥ 7 nested field groups) — specifically the biomarkers + LN +
   margins combination can overflow a 16k-token context with a long
   report. Detected and flagged in
-  [`runners/dspy_monolithic.py`](../../src/digital_registrar_research/ablations/runners/dspy_monolithic.py);
+  [`runners/dspy_monolithic.py`](../../src/digital_registrar/ablations/runners/dspy_monolithic.py);
   if it fires, the finding itself is a result (modularity is necessary,
   not merely helpful, for that organ at that model size).
 - **Schema drift.** JSON schemas under
-  [`schemas/data/`](../../src/digital_registrar_research/schemas/data/)
+  [`schemas/data/`](../../src/digital_registrar/schemas/data/)
   may drift from the Pydantic source. `registrar-schemas --check`
   asserts top-level Literal-vocab parity in CI; run before every
   ablation kickoff.

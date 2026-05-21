@@ -89,8 +89,8 @@ registrar-annotate-workspace --server.port 8502 # forward args to streamlit
 Or directly:
 
 ```bash
-streamlit run src/digital_registrar_research/annotation/app_canonical.py
-streamlit run src/digital_registrar_research/annotation/app.py             # legacy
+streamlit run src/digital_registrar/annotation/app_canonical.py
+streamlit run src/digital_registrar/annotation/app.py             # legacy
 ```
 
 Both apps can run concurrently on different ports for side-by-side comparison.

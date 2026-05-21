@@ -1,0 +1,5 @@
+# Streamlit Community Cloud auto-installs from this file. Pin exact versions.
+# Minimal dep set — DO NOT include torch / transformers / scikit-learn here.
+digital-registrar==0.2.0
+digital-registrar-gui==0.2.0
+streamlit==1.39.0

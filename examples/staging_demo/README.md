@@ -1,6 +1,6 @@
 # staging_demo
 
-Runnable examples for `digital_registrar_research.staging` — the
+Runnable examples for `digital_registrar.staging` — the
 `tnmhelper`-backed AJCC TNM staging service.
 
 These scripts are **examples, not part of the shipped pipeline**. They
@@ -20,7 +20,7 @@ the runner, or the eval harness imports them.
     these scripts), **or**
   - `OPENAI_API_KEY` set, and edit `MODEL = "gpt"` to `MODEL = "gpt5_4_mini"`.
   - Model aliases live in
-    [`src/digital_registrar_research/models/common.py`](../../src/digital_registrar_research/models/common.py).
+    [`src/digital_registrar/models/common.py`](../../src/digital_registrar/models/common.py).
 
 ## Running
 
@@ -34,6 +34,6 @@ script; no external data needed.
 
 ## Background reading
 
-- Module API → [`src/digital_registrar_research/staging/README.md`](../../src/digital_registrar_research/staging/README.md)
+- Module API → [`src/digital_registrar/staging/README.md`](../../src/digital_registrar/staging/README.md)
 - Architecture → [`docs/architecture/staging.md`](../../docs/architecture/staging.md)
 - Vendored wheel & data bundle → [`vendor/README.md`](../../vendor/README.md)

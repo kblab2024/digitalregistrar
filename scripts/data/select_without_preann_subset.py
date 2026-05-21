@@ -30,7 +30,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Matches PREANNOTATION_MODEL in src/digital_registrar_research/annotation/io_canonical.py.
+# Matches PREANNOTATION_MODEL in src/digital_registrar/annotation/io_canonical.py.
 DEFAULT_PREANN_MODEL = "gpt_oss_20b"
 # Matches the seed used by scripts/gen_dummy_skeleton.py.
 DEFAULT_SEED = 20251117

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from digital_registrar_research.schemas.create_organ import (
+from digital_registrar.schemas.create_organ import (
     CreatedOrganReport,
     _pascal_case,
     create_organ,

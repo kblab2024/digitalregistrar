@@ -21,7 +21,7 @@ synthetic-from-real for debugging — see [../workflows/obfuscation.md](../workf
 └── preannotation/{model}/{organ_n}/{case_id}.json  LLM-generated pre-annotation seeds
 ```
 
-`{organ_n}` is the 1-based integer organ index. The mapping is **dataset-specific** — single source of truth is [`configs/organ_code.yaml`](../../configs/organ_code.yaml), loaded by `src/digital_registrar_research/benchmarks/organs.py` (and re-exposed via `scripts/eval/_common/stratify.py` for eval scripts).
+`{organ_n}` is the 1-based integer organ index. The mapping is **dataset-specific** — single source of truth is [`configs/organ_code.yaml`](../../configs/organ_code.yaml), loaded by `src/digital_registrar/benchmarks/organs.py` (and re-exposed via `scripts/eval/_common/stratify.py` for eval scripts).
 
 **TCGA** (5 organs):
 

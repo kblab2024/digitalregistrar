@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from typing import Union, get_args, get_origin
 
-from digital_registrar_research.schemas.extraction import EXTRACTION_META
-from digital_registrar_research.schemas.pydantic import CASE_MODELS, IsCancerCase
+from digital_registrar.schemas.extraction import EXTRACTION_META
+from digital_registrar.schemas.pydantic import CASE_MODELS, IsCancerCase
 
 EXPECTED_ORGANS = {
     "breast", "cervix", "colorectal", "esophagus", "liver",

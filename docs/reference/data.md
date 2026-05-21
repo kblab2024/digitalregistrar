@@ -127,7 +127,7 @@ slot space:
 Run dirs then become `run01-alpha .. run10-alpha` on machine *alpha*
 and `run01-beta .. run10-beta` on machine *beta*. Both forms still
 match the `startswith("run")` discovery glob in
-[`benchmarks/eval/multirun.py`](../../src/digital_registrar_research/benchmarks/eval/multirun.py),
+[`benchmarks/eval/multirun.py`](../../src/digital_registrar/benchmarks/eval/multirun.py),
 so the eval aggregator treats them as additional samples for the
 confidence interval. Slug format: `^[a-z0-9][a-z0-9-]{0,11}$`.
 
@@ -138,11 +138,11 @@ the individual runs — they're a derived artifact, not a separate model.
 ## Paths in code
 
 All hardcoded paths go through
-[`paths.py`](../../src/digital_registrar_research/paths.py). Downstream
+[`paths.py`](../../src/digital_registrar/paths.py). Downstream
 code uses the resolver rather than string literals:
 
 ```python
-from digital_registrar_research.paths import dataset, predictions_dir, evaluation_dir
+from digital_registrar.paths import dataset, predictions_dir, evaluation_dir
 
 ds = dataset("cmuh", mode="with_preann")        # -> DatasetPaths
 ds.reports, ds.annotations, ds.preannotation    # Path objects

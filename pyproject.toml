@@ -1,19 +1,27 @@
 [project]
-name = "digital-registrar-research"
-version = "0.1.0"
-description = "The Digital Registrar — research stack: pipeline, annotation, benchmarks, ablations"
+name = "digital-registrar"
+version = "0.2.0"
+description = "The Digital Registrar — a schema-first framework for multi-cancer, privacy-preserving pathology abstraction via local LLMs."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [
-  { name = "Hong-Kai (Walther) Chen" },
-  { name = "Po-Yen Tzeng" },
+  { name = "Nan-Haw Chow" },
+  { name = "Han Chang" },
+  { name = "Hung-Kai Chen" },
+  { name = "Chen-Yuan Lin" },
+  { name = "Ying-Lung Liu" },
+  { name = "Po-Yen Tseng" },
+  { name = "Li-Ju Shiu" },
+  { name = "Yen-Wei Chu" },
+  { name = "Pau-Choo Chung" },
   { name = "Kai-Po Chang" },
 ]
-keywords = ["cancer", "pathology", "registry", "nlp", "dspy", "clinical"]
+keywords = ["cancer", "pathology", "registry", "nlp", "dspy", "clinical", "cap-aligned"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Science/Research",
+  "Intended Audience :: Healthcare Industry",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
@@ -30,27 +38,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-annotation  = ["streamlit>=1.35"]
-benchmarks  = ["scikit-learn", "torch", "transformers", "openai", "regex", "matplotlib", "seaborn", "scipy", "statsmodels"]
-ablations   = ["jsonschema", "openai", "scipy", "statsmodels", "pyyaml"]
-schema-gui  = ["streamlit>=1.35", "pandas", "ruff"]
-dev         = ["pytest>=8", "ruff", "mypy", "scipy", "statsmodels", "jsonschema", "pyyaml", "scikit-learn", "pyarrow"]
-all         = ["digital-registrar-research[annotation,benchmarks,ablations,schema-gui,dev]"]
+dev = ["pytest>=8", "ruff", "mypy", "build", "twine", "pyarrow"]
 
 [project.scripts]
-registrar-pipeline  = "digital_registrar_research.runner:main"
-registrar-annotate  = "digital_registrar_research.annotation.app:main_cli"
-registrar-annotate-workspace = "digital_registrar_research.annotation.app_canonical:main_cli_workspace"
-registrar-annotate-dummy     = "digital_registrar_research.annotation.app_canonical:main_cli_dummy"
-registrar-benchmark = "digital_registrar_research.benchmarks.eval.run_all:main"
-registrar-ablate    = "digital_registrar_research.ablations.eval.run_ablations:main"
-registrar-schemas   = "digital_registrar_research.schemas.generate:main"
-registrar-schema-gui = "digital_registrar_research.schema_gui.app:main_cli"
-registrar-infer-gui  = "digital_registrar_research.inference_gui.app:main_cli"
+registrar-pipeline = "digital_registrar.runner:main"
+registrar-schemas = "digital_registrar.schemas.generate:main"
+registrar-eval = "digital_registrar.eval.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/kblab2024/digital-registrar-research"
-"Slim release" = "https://github.com/kblab2024/digitalregistrar"
+Homepage = "https://github.com/kblab2024/digitalregistrar"
+Preprint = "https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8"
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -60,11 +57,8 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"digital_registrar_research.schemas" = ["data/*.json", "aliases/*.toml", "_templates/*.tmpl"]
-"digital_registrar_research.staging" = ["data/*.zip"]
-
-[tool.uv.sources]
-tnmhelper = { path = "vendor/tnmhelper-0.1.0-py3-none-any.whl" }
+"digital_registrar.schemas" = ["data/*.json", "aliases/*.toml", "_templates/*.tmpl"]
+"digital_registrar.staging" = ["data/*.zip"]
 
 [tool.ruff]
 line-length = 120
@@ -78,5 +72,5 @@ ignore = ["E501"]
 combine-as-imports = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "apps/infer-gui/tests", "apps/schema-editor/tests", "apps/annotator/tests"]
 pythonpath = ["src"]

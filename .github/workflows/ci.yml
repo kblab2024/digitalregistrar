@@ -18,11 +18,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - name: Install
-        run: pip install -e .[dev]
+      - name: Install vendor wheel (tnmhelper)
+        run: pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
+      - name: Install core (digital-registrar) + dev tools
+        run: pip install -e ".[dev]"
+      - name: Install apps
+        run: |
+          pip install -e apps/infer-gui
+          pip install -e apps/schema-editor
+          pip install -e apps/annotator
       - name: Lint
-        run: ruff check src/ tests/
-      - name: Test
-        run: pytest -q
+        run: ruff check src apps tests
+      - name: Test (core + app suites; attic excluded)
+        run: pytest -q tests apps/infer-gui/tests apps/schema-editor/tests apps/annotator/tests
       - name: Schema concordance (Pydantic ↔ JSON)
-        run: python -m digital_registrar_research.schemas.generate --check
+        run: python -m digital_registrar.schemas.generate --check

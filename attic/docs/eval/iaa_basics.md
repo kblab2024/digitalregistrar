@@ -13,7 +13,7 @@ Two raters, possibly with different label distributions. Subtracts chance agreem
 - **Unweighted κ** — for nominal categoricals (e.g. `cancer_category`). Treats off-diagonal cells equally.
 - **Quadratic-weighted κ** — for ordinals (`grade`, `pt_category`). "Off by one" gets less penalty than "off by three." Use this whenever the field has a natural ordering.
 
-**Implementation:** `sklearn.metrics.cohen_kappa_score(weights=None|"quadratic", labels=ordinal_order)` (Pedregosa et al., 2011); also `digital_registrar_research.benchmarks.eval.iaa.cohen_kappa`.
+**Implementation:** `sklearn.metrics.cohen_kappa_score(weights=None|"quadratic", labels=ordinal_order)` (Pedregosa et al., 2011); also `drr_attic.benchmarks.eval.iaa.cohen_kappa`.
 **References:** Cohen, J. (1960, 1968). *(see [methods_citations.md](methods_citations.md))*
 **Output:** `iaa/pair_*.csv` rows with `stat_name = cohen_kappa_unweighted` or `cohen_kappa_quadratic`.
 
@@ -34,7 +34,7 @@ Reference: Landis, J. R., & Koch, G. G. (1977). "The measurement of observer agr
 
 Generalisation of Cohen's κ to N raters per item. Used internally for multi-run consistency analysis (treating each run as a "rater").
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.multirun.fleiss_kappa` (in-house). Library equivalent: `statsmodels.stats.inter_rater.fleiss_kappa`.
+**Implementation:** `drr_attic.benchmarks.eval.multirun.fleiss_kappa` (in-house). Library equivalent: `statsmodels.stats.inter_rater.fleiss_kappa`.
 **Reference:** Fleiss, J. L. (1971). "Measuring nominal scale agreement among many raters." *Psychological Bulletin* 76 (5): 378–382.
 **Output:** `non_nested/run_consistency.csv` (`fleiss_kappa_correctness`, `fleiss_kappa_values`).
 
@@ -46,7 +46,7 @@ Handles nominal / ordinal / interval data, missing values, any number of raters.
 - `krippendorff_alpha_ordinal` — for ordinals.
 - `krippendorff_alpha_interval` — for continuous values.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.iaa.krippendorff_alpha` (in-house). Library equivalent: `krippendorff.alpha` from the `krippendorff` PyPI package.
+**Implementation:** `drr_attic.benchmarks.eval.iaa.krippendorff_alpha` (in-house). Library equivalent: `krippendorff.alpha` from the `krippendorff` PyPI package.
 **Reference:** Krippendorff, K. (2004). *Content Analysis: An Introduction to Its Methodology* (2nd ed.). Sage. Ch. 11.
 **Output:** `iaa/whole_report.csv`.
 
@@ -101,7 +101,7 @@ Robust ordinal correlation handling ties. Reported alongside quadratic κ for or
 
 Tests whether two raters' disagreements are *symmetric*. Asymmetric disagreement (rater A says yes when B says no much more often than the reverse) suggests systematic bias.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.ci.mcnemar_test` (in-house, with continuity correction and exact binomial fallback for small n). Library equivalent: `statsmodels.stats.contingency_tables.mcnemar`.
+**Implementation:** `digital_registrar.eval.ci.mcnemar_test` (in-house, with continuity correction and exact binomial fallback for small n). Library equivalent: `statsmodels.stats.contingency_tables.mcnemar`.
 **Reference:** McNemar, Q. (1947). "Note on the sampling error of the difference between correlated proportions or percentages." *Psychometrika* 12 (2): 153–157.
 
 ## Coverage κ — agreement on attempted-vs-null
@@ -199,7 +199,7 @@ Optional flags:
 - `--n-confusion N` — top-N categorical fields by disagreement count to write as confusion matrices (default 20).
 - `--top-fields K` — top-K most-disagreed fields shown in the markdown summary (default 10).
 
-**Implementation:** `scripts.eval.iaa.run_iaa_pair`; library at `digital_registrar_research.benchmarks.eval.iaa_headline`.
+**Implementation:** `scripts.eval.iaa.run_iaa_pair`; library at `drr_attic.benchmarks.eval.iaa_headline`.
 
 ## Disagreement resolution dynamics
 

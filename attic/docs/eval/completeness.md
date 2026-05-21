@@ -44,7 +44,7 @@ For every (field, organ) summary:
 
 The gap, **`completeness_penalty = attempted_accuracy − effective_accuracy`**, is the headline of the modularity ablation. If two models report `attempted_accuracy = 0.92` but `effective_accuracy = 0.91 vs 0.65`, the second model is "skipping" a third of its questions. Reporting only the first number hides this.
 
-**Implementation:** `scripts/eval/_common/outcome.py:classify_outcome`. Per-field aggregation: `digital_registrar_research.benchmarks.eval.completeness.aggregate_missingness`.
+**Implementation:** `scripts/eval/_common/outcome.py:classify_outcome`. Per-field aggregation: `digital_registrar.eval.completeness.aggregate_missingness`.
 **Reference:** This three-way decomposition is foundational to the project's modularity argument; not a published metric per se but standard practice in structured-extraction evaluation (see e.g. Jurafsky & Martin, *Speech and Language Processing*, Ch. on Information Extraction).
 
 ## Missingness rates with Wilson CI
@@ -58,7 +58,7 @@ For each (field, organ):
 
 Each rate is reported with a Wilson 95% confidence interval.
 
-**Implementation:** `statsmodels.stats.proportion.proportion_confint(method="wilson")` (Seabold & Perktold, 2010), wrapped by `digital_registrar_research.benchmarks.eval.ci.wilson_ci`.
+**Implementation:** `statsmodels.stats.proportion.proportion_confint(method="wilson")` (Seabold & Perktold, 2010), wrapped by `digital_registrar.eval.ci.wilson_ci`.
 **Reference:** Wilson, E. B. (1927). "Probable inference, the law of succession, and statistical inference." *JASA* 22 (158): 209–212.
 
 ## Error-mode decomposition
@@ -87,7 +87,7 @@ For each (field, organ) we report:
 
 The headline pairing: a modular schema-constrained pipeline should have `oov_rate ≈ 0`; a raw-JSON pipeline typically does not. The gap is the *measurable benefit of schema constraints*.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.completeness.out_of_vocab_rate`. Output: `non_nested/schema_conformance.csv`, `completeness/schema_conformance_per_method.csv`.
+**Implementation:** `digital_registrar.eval.completeness.out_of_vocab_rate`. Output: `non_nested/schema_conformance.csv`, `completeness/schema_conformance_per_method.csv`.
 
 ## Refusal calibration — justified vs lazy missingness
 
@@ -106,7 +106,7 @@ For each (field, organ):
 
 Distinct from `parse_error_rate` (runtime failure) and `field_missing_rate` (just counting nulls without checking gold). This calibration ratio tells you whether the model's silence is principled or evasive.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.completeness.refusal_calibration`. Output: `non_nested/refusal_calibration.csv`, `completeness/refusal_calibration.csv`.
+**Implementation:** `digital_registrar.eval.completeness.refusal_calibration`. Output: `non_nested/refusal_calibration.csv`, `completeness/refusal_calibration.csv`.
 
 ## Position-in-schema correlation (context-window-pressure test)
 
@@ -114,7 +114,7 @@ If the model drops fields preferentially **late in the schema**, that's a smokin
 
 We compute the Spearman correlation ρ between (a) the field's index in the canonical schema and (b) its `field_missing_rate`. Positive ρ → late-schema fields are missing more often.
 
-**Implementation:** `scipy.stats.spearmanr` (Virtanen et al., 2020). Wrapped by `digital_registrar_research.benchmarks.eval.completeness.position_in_schema_correlation`. Output: `completeness/position_in_schema_correlation.csv`.
+**Implementation:** `scipy.stats.spearmanr` (Virtanen et al., 2020). Wrapped by `digital_registrar.eval.completeness.position_in_schema_correlation`. Output: `completeness/position_in_schema_correlation.csv`.
 
 ## Method-pair Δ — the modularity-advantage table
 
@@ -126,7 +126,7 @@ Cross-method comparison: for every pair of methods × every (field, organ), repo
 
 Sorted descending by `|delta_attempted_rate|`, this is **the** ablation headline: the fields where method A's modular schema produces *measurably higher* completeness than method B's monolithic raw JSON.
 
-**Implementation:** McNemar via `digital_registrar_research.benchmarks.eval.ci.mcnemar_test`. Aggregation: `completeness.method_pair_deltas`. Output: `completeness/method_pairwise_deltas.csv`, `completeness/modularity_advantage.csv`.
+**Implementation:** McNemar via `digital_registrar.eval.ci.mcnemar_test`. Aggregation: `completeness.method_pair_deltas`. Output: `completeness/method_pairwise_deltas.csv`, `completeness/modularity_advantage.csv`.
 **Reference:** McNemar, Q. (1947). "Note on the sampling error of the difference between correlated proportions or percentages." *Psychometrika* 12 (2): 153–157.
 
 ## What to do if your numbers are bad

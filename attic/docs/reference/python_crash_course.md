@@ -7,7 +7,7 @@ type-system idioms (`from __future__ import annotations`, `type[X]`,
 
 The toy example threaded through this doc is a miniature "pet adoption"
 signature factory, structurally analogous to the real organ-schema → DSPy
-factory in [src/digital_registrar_research/signatures/](../../src/digital_registrar_research/signatures/).
+factory in [src/digital_registrar/signatures/](../../src/digital_registrar/signatures/).
 
 ---
 
@@ -118,9 +118,9 @@ like Pydantic and DSPy resolve those strings later, when all the names
 they reference are already defined.
 
 > **In this repo:** every module in `signatures/` and `schemas/pydantic/`
-> opens with this line. See [factory.py:17](../../src/digital_registrar_research/signatures/factory.py#L17),
-> [_signature_annotation.py:20](../../src/digital_registrar_research/signatures/_signature_annotation.py#L20),
-> [_enums.py:15](../../src/digital_registrar_research/schemas/pydantic/_enums.py#L15).
+> opens with this line. See [factory.py:17](../../src/digital_registrar/signatures/factory.py#L17),
+> [_signature_annotation.py:20](../../src/digital_registrar/signatures/_signature_annotation.py#L20),
+> [_enums.py:15](../../src/digital_registrar/schemas/pydantic/_enums.py#L15).
 
 Side effect to know about: because annotations are now strings, you
 can't introspect them with naive `Foo.__annotations__` — you must
@@ -161,7 +161,7 @@ listed strings.
 
 > **In this repo:** the whole point of the StrEnum → `Literal[...]`
 > rewrite in `_signature_annotation.py` is so that DSPy sees a closed
-> vocabulary. See [_signature_annotation.py:33-42](../../src/digital_registrar_research/signatures/_signature_annotation.py#L33-L42).
+> vocabulary. See [_signature_annotation.py:33-42](../../src/digital_registrar/signatures/_signature_annotation.py#L33-L42).
 
 ### 2.5 Generic builtins and introspection
 
@@ -193,7 +193,7 @@ This is exactly how the factory's annotation walker peels apart a
 nested annotation like `list[BreastMargin | None]` to recursively rewrite
 each piece.
 
-> **In this repo:** see [_signature_annotation.py:75-76](../../src/digital_registrar_research/signatures/_signature_annotation.py#L75-L76).
+> **In this repo:** see [_signature_annotation.py:75-76](../../src/digital_registrar/signatures/_signature_annotation.py#L75-L76).
 > Lines like `origin = _t.get_origin(annotation); args = _t.get_args(annotation)`
 > are the entire mechanism for "look inside this type."
 
@@ -246,7 +246,7 @@ Use it when the function has nothing to do with a specific instance but
 > **In this repo:** `LowerStrEnum._generate_next_value_` is a
 > `@staticmethod` because Python's enum machinery calls it without an
 > instance — there is no instance yet at the moment Python is deciding
-> what value to assign. See [_enums.py:32-34](../../src/digital_registrar_research/schemas/pydantic/_enums.py#L32-L34).
+> what value to assign. See [_enums.py:32-34](../../src/digital_registrar/schemas/pydantic/_enums.py#L32-L34).
 
 ### 3.2 `@classmethod`
 
@@ -293,7 +293,7 @@ Restrictions: all arguments must be hashable.
 > it manages a module-level dict `_REBUILD_CACHE` for the same reason
 > (caching expensive `create_model` calls so DSPy's `custom_types` dict
 > stays stable across re-builds). See
-> [_signature_annotation.py:127](../../src/digital_registrar_research/signatures/_signature_annotation.py#L127).
+> [_signature_annotation.py:127](../../src/digital_registrar/signatures/_signature_annotation.py#L127).
 > The manual approach is used because the cache key is a tuple including
 > `id(...)` of the source class, which a function-level decorator
 > couldn't express as cleanly.
@@ -403,7 +403,7 @@ frozen instance raises `FrozenInstanceError`. Two consequences:
 >     group: str
 > ```
 >
-> See [factory.py:71-83](../../src/digital_registrar_research/signatures/factory.py#L71-L83).
+> See [factory.py:71-83](../../src/digital_registrar/signatures/factory.py#L71-L83).
 > Note `signature: type[dspy.Signature]` — the field holds a class, not
 > an instance. We will unpack `type[...]` in section 10.
 
@@ -541,7 +541,7 @@ The four arguments:
 For `StrEnum`, the default `_generate_next_value_` already does
 `name.lower()`. So why does this repo redefine it?
 
-> **In this repo:** [_enums.py:20-34](../../src/digital_registrar_research/schemas/pydantic/_enums.py#L20-L34).
+> **In this repo:** [_enums.py:20-34](../../src/digital_registrar/schemas/pydantic/_enums.py#L20-L34).
 > The reason is that the upstream behavior changed across CPython
 > versions, and pinning the override locally makes the contract explicit
 > and version-independent. It also documents intent for readers — the
@@ -694,7 +694,7 @@ back into their StrEnum members. Pydantic v2 does this automatically.
 > StrEnum → `Literal[...]` rewrite safe. The factory tells DSPy "expect
 > a string from this finite set," and Pydantic re-coerces the string
 > back into the StrEnum member on parse. See the docstring at
-> [_signature_annotation.py:16-18](../../src/digital_registrar_research/signatures/_signature_annotation.py#L16-L18).
+> [_signature_annotation.py:16-18](../../src/digital_registrar/signatures/_signature_annotation.py#L16-L18).
 
 ### 6.6 `create_model` — building classes at runtime
 
@@ -728,7 +728,7 @@ by hand. The string `"Name"` becomes the class's `__name__`.
 > **In this repo:** the factory uses `create_model` to *rebuild* each
 > nested `BaseModel` with rewritten annotations (StrEnum → Literal) and
 > with descriptions injected from the extraction metadata. See
-> [_signature_annotation.py:177-181](../../src/digital_registrar_research/signatures/_signature_annotation.py#L177-L181).
+> [_signature_annotation.py:177-181](../../src/digital_registrar/signatures/_signature_annotation.py#L177-L181).
 > The cleaned-up class is what gets handed to DSPy's `custom_types`
 > dict so the LM sees the right JSON schema.
 
@@ -830,8 +830,8 @@ schema, configuration, or extraction metadata). The class form is what
 you use for static, hand-authored signatures.
 
 > **In this repo:** the static example is `StageFromReport` in
-> [staging/README.md:55-63](../../src/digital_registrar_research/staging/README.md#L55-L63).
-> The dynamic call is in [factory.py:114-120](../../src/digital_registrar_research/signatures/factory.py#L114-L120).
+> [staging/README.md:55-63](../../src/digital_registrar/staging/README.md#L55-L63).
+> The dynamic call is in [factory.py:114-120](../../src/digital_registrar/signatures/factory.py#L114-L120).
 > The factory specifically needs `make_signature` because it has to
 > pass `custom_types` for nested `BaseModel` references — the class
 > form doesn't expose that knob.
@@ -873,10 +873,10 @@ sig = make_signature(
 )
 ```
 
-> **In this repo:** see [factory.py:13-15](../../src/digital_registrar_research/signatures/factory.py#L13-L15)
-> for the rationale, and [factory.py:118](../../src/digital_registrar_research/signatures/factory.py#L118)
+> **In this repo:** see [factory.py:13-15](../../src/digital_registrar/signatures/factory.py#L13-L15)
+> for the rationale, and [factory.py:118](../../src/digital_registrar/signatures/factory.py#L118)
 > for the call site. The `_collect_custom_types_from_annotation` helper
-> at [factory.py:159-167](../../src/digital_registrar_research/signatures/factory.py#L159-L167)
+> at [factory.py:159-167](../../src/digital_registrar/signatures/factory.py#L159-L167)
 > walks the rewritten annotation to populate this dict.
 
 ---
@@ -908,8 +908,8 @@ Signature's schema, and returns a `dspy.Prediction` object whose
 attributes match the output field names.
 
 > **In this repo:** `dspy.Predict` is wired in the production pipeline at
-> [pipeline_factory.py:83](../../src/digital_registrar_research/pipeline_factory.py#L83)
-> (router) and [pipeline_factory.py:120](../../src/digital_registrar_research/pipeline_factory.py#L120)
+> [pipeline_factory.py:83](../../src/digital_registrar/pipeline_factory.py#L83)
+> (router) and [pipeline_factory.py:120](../../src/digital_registrar/pipeline_factory.py#L120)
 > (per-step extractors). Each `ExtractionStep` produced by the factory
 > gets paired with a `dspy.Predict` instance.
 
@@ -931,7 +931,7 @@ The Signature stays *exactly the same*. The change is purely in the
 wrapper.
 
 > **In this repo:** see the ablation runner that swaps `Predict` for
-> `ChainOfThought` at [ablations/runners/chain_of_thought.py:38](../../src/digital_registrar_research/ablations/runners/chain_of_thought.py#L38):
+> `ChainOfThought` at [ablations/runners/chain_of_thought.py:38](../../src/digital_registrar/ablations/runners/chain_of_thought.py#L38):
 >
 > ```python
 > def _make_predict(sig, use_cot: bool):
@@ -959,7 +959,7 @@ result = predictor(report="...")
 `max_iters` is a safety cap — if the LM hasn't emitted final outputs
 after that many tool calls, the loop terminates.
 
-> **In this repo:** [staging/README.md:62](../../src/digital_registrar_research/staging/README.md#L62)
+> **In this repo:** [staging/README.md:62](../../src/digital_registrar/staging/README.md#L62)
 > shows the agent:
 >
 > ```python
@@ -1022,7 +1022,7 @@ not docs for human developers. Write it like a prompt:
 - Describe the return shape.
 - Mention valid values, units, edge cases.
 
-> **In this repo:** look at the descriptions in [staging/tools.py:8-31](../../src/digital_registrar_research/staging/tools.py#L8-L31).
+> **In this repo:** look at the descriptions in [staging/tools.py:8-31](../../src/digital_registrar/staging/tools.py#L8-L31).
 > Each one spells out every argument's type and meaning, the return
 > shape, and when to call the tool. None of that is for a Python
 > developer; it's for an LM that has never seen the wrapped function.
@@ -1105,9 +1105,9 @@ class ExtractionStep:
 object — the class that `dspy.Predict(...)` will be called on later, not
 an already-run prediction."
 
-> **In this repo:** [factory.py:81](../../src/digital_registrar_research/signatures/factory.py#L81)
+> **In this repo:** [factory.py:81](../../src/digital_registrar/signatures/factory.py#L81)
 > declares `signature: type[dspy.Signature]`. Downstream at
-> [pipeline_factory.py:120](../../src/digital_registrar_research/pipeline_factory.py#L120),
+> [pipeline_factory.py:120](../../src/digital_registrar/pipeline_factory.py#L120),
 > the pipeline does `dspy.Predict(s.signature)` — it calls `Predict` on
 > the class, not on an instance.
 
@@ -1163,7 +1163,7 @@ That's the *authoring* schema — the kind of thing a human would
 hand-edit. It uses StrEnum (closed vocab), nested `BaseModel`
 (`VetVisit`), and field descriptions on every annotation.
 
-> Mirrors [schemas/pydantic/prostate.py](../../src/digital_registrar_research/schemas/pydantic/prostate.py)
+> Mirrors [schemas/pydantic/prostate.py](../../src/digital_registrar/schemas/pydantic/prostate.py)
 > in style.
 
 ### 11.2 Stage 2 — rewrite the StrEnum to `Literal`
@@ -1181,7 +1181,7 @@ def enum_to_literal(enum_cls: type[Enum]) -> Any:
 `Literal["dog", "cat", "rabbit", "not_stated"]`. DSPy will turn that
 into a closed JSON-schema enum and the LM is forced to pick one.
 
-> Mirrors [_signature_annotation.py:33-42](../../src/digital_registrar_research/signatures/_signature_annotation.py#L33-L42).
+> Mirrors [_signature_annotation.py:33-42](../../src/digital_registrar/signatures/_signature_annotation.py#L33-L42).
 
 ### 11.3 Stage 3 — walk a (possibly nested) annotation
 
@@ -1217,7 +1217,7 @@ walk(PetSpecies | None)           # Literal[...] | None
 walk(list[PetSpecies])            # list[Literal[...]]
 ```
 
-> Mirrors [_signature_annotation.py:50-95](../../src/digital_registrar_research/signatures/_signature_annotation.py#L50-L95).
+> Mirrors [_signature_annotation.py:50-95](../../src/digital_registrar/signatures/_signature_annotation.py#L50-L95).
 
 ### 11.4 Stage 4 — rebuild the nested `BaseModel` with `create_model`
 
@@ -1239,7 +1239,7 @@ def rebuild(cls: type[BaseModel]) -> type[BaseModel]:
 ```
 
 > Mirrors the real `rebuild_basemodel_for_dspy` at
-> [_signature_annotation.py:130-185](../../src/digital_registrar_research/signatures/_signature_annotation.py#L130-L185).
+> [_signature_annotation.py:130-185](../../src/digital_registrar/signatures/_signature_annotation.py#L130-L185).
 
 ### 11.5 Stage 5 — build the DSPy Signature
 
@@ -1275,7 +1275,7 @@ def build_signature_for(case_cls: type[BaseModel]) -> type[dspy.Signature]:
     )
 ```
 
-> Mirrors [factory.py:86-120](../../src/digital_registrar_research/signatures/factory.py#L86-L120).
+> Mirrors [factory.py:86-120](../../src/digital_registrar/signatures/factory.py#L86-L120).
 
 ### 11.6 Stage 6 — wrap the result in a step record
 
@@ -1289,7 +1289,7 @@ class TinyStep:
     output_field_names: tuple[str, ...]
 ```
 
-> Mirrors [factory.py:71-83](../../src/digital_registrar_research/signatures/factory.py#L71-L83).
+> Mirrors [factory.py:71-83](../../src/digital_registrar/signatures/factory.py#L71-L83).
 
 ### 11.7 Stage 7 — verify by printing the JSON schema
 
@@ -1331,13 +1331,13 @@ the Signature changed.
 
 | Toy stage | Mirrors in the real factory |
 | --- | --- |
-| 11.1 `LowerStrEnum`, `PetAdoptionCase` | [_enums.py:20-34](../../src/digital_registrar_research/schemas/pydantic/_enums.py#L20-L34), [schemas/pydantic/prostate.py](../../src/digital_registrar_research/schemas/pydantic/prostate.py) |
-| 11.2 `enum_to_literal` | [_signature_annotation.py:33-42](../../src/digital_registrar_research/signatures/_signature_annotation.py#L33-L42) |
-| 11.3 `walk` | [_signature_annotation.py:50-95](../../src/digital_registrar_research/signatures/_signature_annotation.py#L50-L95) |
-| 11.4 `rebuild` | [_signature_annotation.py:130-185](../../src/digital_registrar_research/signatures/_signature_annotation.py#L130-L185) |
-| 11.5 `build_signature_for` | [factory.py:86-120](../../src/digital_registrar_research/signatures/factory.py#L86-L120) |
-| 11.6 `TinyStep` | [factory.py:71-83](../../src/digital_registrar_research/signatures/factory.py#L71-L83) |
-| 11.7 verification | use [pipeline_factory.py:120](../../src/digital_registrar_research/pipeline_factory.py#L120) for the production version |
+| 11.1 `LowerStrEnum`, `PetAdoptionCase` | [_enums.py:20-34](../../src/digital_registrar/schemas/pydantic/_enums.py#L20-L34), [schemas/pydantic/prostate.py](../../src/digital_registrar/schemas/pydantic/prostate.py) |
+| 11.2 `enum_to_literal` | [_signature_annotation.py:33-42](../../src/digital_registrar/signatures/_signature_annotation.py#L33-L42) |
+| 11.3 `walk` | [_signature_annotation.py:50-95](../../src/digital_registrar/signatures/_signature_annotation.py#L50-L95) |
+| 11.4 `rebuild` | [_signature_annotation.py:130-185](../../src/digital_registrar/signatures/_signature_annotation.py#L130-L185) |
+| 11.5 `build_signature_for` | [factory.py:86-120](../../src/digital_registrar/signatures/factory.py#L86-L120) |
+| 11.6 `TinyStep` | [factory.py:71-83](../../src/digital_registrar/signatures/factory.py#L71-L83) |
+| 11.7 verification | use [pipeline_factory.py:120](../../src/digital_registrar/pipeline_factory.py#L120) for the production version |
 
 ---
 
@@ -1417,9 +1417,9 @@ check the rabbit fee, it would have called the tool twice.
 | Toy stage | Real-staging mirror |
 | --- | --- |
 | 12.1 plain function | `stage_from_observations` in the staging adapter |
-| 12.2 `dspy.Tool(func=..., desc=...)` | [staging/tools.py:8-20](../../src/digital_registrar_research/staging/tools.py#L8-L20) |
-| 12.3 `RecommendPet` Signature (class form) | `StageFromReport` in [staging/README.md:55-63](../../src/digital_registrar_research/staging/README.md#L55-L63) |
-| 12.4 `dspy.ReAct(...)` | [staging/README.md:62](../../src/digital_registrar_research/staging/README.md#L62) |
+| 12.2 `dspy.Tool(func=..., desc=...)` | [staging/tools.py:8-20](../../src/digital_registrar/staging/tools.py#L8-L20) |
+| 12.3 `RecommendPet` Signature (class form) | `StageFromReport` in [staging/README.md:55-63](../../src/digital_registrar/staging/README.md#L55-L63) |
+| 12.4 `dspy.ReAct(...)` | [staging/README.md:62](../../src/digital_registrar/staging/README.md#L62) |
 
 ### 12.7 Two rules of thumb
 
@@ -1442,14 +1442,14 @@ Symptom → cause → fix. Skim down the table.
 ### 13.1 "I changed an enum and DSPy doesn't see the new value"
 
 **Cause**: the per-process `_REBUILD_CACHE` in
-[_signature_annotation.py:127](../../src/digital_registrar_research/signatures/_signature_annotation.py#L127)
+[_signature_annotation.py:127](../../src/digital_registrar/signatures/_signature_annotation.py#L127)
 is still holding the old rebuilt class.
 
 **Fix**: restart the REPL / kernel. If you're hot-reloading in a
 notebook, clear the cache explicitly:
 
 ```python
-from digital_registrar_research.signatures import _signature_annotation
+from digital_registrar.signatures import _signature_annotation
 _signature_annotation._REBUILD_CACHE.clear()
 ```
 
@@ -1472,7 +1472,7 @@ at runtime.
 factory didn't pass it via `custom_types`.
 
 **Fix**: trace through `_collect_custom_types_from_annotation` at
-[factory.py:159-167](../../src/digital_registrar_research/signatures/factory.py#L159-L167)
+[factory.py:159-167](../../src/digital_registrar/signatures/factory.py#L159-L167)
 on the rewritten annotation. The nested class needs to land in the dict
 under its `__name__`.
 
@@ -1500,7 +1500,7 @@ dspy.inspect_history(n=1)        # last 1 LM call
 ### 13.6 "How do I add a new closed vocabulary?"
 
 1. Add a new `LowerStrEnum` subclass in
-   [schemas/pydantic/_enums.py](../../src/digital_registrar_research/schemas/pydantic/_enums.py).
+   [schemas/pydantic/_enums.py](../../src/digital_registrar/schemas/pydantic/_enums.py).
 2. Use it as a field annotation in the relevant case-model
    (`schemas/pydantic/<organ>.py`).
 3. No factory changes needed — the annotation walker picks it up
@@ -1610,4 +1610,4 @@ In this repo:
 - [docs/architecture/schemas.md](../architecture/schemas.md) — how the two-layer schema authoring works.
 - [docs/architecture/dspy_deep_dive.md](../architecture/dspy_deep_dive.md) — deeper notes on DSPy in this codebase.
 - [docs/reference/schema_gui_blueprint.md](schema_gui_blueprint.md) — the schema-editor blueprint that the case-models feed into.
-- [src/digital_registrar_research/staging/README.md](../../src/digital_registrar_research/staging/README.md) — the real-world ReAct + Tool example referenced throughout section 12.
+- [src/digital_registrar/staging/README.md](../../src/digital_registrar/staging/README.md) — the real-world ReAct + Tool example referenced throughout section 12.

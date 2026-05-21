@@ -62,7 +62,7 @@ both gold and prediction before scoring.
 ## 2. Method registry
 
 Each entry below names the public function (importable from
-`digital_registrar_research.benchmarks.eval.stats`), the formula it
+`drr_attic.benchmarks.eval.stats`), the formula it
 implements, when to use it, and the chapter CSV it lives in.
 
 ### 2.1 Confidence intervals (`stats.ci`)

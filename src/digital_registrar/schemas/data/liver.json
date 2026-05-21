@@ -1,0 +1,563 @@
+{
+  "$comment": "AUTO-GENERATED — DO NOT EDIT. Source of truth: src/digital_registrar/schemas/pydantic/liver.py + src/digital_registrar/schemas/extraction/liver.py + src/digital_registrar/schemas/aliases/liver.toml (if present). Regenerate via `registrar-schemas`. CI fails on drift.",
+  "$defs": {
+    "LiverHistology": {
+      "enum": [
+        "hepatocellular_carcinoma",
+        "hepatocellular_carcinoma_fibrolamellar",
+        "hepatocellular_carcinoma_scirrhous",
+        "hepatocellular_carcinoma_clear_cell",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverHistology",
+      "type": "string"
+    },
+    "LiverLN": {
+      "properties": {
+        "examined": {
+          "title": "Examined",
+          "type": "integer"
+        },
+        "involved": {
+          "title": "Involved",
+          "type": "integer"
+        },
+        "station_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "specify the name of the lymph node station here.",
+          "title": "Station Name"
+        }
+      },
+      "required": [
+        "involved",
+        "examined"
+      ],
+      "title": "LiverLN",
+      "type": "object"
+    },
+    "LiverMargin": {
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "distance": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "If margin is involved, return 0. If margin is uninvolved/free, try your best to find the distance at both microscopic and macroscopic(gross) description, and specify the distance from tumor to margin in mm, rounded to integer. If the margin is uninvolved/free and, after your best effort, the distance is still not specified, return null",
+          "title": "Distance"
+        },
+        "margin_category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LiverMarginSite"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "acceptable value for surgical margins in liver cancer. If not included in these standard margins, should be classified as others.",
+          "title": "Margin Category"
+        },
+        "margin_involved": {
+          "title": "Margin Involved",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "margin_involved"
+      ],
+      "title": "LiverMargin",
+      "type": "object"
+    },
+    "LiverMarginSite": {
+      "enum": [
+        "parenchymal",
+        "hepatic_vein",
+        "portal_vein",
+        "bile_duct",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverMarginSite",
+      "type": "string"
+    },
+    "LiverOverallStage": {
+      "enum": [
+        "stageia",
+        "stageib",
+        "stageii",
+        "stageiiia",
+        "stageiiib",
+        "stageiva",
+        "stageivb",
+        "not_stated"
+      ],
+      "title": "LiverOverallStage",
+      "type": "string"
+    },
+    "LiverPN": {
+      "enum": [
+        "nx",
+        "n0",
+        "n1",
+        "not_stated"
+      ],
+      "title": "LiverPN",
+      "type": "string"
+    },
+    "LiverPT": {
+      "enum": [
+        "tx",
+        "t1a",
+        "t1b",
+        "t2",
+        "t3",
+        "t4",
+        "not_stated"
+      ],
+      "title": "LiverPT",
+      "type": "string"
+    },
+    "LiverProcedure": {
+      "enum": [
+        "wedge_resection",
+        "partial_hepatectomy",
+        "segmentectomy",
+        "lobectomy",
+        "total_hepatectomy",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverProcedure",
+      "type": "string"
+    },
+    "LiverTumorExtent": {
+      "enum": [
+        "hepatic_vein",
+        "portal_vein",
+        "visceral_peritoneum",
+        "gallbladder",
+        "diaphragm",
+        "others"
+      ],
+      "title": "LiverTumorExtent",
+      "type": "string"
+    },
+    "LiverTumorFocality": {
+      "enum": [
+        "unifocal",
+        "multifocal",
+        "not_stated"
+      ],
+      "title": "LiverTumorFocality",
+      "type": "string"
+    },
+    "LiverTumorSite": {
+      "enum": [
+        "right_lobe",
+        "left_lobe",
+        "caudate_lobe",
+        "quadrate_lobe",
+        "others",
+        "not_stated"
+      ],
+      "title": "LiverTumorSite",
+      "type": "string"
+    },
+    "LiverVascularInvasion": {
+      "enum": [
+        "large_hepatic_vein",
+        "large_portal_vein",
+        "small_vessel"
+      ],
+      "title": "LiverVascularInvasion",
+      "type": "string"
+    },
+    "PMCategory": {
+      "description": "Pathologic M category. ``mx`` covers the legacy \"cM0/cM1 → code as mx\" rule.",
+      "enum": [
+        "mx",
+        "m0",
+        "m1",
+        "not_stated"
+      ],
+      "title": "PMCategory",
+      "type": "string"
+    },
+    "TNMDescriptor": {
+      "description": "Standard TNM descriptor prefixes used across organs.",
+      "enum": [
+        "y",
+        "r",
+        "m",
+        "not_stated"
+      ],
+      "title": "TNMDescriptor",
+      "type": "string"
+    }
+  },
+  "description": "Canonical extracted case record for liver cancer.",
+  "properties": {
+    "ajcc_version": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the ajcc version of the pathological staging",
+      "dspy_desc": "identify the ajcc version of the pathological staging",
+      "group": "staging",
+      "title": "Ajcc Version"
+    },
+    "distant_metastasis": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not distant metastasis is present",
+      "dspy_desc": "check whether or not distant metastasis is present",
+      "group": "nonnested",
+      "title": "Distant Metastasis"
+    },
+    "extranodal_extension": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+      "dspy_desc": "check whether or not extranodal extension is present; if no lymph node metastasis, should be None",
+      "group": "lymph_nodes",
+      "title": "Extranodal Extension"
+    },
+    "grade": {
+      "anyOf": [
+        {
+          "enum": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the grade of the cancer, well->1, moderate->2, poor->3, undifferentiated->4",
+      "dspy_desc": "identify the grade of the cancer, well->1, moderate->2, poor->3, undifferentiated->4",
+      "group": "nonnested",
+      "title": "Grade"
+    },
+    "histology": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverHistology"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the histological type of the cancer. e.g. invasive carcinoma of no special type",
+      "dspy_desc": "identify the histological type of the cancer. e.g. invasive carcinoma of no special type",
+      "group": "nonnested",
+      "title": "Histology"
+    },
+    "margins": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LiverMargin"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"proximal_duodenal\", \"margin_involved\": true, \"distance\": null}, {\"margin_category\": \"anterior_outmost\", \"margin_involved\": false, \"distance\": 10}, {\"margin_category\": \"radial\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "dspy_desc": "return all of the possible involved margins and its distance from cancer. example:[{\"margin_category\": \"proximal_duodenal\", \"margin_involved\": true, \"distance\": null}, {\"margin_category\": \"anterior_outmost\", \"margin_involved\": false, \"distance\": 10}, {\"margin_category\": \"radial\", \"margin_involved\": false, \"distance\": null}]. If not present, just output null for every margin",
+      "group": "margins",
+      "title": "Margins"
+    },
+    "maximal_ln_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+      "dspy_desc": "check the maximal size of node metastatic tumor in mm, rounded to integer; if no lymph node metastasis, should be None",
+      "group": "lymph_nodes",
+      "title": "Maximal Ln Size"
+    },
+    "overall_stage": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverOverallStage"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the overall stage of the tumor",
+      "dspy_desc": "identify the overall stage of the tumor",
+      "group": "staging",
+      "title": "Overall Stage"
+    },
+    "perineural_invasion": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check whether or not perineural invasion is present",
+      "dspy_desc": "check whether or not perineural invasion is present",
+      "group": "nonnested",
+      "title": "Perineural Invasion"
+    },
+    "pm_category": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PMCategory"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "dspy_desc": "identify the pm category of the tumor. if you see cM0 or cM1, etc., code as mx, since pathological M category is not available",
+      "group": "staging",
+      "title": "Pm Category"
+    },
+    "pn_category": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverPN"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pn category of the tumor",
+      "dspy_desc": "identify the pn category of the tumor",
+      "group": "staging",
+      "title": "Pn Category"
+    },
+    "procedure": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverProcedure"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify which surgery procedure was used. e.g. partial hepatectomy",
+      "dspy_desc": "identify which surgery procedure was used. e.g. partial hepatectomy",
+      "group": "nonnested",
+      "title": "Procedure"
+    },
+    "pt_category": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverPT"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the pt category of the tumor",
+      "dspy_desc": "identify the pt category of the tumor",
+      "group": "staging",
+      "title": "Pt Category"
+    },
+    "regional_lymph_node": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LiverLN"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the involved regional lymph node. example:[{\"involved\": 2, \"examined\": 5, \"station_name\": \"station 1\"}, {\"involved\": 0, \"examined\": 3, \"station_name\": \"station 2\"}, ...]. If not present, just output null for every lymph node",
+      "dspy_desc": "return all of the involved regional lymph node. example:[{\"involved\": 2, \"examined\": 5, \"station_name\": \"station 1\"}, {\"involved\": 0, \"examined\": 3, \"station_name\": \"station 2\"}, ...]. If not present, just output null for every lymph node",
+      "group": "lymph_nodes",
+      "title": "Regional Lymph Node"
+    },
+    "tnm_descriptor": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/TNMDescriptor"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "dspy_desc": "identify the tnm descriptor of the tumor. e.g., \"y\" (post-therapy), \"r\", etc.",
+      "group": "staging",
+      "title": "Tnm Descriptor"
+    },
+    "treatment_effect": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "dspy_desc": "check the treatment effect of the cancer. If you see \"No known presurgical therapy\", return None",
+      "group": "nonnested",
+      "title": "Treatment Effect"
+    },
+    "tumor_extent": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LiverTumorExtent"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the possible tumor extension. example: [\"hepatic_vein\", \"gallbladder\"]. If not present, just output None, do not overdiagnosis",
+      "dspy_desc": "return all of the possible tumor extension. example: [\"hepatic_vein\", \"gallbladder\"]. If not present, just output None, do not overdiagnosis",
+      "group": "extent",
+      "title": "Tumor Extent"
+    },
+    "tumor_focality": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverTumorFocality"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify whether the tumor is unifocal or multifocal",
+      "dspy_desc": "identify whether the tumor is unifocal or multifocal",
+      "group": "nonnested",
+      "title": "Tumor Focality"
+    },
+    "tumor_site": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiverTumorSite"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the site of the tumor. e.g. right lobe",
+      "dspy_desc": "identify the site of the tumor. e.g. right lobe",
+      "group": "nonnested",
+      "title": "Tumor Site"
+    },
+    "tumor_size": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+      "dspy_desc": "identify the size of the tumor in mm, rounded, if multiple tumors are present, please provide the size of the largest tumor",
+      "group": "nonnested",
+      "title": "Tumor Size"
+    },
+    "vascular_invasion": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/LiverVascularInvasion"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "return all of the possible vascular invasion. example: [\"large_hepatic_vein\", \"small_vessel\"]. If not present, just output None, do not overdiagnosis",
+      "dspy_desc": "return all of the possible vascular invasion. example: [\"large_hepatic_vein\", \"small_vessel\"]. If not present, just output None, do not overdiagnosis",
+      "group": "vascular_invasion",
+      "title": "Vascular Invasion"
+    }
+  },
+  "title": "LiverCancerCase",
+  "type": "object"
+}

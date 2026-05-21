@@ -43,7 +43,7 @@ Both flavors are reported with multiple CIs side by side. The gap is the **compl
 
 **Wilson 95% CI** on both via `statsmodels.stats.proportion.proportion_confint(method="wilson")` (Pedregosa et al., 2011 documents the equivalent in scikit-learn; we use statsmodels). Reference: Wilson, E. B. (1927). "Probable inference, the law of succession, and statistical inference." *JASA* 22 (158): 209–212.
 
-**BCa bootstrap CI** on attempted accuracy via the in-house `digital_registrar_research.benchmarks.eval.ci.bootstrap_ci(method="bca")`, equivalent to `scipy.stats.bootstrap(method="BCa")` (Virtanen et al., 2020). Reference: Efron, B. (1987). "Better bootstrap confidence intervals." *JASA* 82 (397): 171–185.
+**BCa bootstrap CI** on attempted accuracy via the in-house `digital_registrar.eval.ci.bootstrap_ci(method="bca")`, equivalent to `scipy.stats.bootstrap(method="BCa")` (Virtanen et al., 2020). Reference: Efron, B. (1987). "Better bootstrap confidence intervals." *JASA* 82 (397): 171–185.
 
 **Student-t CI on the run-level mean** (when ≥ 2 runs) via `scipy.stats.t.interval`. Reference: Student (1908). "The probable error of a mean." *Biometrika* 6 (1): 1–25.
 
@@ -105,7 +105,7 @@ For ordinal fields, an "off-by-one" error is materially less bad than "off-by-th
 
 ## Multi-primary subgroup column
 
-Every metric is also broken down by `subgroup ∈ {single_primary, multi_primary, all}`. Multi-primary detection lives in `digital_registrar_research.benchmarks.eval.multi_primary` (heuristics: `cancer_laterality == "bilateral"`, multi-clock / multi-quadrant strings, multifocal flags, etc.). Multi-primary cases are clinically distinct and per-organ schemas designed for single-primary disease can systematically misidentify them; reporting per-subgroup accuracy makes this visible instead of hiding it in the aggregate.
+Every metric is also broken down by `subgroup ∈ {single_primary, multi_primary, all}`. Multi-primary detection lives in `drr_attic.benchmarks.eval.multi_primary` (heuristics: `cancer_laterality == "bilateral"`, multi-clock / multi-quadrant strings, multifocal flags, etc.). Multi-primary cases are clinically distinct and per-organ schemas designed for single-primary disease can systematically misidentify them; reporting per-subgroup accuracy makes this visible instead of hiding it in the aggregate.
 
 `per_field_by_subgroup.csv` reports the same metric set per subgroup so the writeup can cite "in the multi-primary subgroup, accuracy was X with 95% CI [...]".
 

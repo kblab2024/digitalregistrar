@@ -12,7 +12,7 @@ The default for any binary rate (accuracy, parse_error_rate, attempted_rate, ...
 
 **Use when:** you have count `k` correct out of `n` total, and want a CI on the proportion.
 
-**Implementation:** `digital_registrar_research.benchmarks.eval.ci.wilson_ci(k, n, alpha)` (in-house, ~10 LOC). Library equivalent: `statsmodels.stats.proportion.proportion_confint(method="wilson")`.
+**Implementation:** `digital_registrar.eval.ci.wilson_ci(k, n, alpha)` (in-house, ~10 LOC). Library equivalent: `statsmodels.stats.proportion.proportion_confint(method="wilson")`.
 **Reference:** Wilson, E. B. (1927). "Probable inference, the law of succession, and statistical inference." *JASA* 22 (158): 209–212.
 
 ## Clopper-Pearson exact CI — for proportions, conservative

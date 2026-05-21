@@ -259,7 +259,7 @@ See [ablations.md](../ablations/index.md) for the per-cell argument reference an
 The aggregator's `--results-root` flag scopes discovery to a specific tree, which is what the smoke runners use under the hood:
 
 ```
-python -m digital_registrar_research.ablations.eval.run_ablations \
+python -m drr_attic.ablations.eval.run_ablations \
     --results-root workspace/results/_smoke_20260427-1015 \
     --cells dspy_monolithic raw_json \
     --models gpt-oss-20b
