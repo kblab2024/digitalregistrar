@@ -65,8 +65,10 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
     from digital_registrar_research.models.common import model_list
     from digital_registrar_research.paths import RAW_REPORTS
 
-    from .runner_bridge import (
+    from digital_registrar_research.inference_gui.runner_bridge import (
         PipelineSetupError,
+        capture_lm_trace,
+        lm_history_len,
         make_run_dir,
         run_one,
         save_output,
@@ -90,7 +92,8 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
         "results": [],                # list[{stem, output, elapsed, error}]
         "viewed_idx": 0,
         "last_error": "",
-        "pipeline_ready_for": None,   # (engine, model) tuple
+        "lm_context": None,           # dict | None — kwargs for dspy.context(**ctx)
+        "lm_context_for": None,       # (engine, model) tuple
     }
     for k, v in defaults.items():
         st.session_state.setdefault(k, v)
@@ -157,14 +160,16 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
 
     def _ensure_pipeline_ready() -> bool:
         key = (st.session_state.engine, st.session_state.model)
-        if st.session_state.pipeline_ready_for == key:
+        if st.session_state.lm_context_for == key and st.session_state.lm_context is not None:
             return True
         try:
-            setup_for(st.session_state.engine, st.session_state.model)
+            st.session_state.lm_context = setup_for(
+                st.session_state.engine, st.session_state.model,
+            )
         except PipelineSetupError as e:
             st.error(f"Model setup failed — {e}")
             return False
-        st.session_state.pipeline_ready_for = key
+        st.session_state.lm_context_for = key
         return True
 
     def _run_single() -> None:
@@ -175,24 +180,33 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
         if not _ensure_pipeline_ready():
             return
         stem = st.session_state.uploaded_name or "pasted_report"
+        ctx = st.session_state.lm_context
+        before = lm_history_len(ctx)
         with st.spinner(f"Running {st.session_state.engine}/{st.session_state.model}…"):
             try:
                 out, elapsed = run_one(
                     st.session_state.input_text, stem,
                     engine=st.session_state.engine,
+                    lm_context=ctx,
                     decomposition=st.session_state.decomposition,
                     jsonize=st.session_state.jsonize,
                     validate_output=st.session_state.validate_output,
                 )
             except Exception as e:
-                st.session_state.single_result = {"stem": stem, "output": None, "elapsed": 0.0, "error": repr(e)}
+                trace, n_calls = capture_lm_trace(ctx, before)
+                st.session_state.single_result = {
+                    "stem": stem, "output": None, "elapsed": 0.0, "error": repr(e),
+                    "lm_trace": trace, "lm_calls": n_calls,
+                }
                 return
+        trace, n_calls = capture_lm_trace(ctx, before)
         run_dir = make_run_dir()
         save_path = save_output(run_dir, stem, out)
         st.session_state.run_dir = run_dir
         st.session_state.single_result = {
             "stem": stem, "output": out, "elapsed": elapsed, "error": None,
             "save_path": str(save_path),
+            "lm_trace": trace, "lm_calls": n_calls,
         }
 
     def _run_folder() -> None:
@@ -211,25 +225,32 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
         st.session_state.viewed_idx = 0
         prog = st.progress(0.0, text="Starting…")
         status = st.status("Running…", expanded=False)
+        ctx = st.session_state.lm_context
         for i, fp in enumerate(files, 1):
+            before = lm_history_len(ctx)
             try:
                 report = fp.read_text(encoding="utf-8")
                 out, sec = run_one(
                     report, fp.stem,
                     engine=st.session_state.engine,
+                    lm_context=ctx,
                     decomposition=st.session_state.decomposition,
                     jsonize=st.session_state.jsonize,
                     validate_output=st.session_state.validate_output,
                 )
                 save_output(st.session_state.run_dir, fp.stem, out)
+                trace, n_calls = capture_lm_trace(ctx, before)
                 st.session_state.results.append({
                     "stem": fp.stem, "output": out, "elapsed": sec, "error": None,
                     "source_path": str(fp),
+                    "lm_trace": trace, "lm_calls": n_calls,
                 })
             except Exception as e:
+                trace, n_calls = capture_lm_trace(ctx, before)
                 st.session_state.results.append({
                     "stem": fp.stem, "output": None, "elapsed": 0.0, "error": repr(e),
                     "source_path": str(fp),
+                    "lm_trace": trace, "lm_calls": n_calls,
                 })
                 status.write(f"FAIL {fp.name}: {e}")
             prog.progress(i / len(files), text=f"{i}/{len(files)} {fp.name}")
@@ -329,6 +350,7 @@ def _render_result(st, r: dict) -> None:
         st.error(f"{r['stem']} — failed.")
         with st.expander("Traceback", expanded=False):
             st.code(r["error"])
+        _render_lm_trace(st, r)
         return
 
     elapsed = r.get("elapsed", 0.0)
@@ -345,6 +367,29 @@ def _render_result(st, r: dict) -> None:
         mime="application/json",
         use_container_width=True,
     )
+    _render_lm_trace(st, r)
+
+
+def _render_lm_trace(st, r: dict) -> None:
+    """Expander showing the dspy.inspect_history() output for this run.
+
+    One entry per ``dspy.Predict`` call: router → optional jsonize → one per
+    group extractor. Useful for debugging which group signature produced bad
+    output (look at its prompt + the LM's raw completion).
+    """
+    trace = r.get("lm_trace", "")
+    n_calls = r.get("lm_calls", 0)
+    if not trace:
+        return
+    with st.expander(f"LM trace — {n_calls} call{'s' if n_calls != 1 else ''}", expanded=False):
+        st.download_button(
+            "Download trace",
+            data=trace,
+            file_name=f"{r['stem']}_lm_trace.txt",
+            mime="text/plain",
+            use_container_width=True,
+        )
+        st.text(trace)
 
 
 def main_cli() -> int:
