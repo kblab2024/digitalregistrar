@@ -85,5 +85,8 @@ configs/local/*
 *.pem
 /secrets/
 
+# Pipeline run outputs (one timestamped dir per invocation)
+/runs/
+
 # Jupyter
 .ipynb_checkpoints/
