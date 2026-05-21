@@ -144,6 +144,19 @@ registrar-pipeline --engine factory \
     --model gpt --decomposition auto --no-jsonize
 ```
 
+Interactively (single report or folder, with sidebar controls for engine /
+model / decomposition):
+
+```bash
+registrar-infer-gui              # Streamlit GUI, defaults to port 8502
+```
+
+See [../../src/digital_registrar_research/inference_gui/README.md](../../src/digital_registrar_research/inference_gui/README.md)
+for sidebar semantics and output paths. The GUI uses the same
+`run_cancer_pipeline_v2` / `run_cancer_pipeline` entry points as the CLI,
+so its `runs/run_<timestamp>/<stem>_output.json` outputs are interchangeable
+with batch runs.
+
 Pipeline wrappers under `scripts/pipeline/` are all factory-engine:
 `run_factory_ollama_single.py`, `run_factory_ollama_smoke.py`,
 `run_factory_openai_single.py`, `run_factory_inference_smoke.py`. The
@@ -191,3 +204,13 @@ LiteLLM bridge automatically.
 Legacy is preserved so existing benchmarks and reproducibility runs keep
 working. To add a cancer type, prefer the v2 Pydantic path; the legacy
 engine picks up new types via `CASE_MODELS` once promoted there.
+
+## Available: staging service
+
+`digital_registrar_research.staging` exposes the vendored `tnmhelper`
+engine through two surfaces — plain callables (`stage_from_observations`
+et al.) and a `dspy.ReAct`-compatible tool list (`STAGING_TOOLS`). It is
+**not invoked by the pipeline today**; the module ships as a building
+block for downstream consumers and future wirings. See
+[staging.md](staging.md) for the API, the data-bundle lifecycle, and
+worked examples in [`examples/staging_demo/`](../../examples/staging_demo/).

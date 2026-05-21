@@ -26,6 +26,7 @@ dependencies = [
   "pydantic>=2",
   "numpy",
   "pandas",
+  "tnmhelper",
 ]
 
 [project.optional-dependencies]
@@ -45,6 +46,7 @@ registrar-benchmark = "digital_registrar_research.benchmarks.eval.run_all:main"
 registrar-ablate    = "digital_registrar_research.ablations.eval.run_ablations:main"
 registrar-schemas   = "digital_registrar_research.schemas.generate:main"
 registrar-schema-gui = "digital_registrar_research.schema_gui.app:main_cli"
+registrar-infer-gui  = "digital_registrar_research.inference_gui.app:main_cli"
 
 [project.urls]
 Homepage = "https://github.com/kblab2024/digital-registrar-research"
@@ -59,6 +61,10 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "digital_registrar_research.schemas" = ["data/*.json", "aliases/*.toml", "_templates/*.tmpl"]
+"digital_registrar_research.staging" = ["data/*.zip"]
+
+[tool.uv.sources]
+tnmhelper = { path = "vendor/tnmhelper-0.1.0-py3-none-any.whl" }
 
 [tool.ruff]
 line-length = 120
