@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from typing import Literal
 
-from digital_registrar_research.paths import REPO_ROOT
+from digital_registrar_research.paths import RUNS_ROOT
 
 
 class PipelineSetupError(RuntimeError):
@@ -89,9 +89,9 @@ def save_output(run_dir: Path, stem: str, output: dict) -> Path:
 
 
 def make_run_dir() -> Path:
-    """Create ``runs/run_<timestamp>/`` under the repo root."""
+    """Create ``workspace/runs/run_<timestamp>/`` (override via ``DIGITAL_REGISTRAR_WORKSPACE``)."""
     from digital_registrar_research.runner import create_run_folder
-    base = REPO_ROOT / "runs"
+    base = RUNS_ROOT
     base.mkdir(parents=True, exist_ok=True)
     return Path(create_run_folder(str(base)))
 

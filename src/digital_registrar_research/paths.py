@@ -10,32 +10,39 @@ Set it to ``workspace_obfustrated`` (or any other dir under repo root)
 to point library code at an alternate workspace tree without touching
 this file. Existing callers that import the constants by name still
 work — they're computed from the env var at import time.
+
+Data location: as of the 2026 reorg, all runtime data (TCGA reports,
+results, runs, annotations) lives under ``$WORKSPACE_ROOT/`` — gitignored,
+machine-local. Override with ``DIGITAL_REGISTRAR_DATA_ROOT`` if your
+TCGA / institutional dataset lives outside the workspace tree.
 """
 import os
 from pathlib import Path
 
 # src/digital_registrar_research/paths.py → parents[2] is the repo root
+# (still correct after Phase 4: src/digital_registrar/paths.py → parents[2] is repo root)
 REPO_ROOT: Path = Path(__file__).resolve().parents[2]
-
-# Example data (TCGA gold set) — shipped in-repo. The flat three-folder
-# layout (`{prefix}_dataset_{date}/`, `{prefix}_result_{date}/`,
-# `{prefix}_annotation_{date}/`) is the contract the doctor-facing annotation
-# UI expects (see annotation.io.discover_folders).
-DATA_ROOT: Path = REPO_ROOT / "data"
-RAW_REPORTS: Path = DATA_ROOT / "tcga_dataset_20251117"
-PREANNOTATIONS: Path = DATA_ROOT / "tcga_result_20251117"
-GOLD_ANNOTATIONS: Path = DATA_ROOT / "tcga_annotation_20251117"
 
 # Workspace dir name — env-overridable so a Claude session can point library
 # code at workspace_obfustrated/ without code edits.
 WORKSPACE_DIR_NAME: str = os.environ.get("DIGITAL_REGISTRAR_WORKSPACE", "workspace")
 WORKSPACE_ROOT: Path = REPO_ROOT / WORKSPACE_DIR_NAME
 
+# Example data (TCGA gold set) lives inside the workspace tree by default.
+# The flat three-folder layout (`{prefix}_dataset_{date}/`, `{prefix}_result_{date}/`,
+# `{prefix}_annotation_{date}/`) is the contract the doctor-facing annotation
+# UI expects (see annotation.io.discover_folders).
+DATA_ROOT: Path = Path(os.environ.get("DIGITAL_REGISTRAR_DATA_ROOT", str(WORKSPACE_ROOT / "data")))
+RAW_REPORTS: Path = DATA_ROOT / "tcga_dataset_20251117"
+PREANNOTATIONS: Path = DATA_ROOT / "tcga_result_20251117"
+GOLD_ANNOTATIONS: Path = DATA_ROOT / "tcga_annotation_20251117"
+
 # Runtime artifacts (gitignored). The workspace tree mirrors the dummy/
 # skeleton: workspace/results/{predictions,eval,ablations,benchmarks}/...
 RESULTS_ROOT: Path = WORKSPACE_ROOT / "results"
 BENCHMARKS_RESULTS: Path = RESULTS_ROOT / "benchmarks"
 ABLATIONS_RESULTS: Path = RESULTS_ROOT / "ablations"
+RUNS_ROOT: Path = WORKSPACE_ROOT / "runs"
 
 
 def workspace_root(workspace: str | Path | None = None) -> Path:
@@ -64,7 +71,7 @@ SCHEMAS_DATA: Path = Path(__file__).resolve().parent / "schemas" / "data"
 __all__ = [
     "REPO_ROOT", "DATA_ROOT", "RAW_REPORTS", "PREANNOTATIONS", "GOLD_ANNOTATIONS",
     "WORKSPACE_DIR_NAME", "WORKSPACE_ROOT",
-    "RESULTS_ROOT", "BENCHMARKS_RESULTS", "ABLATIONS_RESULTS",
+    "RESULTS_ROOT", "BENCHMARKS_RESULTS", "ABLATIONS_RESULTS", "RUNS_ROOT",
     "workspace_root", "results_root",
     "SCHEMAS_DATA",
 ]

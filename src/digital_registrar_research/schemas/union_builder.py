@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from functools import cache
 
-from ..benchmarks.eval.scope import IMPLEMENTED_ORGANS
+from . import list_organs
 from .builder import flatten_schema_for_prompt, load_organ_schema
 
 
@@ -29,7 +29,7 @@ def build_union_schema(organs: tuple[str, ...] | None = None) -> dict:
     for ``response_format={"type": "json_schema", "schema": <this>}``
     or for inlining into a prompt via :func:`describe_field_list`.
     """
-    organ_list = list(organs) if organs is not None else sorted(IMPLEMENTED_ORGANS)
+    organ_list = list(organs) if organs is not None else sorted(list_organs())
 
     merged: dict = {}
     for organ in organ_list:

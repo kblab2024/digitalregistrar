@@ -1,2 +1,0 @@
-patient_filename: TCGA-DD-A4ND.64D878AE-DEEA-4C56-854C-3774038E2914
-text: TISSUE DESCRIPTION: A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 All A12 A13. Left lobe liver (915.0 grams, 13.5 x 13.0 x 8.0 cm). DIAGNOSIS: Liver, left lobe, resection: Grade 3 (of 4) hepatocellular carcinoma. forms a 13.0 x 13.0 x 7.5 cm intrahepatic mass with focal necrosis. No vascular invasion identified. Margins of resection negative for. tumor (closest margin 1.2 cm) Uninvolved liver is noncirrhotic.

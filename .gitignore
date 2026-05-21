@@ -36,12 +36,11 @@ digital-registrar-research.code-workspace
 Thumbs.db
 
 # Project — runtime artifacts, never checked in
-results/**/*.csv
-results/**/*.json
-results/**/*.pt
-results/**/*.ckpt
-!results/**/.gitkeep
-workspace/
+# Everything under workspace/ is gitignored (data, results, runs, annotations, ckpts).
+# Keep .gitkeep files so the skeleton survives a clean checkout.
+/workspace/
+!/workspace/.gitkeep
+!/workspace/**/.gitkeep
 ckpts/
 
 # Dummy experiment root — configs/models/README tracked; data/results are generated,
@@ -52,9 +51,6 @@ ckpts/
 !/examples/dummy/results/**/
 !/examples/dummy/data/**/.gitkeep
 !/examples/dummy/results/**/.gitkeep
-
-# Live annotator workspace — real patient data, never pushed
-/workspace/
 
 # Obfustrated workspace — synthetic-from-real, schema-conformant copy for
 # debugging eval/ablation/inference paths without exposing PHI. Generated
@@ -85,7 +81,8 @@ configs/local/*
 *.pem
 /secrets/
 
-# Pipeline run outputs (one timestamped dir per invocation)
+# Pipeline run outputs (one timestamped dir per invocation) — now under workspace/runs/
+# kept here as a fallback for stray /runs/ dirs from older checkouts
 /runs/
 
 # Jupyter

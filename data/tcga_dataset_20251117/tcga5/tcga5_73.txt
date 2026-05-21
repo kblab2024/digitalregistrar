@@ -1,2 +1,0 @@
-patient_filename: TCGA-DD-A39Z.1976B0D8-E1F2-468F-9AB0-242E9507AB0D
-text: TISSUE DESCRIPTION: Left lobe liver (655 grams; 13 x 12.5 x 7.5 cm), and separately submitted specimen. from the right pelvic sidewall (1.2 x 0.9 x 0.4 cm). CR96-430 A1, A2, A3, B1. DIAGNOSIS: Left lobe liver: Grade 2 (of 4) hepatocellular carcinoma forming a 10.5 x 10.1 x 8.1. cm mass. The tumor is located 1.8 cm from the closest surgical margin. The. remaining liver parenchyma is without diagnostic abnormality. Right pelvic sidewall: Leiomyoma identified measuring 7 mm in greatest dimension.
