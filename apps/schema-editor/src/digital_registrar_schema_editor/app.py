@@ -11,6 +11,13 @@ import os
 import sys
 from pathlib import Path
 
+# The shared playground widget lives at apps/_shared/playground/src/ — add
+# it to sys.path so this app can import it without a workspace-aware
+# package manager.
+_SHARED_WIDGETS = Path(__file__).resolve().parents[3] / "_shared" / "playground" / "src"
+if str(_SHARED_WIDGETS) not in sys.path:
+    sys.path.insert(0, str(_SHARED_WIDGETS))
+
 
 def main() -> None:
     """Streamlit page renderer — called by ``streamlit run app.py``.
@@ -54,6 +61,7 @@ def main() -> None:
         "Descriptions & groups (L2)",
         "Aliases (L3)",
         "Preview & save",
+        "Try it",
     ])
     with tabs[0]:
         enums_view.render(state)
@@ -65,6 +73,9 @@ def main() -> None:
         aliases_view.render(state)
     with tabs[4]:
         preview_view.render(state)
+    with tabs[5]:
+        from drr_playground_widget import render_playground
+        render_playground(st, organ_state=state)
 
 
 def main_cli() -> int:

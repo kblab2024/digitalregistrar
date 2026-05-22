@@ -1,0 +1,23 @@
+[project]
+name = "drr-playground-widget"
+version = "0.1.0"
+description = "Shared Streamlit widget for chunker + single-signature playground (infer-gui, schema-editor)."
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+  { name = "Han Chang" },
+  { name = "Kai-Po Chang" },
+]
+dependencies = [
+  "digital-registrar",
+  "streamlit>=1.35",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+[tool.setuptools.packages.find]
+where = ["src"]

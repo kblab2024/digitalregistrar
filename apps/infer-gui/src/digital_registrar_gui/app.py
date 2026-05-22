@@ -18,6 +18,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+# The shared playground widget lives at apps/_shared/playground/src/ — add
+# it to sys.path so this app can import it without a workspace-aware
+# package manager. Editable installs would also work; this avoids the
+# install step.
+_SHARED_WIDGETS = Path(__file__).resolve().parents[3] / "_shared" / "playground" / "src"
+if str(_SHARED_WIDGETS) not in sys.path:
+    sys.path.insert(0, str(_SHARED_WIDGETS))
+
 
 # ── CSS (copied verbatim from annotation/app.py:47-82) ────────────────────────
 
@@ -263,18 +271,31 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
         else:
             _run_folder()
 
-    # ── Main two-column layout ────────────────────────────────────────────────
+    # ── Main tabs ─────────────────────────────────────────────────────────────
 
     st.title("pipeline inference")
+    tab_pipeline, tab_playground = st.tabs(["Pipeline", "Playground"])
 
-    col_left, col_right = st.columns([1, 1])
+    with tab_pipeline:
+        col_left, col_right = st.columns([1, 1])
+        with col_right:
+            st.markdown('<span class="report-col-marker"></span>', unsafe_allow_html=True)
+            _render_output_panel(st)
+        with col_left:
+            _render_input_panel(st)
 
-    with col_right:
-        st.markdown('<span class="report-col-marker"></span>', unsafe_allow_html=True)
-        _render_output_panel(st)
-
-    with col_left:
-        _render_input_panel(st)
+    with tab_playground:
+        from drr_playground_widget import render_playground
+        # Ensure the LM picked in the sidebar is configured before any
+        # "Run signature" click — otherwise the widget's predictor call
+        # would error against an unconfigured dspy.settings.
+        if not _ensure_pipeline_ready():
+            st.stop()
+        render_playground(
+            st,
+            lm_context=st.session_state.get("lm_context"),
+            input_state_key="input_text",
+        )
 
 
 def _render_input_panel(st) -> None:

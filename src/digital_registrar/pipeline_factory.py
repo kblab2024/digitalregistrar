@@ -23,6 +23,7 @@ from typing import Literal
 import dspy
 from pydantic import ValidationError
 
+from .chunking import Chunk, Chunker, Router
 from .models.common import autoconf_dspy
 from .schemas import CASE_MODELS
 from .schemas.extraction import EXTRACTION_META
@@ -73,12 +74,18 @@ class CancerPipelineV2(dspy.Module):
         jsonize_enabled: bool = False,
         model_profile: str | None = None,
         validate_output: bool = True,
+        chunker: Chunker | None = None,
+        chunk_router: Router | None = None,
+        routing_mode: Literal["off", "filter"] = "off",
     ) -> None:
         super().__init__()
         self._decomposition = decomposition
         self._model_profile = model_profile
         self._jsonize_enabled = jsonize_enabled
         self._validate_output = validate_output
+        self._chunker = chunker
+        self._chunk_router = chunk_router
+        self._routing_mode = routing_mode
 
         self.router = dspy.Predict(build_router_signature(CASE_MODELS))
         self.jsonize = (
@@ -133,6 +140,33 @@ class CancerPipelineV2(dspy.Module):
 
     # ----- forward -------------------------------------------------------
 
+    def _maybe_chunk(
+        self,
+        report: str | list[str],
+        organ: str,
+        logger: logging.Logger,
+    ) -> list[Chunk] | None:
+        """Return routed chunks for ``organ`` when chunk-routing is enabled.
+
+        Returns None when routing is off (caller uses the full report as
+        today), an empty list when routing is on but the chunker yielded
+        nothing (the extractor loop falls back to the full report per
+        group), or a populated list ready to be filtered per ``step.group``.
+        """
+        if self._routing_mode != "filter" or self._chunker is None:
+            return None
+        if not isinstance(report, str):
+            logger.warning(
+                "routing_mode=filter requires a `report: str` input; got "
+                "list[str] — falling back to no routing.",
+            )
+            return None
+        chunks = list(self._chunker.chunk(report))
+        if self._chunk_router is not None:
+            groups = EXTRACTION_META[organ]["groups"]
+            chunks = list(self._chunk_router.route(chunks, groups))
+        return chunks
+
     def forward(
         self,
         report: str | list[str],
@@ -185,6 +219,20 @@ class CancerPipelineV2(dspy.Module):
             except Exception as e:
                 logger.warning("jsonize failed: %s", e)
 
+        # Optional chunk-routing: compute once, filter per step below.
+        routed_chunks = self._maybe_chunk(report, rsp.cancer_category, logger)
+        if routed_chunks is not None:
+            out["chunks"] = [
+                {
+                    "id": c.id,
+                    "span": list(c.span),
+                    "labels": sorted(c.labels),
+                    "meta": c.meta,
+                }
+                for c in routed_chunks
+            ]
+            out["step_chunks"] = {}
+
         # Per-group (or monolithic) extraction.
         extractors = self._get_extractors(rsp.cancer_category)
         for step, predictor in extractors:
@@ -195,8 +243,19 @@ class CancerPipelineV2(dspy.Module):
                 rsp.cancer_category,
                 fname,
             )
+            step_input = paragraphs
+            if routed_chunks is not None:
+                picked = [c for c in routed_chunks if step.group in c.labels]
+                if picked:
+                    step_input = [c.text for c in picked]
+                else:
+                    logger.warning(
+                        "no chunks routed to group %r; falling back to full report",
+                        step.group,
+                    )
+                out["step_chunks"][step.name] = [c.id for c in picked]
             try:
-                pred = predictor(report=paragraphs, report_jsonized=json_report)
+                pred = predictor(report=step_input, report_jsonized=json_report)
                 organ_data = dump_prediction_plain(pred)
                 # Filter to this step's output fields so we don't accidentally
                 # leak echoed input fields back into cancer_data.
@@ -236,17 +295,27 @@ def run_cancer_pipeline_v2(
     jsonize_enabled: bool = False,
     model_profile: str | None = None,
     validate_output: bool = True,
+    chunker: Chunker | None = None,
+    chunk_router: Router | None = None,
+    routing_mode: Literal["off", "filter"] = "off",
 ) -> tuple[dict, float]:
     """Run the v2 pipeline on a single report.
 
     Drop-in replacement for :func:`pipeline.run_cancer_pipeline` — same
     return signature ``(output_dict, elapsed_seconds)``.
+
+    Pass ``chunker`` and ``routing_mode="filter"`` to feed each per-group
+    extractor only the chunks routed to that group's tag. ``chunk_router``
+    is optional for self-labeling chunkers (e.g. ``RegexSectionChunker``).
     """
     pipeline = CancerPipelineV2(
         decomposition=decomposition,
         jsonize_enabled=jsonize_enabled,
         model_profile=model_profile,
         validate_output=validate_output,
+        chunker=chunker,
+        chunk_router=chunk_router,
+        routing_mode=routing_mode,
     )
     response, timing = _run_pipeline(pipeline, report=report, fname=fname)
     return response, timing
