@@ -1,6 +1,5 @@
 """Smoke tests for the annotation IO layer (three-folder discovery + flat-JSON contract)."""
 import pytest
-
 from digital_registrar_annotator import io as ann_io
 
 from digital_registrar.paths import DATA_ROOT
