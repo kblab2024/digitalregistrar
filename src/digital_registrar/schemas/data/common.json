@@ -6,16 +6,16 @@
       "anyOf": [
         {
           "enum": [
-            "breast",
-            "cervix",
-            "colorectal",
-            "esophagus",
-            "liver",
-            "lung",
-            "pancreas",
-            "prostate",
             "stomach",
+            "colorectal",
+            "breast",
+            "esophagus",
+            "lung",
+            "prostate",
             "thyroid",
+            "pancreas",
+            "cervix",
+            "liver",
             "others"
           ],
           "type": "string"

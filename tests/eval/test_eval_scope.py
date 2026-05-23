@@ -1,5 +1,8 @@
 """Sanity tests for the canonical scoring scope (FAIR_SCOPE whitelist)."""
-from drr_attic.benchmarks.eval import scope
+import pytest
+
+pytest.importorskip("drr_attic", reason="drr-attic is an optional research package")
+from drr_attic.benchmarks.eval import scope  # noqa: E402
 
 
 def test_fair_scope_defined_and_nonempty():
