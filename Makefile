@@ -13,12 +13,10 @@ help:
 
 # Production install (end users): just the core package
 install:
-	pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
 	pip install .
 
 # Dev install (cloners): editable mode for everything + dev tooling
 install-dev:
-	pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
 	pip install -e ".[dev]"
 	pip install -e apps/infer-gui
 	pip install -e apps/schema-editor

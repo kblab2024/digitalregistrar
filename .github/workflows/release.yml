@@ -31,8 +31,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - name: Install vendor wheel (tnmhelper)
-        run: pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
       - name: Install core + apps + dev tools
         run: |
           pip install -e ".[dev]"
@@ -118,8 +116,6 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - name: Install vendor wheel (tnmhelper)
-        run: pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
       - name: Install core + apps + PyInstaller
         run: |
           pip install .

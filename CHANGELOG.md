@@ -33,7 +33,6 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 - Lint, test-collection, and schema-concordance regressions introduced by the reorg ([PR #1](https://github.com/kblab2024/digitalregistrar/pull/1)).
 
 ### Known limitations
-- **`tnmhelper` is not yet on PyPI.** The dep is declared in [pyproject.toml](pyproject.toml) but the wheel only exists in [vendor/tnmhelper-0.1.0-py3-none-any.whl](vendor/tnmhelper-0.1.0-py3-none-any.whl). Until `tnmhelper-0.1.0` is published from the sibling repo, `pip install digital-registrar` from PyPI will fail to resolve. **This is the one remaining release-blocker.** Resolved before the tag is cut.
 - `apps.annotator.io.discover_folders` still expects the legacy `{prefix}_{dataset|result|annotation}_{date}/` directory layout. The dummy fixture under `examples/dummy/data/` was restructured to a flatter `{tcga,cmuh}/{reports,preannotation,annotations}/` shape during the reorg, so the discovery test for that fixture is skipped pending a product decision (update `discover_folders` or restore a legacy fixture).
 - The eval helpers in `tests/eval/test_paths_and_pairing.py` reference `scripts.eval._common.*` which moved into `attic/eval_scripts/` (not importable). The test is module-level skipped pending a rewrite against the canonical `digital_registrar.eval.*` API.
 - `digital-registrar-schema-editor` declares `ruff` as a runtime dependency — needs confirmation whether intentional (app shells out to ruff) or a leftover from dev tools.
