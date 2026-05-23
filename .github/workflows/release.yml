@@ -76,10 +76,14 @@ jobs:
           name: pypi-dist
           path: dist/
 
-  # ── Publish to PyPI (or TestPyPI on dispatch). Uses Trusted Publishing (OIDC). ──
-  # IMPORTANT: this requires the user to configure a Pending Publisher on each of
-  # the 4 PyPI projects, pointing at this repo + this workflow + the appropriate
-  # environment. See docs/release.md for instructions.
+  # ── Publish to PyPI (or TestPyPI on dispatch). ──
+  # BOOTSTRAP MODE: uses a PYPI_API_TOKEN repo secret instead of Trusted Publishing,
+  # because PyPI's Pending Publisher form rejected creation of pending publishers for
+  # the three app packages (anti-typosquat heuristic kicked in once `digital-registrar`
+  # was registered). Once the four projects exist on PyPI after this first publish,
+  # FOLLOW-UP: add a regular (non-pending) Trusted Publisher to each project, then
+  # delete the PYPI_API_TOKEN secret and re-enable OIDC by removing the `password:`
+  # line below. See CHANGELOG and PR notes for the transition checklist.
   publish-pypi:
     needs: build-wheels
     runs-on: ubuntu-latest
@@ -97,11 +101,13 @@ jobs:
           repository-url: https://test.pypi.org/legacy/
           packages-dir: dist/
           skip-existing: true
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
       - name: Publish to PyPI
         if: github.event_name == 'push' || !inputs.test_pypi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+          password: ${{ secrets.PYPI_API_TOKEN }}
 
   # ── Build PyInstaller bundles for the 3 Streamlit apps on Windows/macOS/Linux ──
   build-bundles:

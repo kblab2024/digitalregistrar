@@ -108,20 +108,33 @@ Images published to Docker Hub or GHCR. Expected size: ~1.5 GB (`python:3.11-sli
 - `.github/workflows/ci.yml` — runs on every push / PR. Installs core + 3 apps via plain pip, lints with ruff, runs targeted tests, checks schema concordance. Attic excluded.
 - `.github/workflows/release.yml` — on `v[0-9]*` tag (or `workflow_dispatch` for TestPyPI dry runs): re-runs CI on the tagged commit, builds all 4 wheels + sdists, publishes to PyPI via Trusted Publishing (OIDC), builds PyInstaller bundles via `[windows-latest, macos-latest, ubuntu-latest]` matrix, attaches everything to a **draft** GitHub Release (you manually publish after eyeballing).
 
-### One-time PyPI Trusted Publishing setup
+### PyPI auth: bootstrap with API token, then switch to Trusted Publishing
 
-Before the first tag fires `release.yml`, configure a *Pending Publisher* on PyPI for each of the four packages:
+The release workflow ships **in bootstrap mode** for v0.2.0b1: it uses a `PYPI_API_TOKEN` repo secret to authenticate to PyPI. This is *temporary*. The reason it's not Trusted Publishing yet is that PyPI's anti-typosquat heuristic rejects *pending* Trusted Publisher creation for `digital-registrar-{gui,annotator,schema-editor}` once `digital-registrar` exists as a project name — the form returns an error even though we own the parent name. The standard workaround is to use an API token for the first publish, then add Trusted Publishers to each *existing* project (not subject to the typosquat check).
 
-1. Create the four projects on PyPI (you can do this by uploading a zero-byte wheel manually, or by creating them via the PyPI web UI as part of registering a Pending Publisher — see [docs.pypi.org/trusted-publishers](https://docs.pypi.org/trusted-publishers/adding-a-publisher/)).
-2. For each project, under **Manage → Publishing → Add a new publisher → GitHub**:
-   - Owner: `kblab2024`
-   - Repository: `digitalregistrar`
-   - Workflow name: `release.yml`
-   - Environment name: `pypi`
-3. Repeat for TestPyPI ([test.pypi.org](https://test.pypi.org/)) with environment name `testpypi` if you want `workflow_dispatch` dry runs to work.
-4. In the repo settings (Settings → Environments), create environments named `pypi` and `testpypi`. Add deployment protection rules (e.g., manual approval) on `pypi` to require a human click before each PyPI publish.
+**First-time setup (bootstrap, do once before tagging v0.2.0b1):**
 
-After that, no API tokens or secrets are needed — OIDC handles auth.
+1. **PyPI** → Account settings → API tokens → *Add API token*:
+   - Token name: `digitalregistrar-release-bootstrap`
+   - Scope: **Entire account** (the four projects don't exist yet — token must be account-scoped)
+   - Copy the token (`pypi-...`); you'll only see it once.
+2. **Repo secret**: `kblab2024/digitalregistrar` → Settings → Secrets and variables → Actions → New repository secret:
+   - Name: `PYPI_API_TOKEN`
+   - Value: the token from step 1.
+3. **Environments**: Settings → Environments → create `pypi` with `kblab2024` as a required reviewer (single-click manual approval before each PyPI publish). Optional: create `testpypi` for `workflow_dispatch` dry runs (and a `TEST_PYPI_API_TOKEN` secret with a TestPyPI account-scoped token, if you want dry runs).
+
+**Follow-up after v0.2.0b1 lands on PyPI (clean up the bootstrap):**
+
+Now all four projects exist on PyPI. Switch each to Trusted Publishing:
+
+1. For each of the four projects, on PyPI → Project → *Manage → Publishing → Add a new publisher → GitHub*:
+   - Owner: `kblab2024` · Repository: `digitalregistrar` · Workflow: `release.yml` · Environment: `pypi`
+   - These are *publishers on an existing project* — not subject to the typosquat heuristic that blocked the *pending* publisher form.
+2. Edit `release.yml`: remove the two `password: ${{ secrets.PYPI_API_TOKEN }}` (and `TEST_PYPI_API_TOKEN`) lines from the `publish-pypi` job. The `permissions: id-token: write` is already in place, so removing the `password:` lines automatically reverts to OIDC-based Trusted Publishing.
+3. Revoke `PYPI_API_TOKEN` (and `TEST_PYPI_API_TOKEN` if you set one) — both on PyPI's *API tokens* page and as a repo secret.
+4. Optional: remove the unused `digital-registrar` Pending Publisher that succeeded earlier — it's harmless but no longer needed.
+
+After cleanup, future releases use OIDC end-to-end. No tokens to rotate.
 
 ### Docker (not published from this tag)
 
