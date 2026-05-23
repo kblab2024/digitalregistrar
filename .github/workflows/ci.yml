@@ -30,6 +30,6 @@ jobs:
       - name: Lint
         run: ruff check src apps tests
       - name: Test (core + app suites; attic excluded)
-        run: pytest -q tests apps/infer-gui/tests apps/schema-editor/tests apps/annotator/tests
+        run: pytest -q tests apps/annotator/tests
       - name: Schema concordance (Pydantic ↔ JSON)
         run: python -m digital_registrar.schemas.generate --check

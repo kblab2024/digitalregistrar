@@ -1,5 +1,8 @@
 """Smoke tests for the canonical eval/metrics module (importable, callable)."""
-from drr_attic.benchmarks.eval import metrics
+import pytest
+
+pytest.importorskip("drr_attic", reason="drr-attic is an optional research package")
+from drr_attic.benchmarks.eval import metrics  # noqa: E402
 
 
 def test_metrics_module_exposes_aggregate_and_summary():

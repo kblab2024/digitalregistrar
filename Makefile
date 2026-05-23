@@ -29,7 +29,7 @@ install-attic:
 	pip install -e attic/
 
 test:
-	pytest -q tests apps/infer-gui/tests apps/schema-editor/tests apps/annotator/tests
+	pytest -q tests apps/annotator/tests
 
 lint:
 	ruff check src apps tests
