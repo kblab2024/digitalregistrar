@@ -1,0 +1,195 @@
+name: Release
+
+# Trigger on annotated `v*` tags (e.g. v0.2.0b1, v0.2.0, v1.0.0rc1).
+# workflow_dispatch lets you do TestPyPI dry runs without cutting a tag.
+on:
+  push:
+    tags:
+      - 'v[0-9]*'
+  workflow_dispatch:
+    inputs:
+      test_pypi:
+        description: 'Publish to TestPyPI instead of PyPI (dry run)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write    # github-release job needs this
+  id-token: write    # PyPI Trusted Publishing (OIDC)
+
+jobs:
+  # ── Re-run CI on the tagged commit before doing anything irreversible ──
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install vendor wheel (tnmhelper)
+        run: pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
+      - name: Install core + apps + dev tools
+        run: |
+          pip install -e ".[dev]"
+          pip install -e apps/infer-gui
+          pip install -e apps/schema-editor
+          pip install -e apps/annotator
+      - name: Lint
+        run: ruff check src apps tests
+      - name: Test
+        run: pytest -q tests apps/annotator/tests
+      - name: Schema concordance
+        run: python -m digital_registrar.schemas.generate --check
+
+  # ── Build all four wheels + sdists in one job ──
+  build-wheels:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install build backend
+        run: pip install build
+      - name: Build digital-registrar (core)
+        run: python -m build --outdir dist-core .
+      - name: Build digital-registrar-gui
+        run: python -m build --outdir dist-gui apps/infer-gui
+      - name: Build digital-registrar-annotator
+        run: python -m build --outdir dist-annotator apps/annotator
+      - name: Build digital-registrar-schema-editor
+        run: python -m build --outdir dist-schema-editor apps/schema-editor
+      - name: Collect all dist artifacts into one folder
+        run: |
+          mkdir -p dist
+          cp dist-core/* dist/
+          cp dist-gui/* dist/
+          cp dist-annotator/* dist/
+          cp dist-schema-editor/* dist/
+          ls -lh dist/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pypi-dist
+          path: dist/
+
+  # ── Publish to PyPI (or TestPyPI on dispatch). Uses Trusted Publishing (OIDC). ──
+  # IMPORTANT: this requires the user to configure a Pending Publisher on each of
+  # the 4 PyPI projects, pointing at this repo + this workflow + the appropriate
+  # environment. See docs/release.md for instructions.
+  publish-pypi:
+    needs: build-wheels
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ (github.event_name == 'workflow_dispatch' && inputs.test_pypi) && 'testpypi' || 'pypi' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pypi-dist
+          path: dist/
+      - name: Publish to TestPyPI
+        if: github.event_name == 'workflow_dispatch' && inputs.test_pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: dist/
+          skip-existing: true
+      - name: Publish to PyPI
+        if: github.event_name == 'push' || !inputs.test_pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+
+  # ── Build PyInstaller bundles for the 3 Streamlit apps on Windows/macOS/Linux ──
+  build-bundles:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install vendor wheel (tnmhelper)
+        run: pip install vendor/tnmhelper-0.1.0-py3-none-any.whl
+      - name: Install core + apps + PyInstaller
+        run: |
+          pip install .
+          pip install apps/infer-gui
+          pip install apps/annotator
+          pip install apps/schema-editor
+          pip install pyinstaller
+      - name: Build all three bundles
+        working-directory: packaging
+        run: |
+          pyinstaller pyinstaller/infer_gui.spec
+          pyinstaller pyinstaller/schema_editor.spec
+          pyinstaller pyinstaller/annotator.spec
+      - name: Archive bundles (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cd packaging
+          tar -czf "../bundle-${{ matrix.os }}-infer-gui.tar.gz" -C dist registrar-infer-gui
+          tar -czf "../bundle-${{ matrix.os }}-schema-editor.tar.gz" -C dist registrar-schema-gui
+          tar -czf "../bundle-${{ matrix.os }}-annotator.tar.gz" -C dist registrar-annotate
+      - name: Archive bundles (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          Compress-Archive -Path packaging/dist/registrar-infer-gui -DestinationPath "bundle-${{ matrix.os }}-infer-gui.zip"
+          Compress-Archive -Path packaging/dist/registrar-schema-gui -DestinationPath "bundle-${{ matrix.os }}-schema-editor.zip"
+          Compress-Archive -Path packaging/dist/registrar-annotate -DestinationPath "bundle-${{ matrix.os }}-annotator.zip"
+        shell: pwsh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-${{ matrix.os }}
+          path: |
+            bundle-*.tar.gz
+            bundle-*.zip
+
+  # ── Create a draft GitHub Release with everything attached ──
+  github-release:
+    needs: [publish-pypi, build-bundles]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release-assets
+          find artifacts -type f \( -name "*.whl" -o -name "*.tar.gz" -o -name "*.zip" \) \
+            -exec cp {} release-assets/ \;
+          ls -lh release-assets/
+      - name: Create draft GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          name: ${{ github.ref_name }}
+          body: |
+            ## Digital Registrar ${{ github.ref_name }}
+
+            See [CHANGELOG.md](CHANGELOG.md) for the full notes for this version.
+
+            ### Artifacts attached
+            - **PyPI wheels + sdists** — all four packages (`digital-registrar`, `digital-registrar-gui`, `digital-registrar-annotator`, `digital-registrar-schema-editor`).
+            - **PyInstaller bundles** — Windows, macOS, Linux for each of the three Streamlit apps.
+
+            ### Install
+            ```bash
+            pip install --pre digital-registrar-gui          # or -annotator, or -schema-editor
+            registrar-infer-gui
+            ```
+
+            > **Beta:** this is a pre-release. `pip install` skips it by default — `--pre` is required to opt in.
+          files: release-assets/*

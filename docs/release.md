@@ -106,7 +106,26 @@ Images published to Docker Hub or GHCR. Expected size: ~1.5 GB (`python:3.11-sli
 ## CI / release automation
 
 - `.github/workflows/ci.yml` — runs on every push / PR. Installs core + 3 apps via plain pip, lints with ruff, runs targeted tests, checks schema concordance. Attic excluded.
-- `.github/workflows/release.yml` — (TODO) on `v*.*.*` tag: builds all 4 wheels, uploads to PyPI, builds Docker images, builds PyInstaller bundles via OS matrix, attaches everything to the GitHub Release.
+- `.github/workflows/release.yml` — on `v[0-9]*` tag (or `workflow_dispatch` for TestPyPI dry runs): re-runs CI on the tagged commit, builds all 4 wheels + sdists, publishes to PyPI via Trusted Publishing (OIDC), builds PyInstaller bundles via `[windows-latest, macos-latest, ubuntu-latest]` matrix, attaches everything to a **draft** GitHub Release (you manually publish after eyeballing).
+
+### One-time PyPI Trusted Publishing setup
+
+Before the first tag fires `release.yml`, configure a *Pending Publisher* on PyPI for each of the four packages:
+
+1. Create the four projects on PyPI (you can do this by uploading a zero-byte wheel manually, or by creating them via the PyPI web UI as part of registering a Pending Publisher — see [docs.pypi.org/trusted-publishers](https://docs.pypi.org/trusted-publishers/adding-a-publisher/)).
+2. For each project, under **Manage → Publishing → Add a new publisher → GitHub**:
+   - Owner: `kblab2024`
+   - Repository: `digitalregistrar`
+   - Workflow name: `release.yml`
+   - Environment name: `pypi`
+3. Repeat for TestPyPI ([test.pypi.org](https://test.pypi.org/)) with environment name `testpypi` if you want `workflow_dispatch` dry runs to work.
+4. In the repo settings (Settings → Environments), create environments named `pypi` and `testpypi`. Add deployment protection rules (e.g., manual approval) on `pypi` to require a human click before each PyPI publish.
+
+After that, no API tokens or secrets are needed — OIDC handles auth.
+
+### Docker (not published from this tag)
+
+Docker is documented above (Path B) and the Dockerfiles ship in [packaging/docker/](../packaging/docker/), but the release workflow does not currently build or push them. Re-add a `docker-build` job to `release.yml` when Docker becomes a supported channel.
 
 ## Updating the citation on journal publication
 
