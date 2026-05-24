@@ -63,7 +63,7 @@ drr-next/
 ```bash
 git clone https://github.com/kblab2024/digitalregistrar.git digitalregistrar 
 cd digitalregistrar 
-make install-dev      # installs core + 3 apps + dev tooling
+ make install-dev      # installs core + 3 apps + dev tooling
 make test             # core + app test suites
 make lint             # ruff
 ```
