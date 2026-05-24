@@ -21,6 +21,7 @@ import tomllib
 from pathlib import Path
 
 from digital_registrar.schemas.pydantic._factory_helpers import DEFAULT_GROUP_INSTRUCTION
+
 from .state import (
     AliasGroup,
     EnumDecl,

@@ -9,11 +9,11 @@ For paper-specific evaluation (IAA, preann effect, multirun statistical
 analysis, BERT-specific eval, GPU-accelerated CIs), install the
 `drr-attic` package and use `registrar-benchmark`.
 """
-from . import metrics, nested_metrics, pairwise_compare, completeness, ci, scope, scope_organs
-from .metrics import score_case, aggregate_cases_to_df, summary_table, field_correct
-from .nested_metrics import score_lymph_nodes, score_margins
-from .completeness import aggregate_missingness, out_of_vocab_rate, method_pair_deltas
+from . import ci, completeness, metrics, nested_metrics, pairwise_compare, scope, scope_organs
 from .ci import wilson_ci
+from .completeness import aggregate_missingness, method_pair_deltas, out_of_vocab_rate
+from .metrics import aggregate_cases_to_df, field_correct, score_case, summary_table
+from .nested_metrics import score_lymph_nodes, score_margins
 
 # Public aliases — preferred names for the top-level digital_registrar.* API.
 # Modules themselves are also exposed so users can `from digital_registrar.eval import metrics`.

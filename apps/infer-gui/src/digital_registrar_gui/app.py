@@ -72,7 +72,6 @@ def main() -> None:  # noqa: C901 — one-file Streamlit page is conventional
 
     from digital_registrar.models.common import model_list
     from digital_registrar.paths import RAW_REPORTS
-
     from digital_registrar_gui.runner_bridge import (
         PipelineSetupError,
         capture_lm_trace,
