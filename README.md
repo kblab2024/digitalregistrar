@@ -61,8 +61,8 @@ drr-next/
 ## Dev install (cloners)
 
 ```bash
-git clone https://github.com/kblab2024/digitalregistrar.git drr-next
-cd drr-next
+git clone https://github.com/kblab2024/digitalregistrar.git digitalregistrar 
+cd digitalregistrar 
 make install-dev      # installs core + 3 apps + dev tooling
 make test             # core + app test suites
 make lint             # ruff
