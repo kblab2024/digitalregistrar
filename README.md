@@ -4,6 +4,8 @@
 
 [![DOI](https://img.shields.io/badge/Diagnostics-10.3390%2Fdiagnostics16111644-blue)](https://doi.org/10.3390/diagnostics16111644) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11+-brightgreen)](https://www.python.org/downloads/)
 
+**TL;DR** — `pip install digital-registrar-gui && registrar-infer-gui` → paste a pathology report → get structured JSON. Requires either a local Ollama server with one of `gpt-oss:20b` / `qwen3:30b` / `gemma3:27b` pulled, **or** an `OPENAI_API_KEY`. See [Quickstart](#quickstart-end-users).
+
 Digital Registrar transforms free-text surgical pathology reports into machine-readable registry records using a College of American Pathologists (CAP)-aligned clinical ontology, encoded as strictly-typed DSPy signatures. The system covers **10 major cancer types across 192 per-organ registry field cells (60 unique field names)** — including complex variable-length structures like lymph-node groups and surgical margins — and is **model-agnostic**: any local LLM can serve as the inference engine. Designed for on-premise deployment on a single 48 GB GPU, it keeps sensitive clinical text inside the institution.
 
 ## Highlights
@@ -14,6 +16,37 @@ Digital Registrar transforms free-text surgical pathology reports into machine-r
 - **Validated generalizability** — **92.0 %** macro-mean exact-match on 893 internal reports (10 organs); **77.5 %** on the external TCGA cohort of 242 reports — **88.0 %** after excluding structurally-silent fields ([paper](https://doi.org/10.3390/diagnostics16111644)).
 
 ## Quickstart (end users)
+
+### Prerequisites — pick one LLM backend
+
+The toolkit is BYO-LLM. You need **either**:
+
+- **Local Ollama** with one of the three paper-benchmarked models pulled:
+  ```bash
+  ollama pull gpt-oss:20b      # default — best accuracy on internal validation
+  ollama pull qwen3:30b        # alt MoE (Qwen3-30B-A3B)
+  ollama pull gemma3:27b       # alt dense
+  ```
+  Sized for a single ~48 GB GPU. Smaller VRAM works with quantised tags but is unbenchmarked.
+
+- **OpenAI**: set `OPENAI_API_KEY` in your env (or in `~/.config/digital-registrar/.env`), then pick `gpt5_4_mini` in the GUI's model dropdown.
+
+### Run the GUI in 30 seconds
+
+```bash
+# Path A — local Ollama (default)
+pip install digital-registrar-gui
+registrar-infer-gui                 # opens http://localhost:8502 with gpt-oss:20b
+
+# Path B — OpenAI
+export OPENAI_API_KEY=sk-...
+pip install digital-registrar-gui
+registrar-infer-gui                 # then change the model selector to gpt5_4_mini
+```
+
+Paste a report (or point at a folder of `.txt` files) and the structured JSON appears on the right. The expander shows the full DSPy LM trace (router + group extractors).
+
+### Other packages
 
 The toolkit ships as four pip-installable packages. Pick the apps you need:
 

@@ -1,6 +1,6 @@
 [project]
 name = "digital-registrar"
-version = "0.2.0b1"
+version = "0.2.0b2"
 description = "The Digital Registrar — a schema-first framework for multi-cancer, privacy-preserving pathology abstraction via local LLMs."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -1,6 +1,6 @@
 [project]
 name = "digital-registrar-schema-editor"
-version = "0.2.0b1"
+version = "0.2.0b2"
 description = "Streamlit editor for the Digital Registrar three-layer per-organ schema."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -17,7 +17,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
 dependencies = [
-  "digital-registrar==0.2.0b1",
+  "digital-registrar==0.2.0b2",
   "streamlit>=1.35",
   "pandas",
   "ruff",

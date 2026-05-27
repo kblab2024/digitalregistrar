@@ -7,6 +7,15 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+## [0.2.0b2] — 2026-05-27
+
+**README-only beta refresh** prompted by the Diagnostics launch announcement. No code or schema changes; PyPI metadata republished so cold-install instructions reach end users.
+
+### Changed
+- Root README: added a TL;DR hook above the intro, restructured `## Quickstart (end users)` into a "Prerequisites → Run the GUI → Other packages" flow. The Prerequisites block makes the BYO-LLM gate explicit (one of `gpt-oss:20b` / `qwen3:30b` / `gemma3:27b` via Ollama, **or** an `OPENAI_API_KEY`), so first-time pip installers from the launch tweet don't hit a silent `ConnectionError` against Ollama.
+- `digital-registrar-gui` README: added a `## Prerequisites` section above `## What it does` mirroring the root README gate, and a one-line "Requires Ollama or OpenAI key" disclaimer in the top blurb.
+- Bumped version pins to `0.2.0b2` in all four `pyproject.toml` files and in [packaging/hosted-demo/requirements.txt](packaging/hosted-demo/requirements.txt).
+
 ## [0.2.0b1] — 2026-05-23
 
 **First tagged release.** The companion medRxiv preprint v8 ([10.1101/2025.10.21.25338475](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8)) has been accepted, so the project shifts from a research codebase to a beta toolkit for end-users (cancer registrars, pathology informatics teams, registry IT). This release ships four installable Python packages plus PyInstaller native bundles.
@@ -45,5 +54,6 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 - Hosted Streamlit demo (Path B in [docs/release.md](docs/release.md)) — separate operational concern, not bound to this tag.
 - Docker images (Dockerfiles remain in [packaging/docker/](packaging/docker/) but are not built / published from this tag).
 
-[Unreleased]: https://github.com/kblab2024/digitalregistrar/compare/v0.2.0b1...HEAD
+[Unreleased]: https://github.com/kblab2024/digitalregistrar/compare/v0.2.0b2...HEAD
+[0.2.0b2]: https://github.com/kblab2024/digitalregistrar/releases/tag/v0.2.0b2
 [0.2.0b1]: https://github.com/kblab2024/digitalregistrar/releases/tag/v0.2.0b1
