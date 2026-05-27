@@ -1,6 +1,6 @@
 [project]
 name = "digital-registrar-gui"
-version = "0.2.0b1"
+version = "0.2.0b2"
 description = "Streamlit inference GUI for the Digital Registrar pipeline."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -18,7 +18,7 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Medical Science Apps.",
 ]
 dependencies = [
-  "digital-registrar==0.2.0b1",
+  "digital-registrar==0.2.0b2",
   "streamlit>=1.35",
 ]
 

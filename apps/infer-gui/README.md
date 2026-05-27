@@ -1,6 +1,6 @@
 # digital-registrar-gui
 
-Streamlit inference GUI for the Digital Registrar pipeline. Lets you paste a pathology report (or pick a folder of `.txt` files) and see the structured extraction in real time.
+Streamlit inference GUI for the Digital Registrar pipeline. Lets you paste a pathology report (or pick a folder of `.txt` files) and see the structured extraction in real time. **Requires** a local Ollama server (with one of the paper-benchmarked models) **or** an `OPENAI_API_KEY` — see [Prerequisites](#prerequisites--pick-one-llm-backend) below.
 
 ## Install
 
@@ -10,6 +10,21 @@ registrar-infer-gui
 ```
 
 The default port is 8502. Override with `registrar-infer-gui --port 9000`.
+
+## Prerequisites — pick one LLM backend
+
+The GUI is BYO-LLM. You need **either**:
+
+- **Local Ollama** with one of the three paper-benchmarked models:
+  ```bash
+  ollama pull gpt-oss:20b      # default
+  ollama pull qwen3:30b        # alt (Qwen3-30B-A3B)
+  ollama pull gemma3:27b       # alt
+  ```
+
+- **OpenAI**: `export OPENAI_API_KEY=sk-...`, then pick `gpt5_4_mini` in the GUI's model dropdown.
+
+See the [main repo](https://github.com/kblab2024/digitalregistrar) for the full pipeline docs and four-package overview.
 
 ## What it does
 
