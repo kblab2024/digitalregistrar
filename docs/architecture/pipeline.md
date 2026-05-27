@@ -4,7 +4,7 @@
 
 **The Digital Registrar** extracts CAP-aligned cancer fields from pathology
 reports. The pipeline is model-agnostic, locally deployable via Ollama, and
-covers 193+ fields across 10 cancer types.
+covers 192 per-organ field cells (60 unique field names) across 10 cancer types.
 
 ## Engines
 

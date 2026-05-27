@@ -48,7 +48,7 @@ registrar-eval = "digital_registrar.eval.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/kblab2024/digitalregistrar"
-Preprint = "https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8"
+Paper = "https://doi.org/10.3390/diagnostics16111644"
 
 [build-system]
 requires = ["setuptools>=68"]
