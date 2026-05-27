@@ -72,6 +72,17 @@ _BASE_KWARGS = {"repeat_penalty": 1.05, "keep_alive": "30m", "cache": False, "se
 # forward them to the upstream API (which would 400).
 _OLLAMA_ONLY_KEYS = ("top_k", "num_ctx", "repeat_penalty", "keep_alive")
 
+# OpenAI model families that reject ``max_tokens`` and require
+# ``max_completion_tokens`` instead (gpt-5.x + reasoning o-series).
+_OPENAI_COMPLETION_TOKENS_PREFIXES = ("gpt-5", "gpt5", "o1", "o3", "o4")
+
+
+def _needs_max_completion_tokens(model_id: str) -> bool:
+    if not model_id.startswith("openai/"):
+        return False
+    bare = model_id.split("/", 1)[1]
+    return bare.startswith(_OPENAI_COMPLETION_TOKENS_PREFIXES)
+
 
 def compute_lm_kwargs(model_name: str, overrides: dict | None = None) -> dict:
     """Resolve the final dspy.LM kwargs for *model_name*.
@@ -106,6 +117,8 @@ def load_model(model_name: str, overrides: dict | None = None):
         from digital_registrar.util.secrets import load_openai_key
         api_key = load_openai_key()
         api_kwargs = {k: v for k, v in kwargs.items() if k not in _OLLAMA_ONLY_KEYS}
+        if _needs_max_completion_tokens(model_id) and "max_tokens" in api_kwargs:
+            api_kwargs["max_completion_tokens"] = api_kwargs.pop("max_tokens")
         lm = dspy.LM(
             model=model_id,
             api_key=api_key,

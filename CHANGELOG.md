@@ -7,6 +7,16 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+## [0.2.0b3] — 2026-05-28
+
+**Hotfix beta** for end users routing through `openai/gpt-5.4-mini` (and any future OpenAI gpt-5.x / o-series reasoning model). The default decoding profile passed a `max_tokens` cap that the new OpenAI Chat Completions surface rejects with `BadRequestError: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.`, breaking the GUI inference path the moment a registrar pointed it at OpenAI instead of Ollama.
+
+### Fixed
+- [src/digital_registrar/models/common.py](src/digital_registrar/models/common.py): when `load_model()` dispatches through the `openai/` provider for a gpt-5.x or o-series model id (`gpt-5*`, `gpt5*`, `o1*`, `o3*`, `o4*`), rename the resolved `max_tokens` kwarg to `max_completion_tokens` at the dspy.LM build site. The translation mirrors the existing `_OLLAMA_ONLY_KEYS` strip — applied only when the LM is actually built so `compute_lm_kwargs()` (and the manifests that consume it) still record the intended sampler config under the canonical `max_tokens` name.
+
+### Changed
+- Bumped version pins to `0.2.0b3` in all four `pyproject.toml` files and in [packaging/hosted-demo/requirements.txt](packaging/hosted-demo/requirements.txt).
+
 ## [0.2.0b2] — 2026-05-27
 
 **README-only beta refresh** prompted by the Diagnostics launch announcement. No code or schema changes; PyPI metadata republished so cold-install instructions reach end users.
@@ -54,6 +64,7 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 - Hosted Streamlit demo (Path B in [docs/release.md](docs/release.md)) — separate operational concern, not bound to this tag.
 - Docker images (Dockerfiles remain in [packaging/docker/](packaging/docker/) but are not built / published from this tag).
 
-[Unreleased]: https://github.com/kblab2024/digitalregistrar/compare/v0.2.0b2...HEAD
+[Unreleased]: https://github.com/kblab2024/digitalregistrar/compare/v0.2.0b3...HEAD
+[0.2.0b3]: https://github.com/kblab2024/digitalregistrar/releases/tag/v0.2.0b3
 [0.2.0b2]: https://github.com/kblab2024/digitalregistrar/releases/tag/v0.2.0b2
 [0.2.0b1]: https://github.com/kblab2024/digitalregistrar/releases/tag/v0.2.0b1
