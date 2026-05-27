@@ -1,6 +1,6 @@
 # Digital Registrar — documentation
 
-> Software companion to: Chow N-H, Chang H, Chen H-K, et al. *Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs.* medRxiv 2026. [doi: 10.1101/2025.10.21.25338475](https://doi.org/10.1101/2025.10.21.25338475)
+> Software companion to: Chow N-H, Chang H, Chen H-K, et al. *Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs.* Diagnostics. 2026;16(11):1644. [doi: 10.3390/diagnostics16111644](https://doi.org/10.3390/diagnostics16111644)
 
 The toolkit ships as **four pip-installable packages** plus an `attic/` of research scaffolding kept for reproducibility but not maintained.
 
@@ -50,6 +50,6 @@ Class I + II are the four published PyPI packages. Class III + IV live under `at
 
 ## Quick links
 
-- Paper: [medRxiv preprint](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8)
+- Paper: [Diagnostics 2026;16(11):1644](https://doi.org/10.3390/diagnostics16111644)
 - Repo: [github.com/kblab2024/digitalregistrar](https://github.com/kblab2024/digitalregistrar)
 - Citation: [../CITATION.cff](../CITATION.cff)

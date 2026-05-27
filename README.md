@@ -2,16 +2,16 @@
 
 > **A schema-first framework for multi-cancer, privacy-preserving pathology abstraction via local LLMs.**
 
-[![Preprint](https://img.shields.io/badge/medRxiv-10.1101%2F2025.10.21.25338475-blue)](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11+-brightgreen)](https://www.python.org/downloads/)
+[![DOI](https://img.shields.io/badge/Diagnostics-10.3390%2Fdiagnostics16111644-blue)](https://doi.org/10.3390/diagnostics16111644) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11+-brightgreen)](https://www.python.org/downloads/)
 
-Digital Registrar transforms free-text surgical pathology reports into machine-readable registry records using a College of American Pathologists (CAP)-aligned clinical ontology, encoded as strictly-typed DSPy signatures. The system covers **10 major cancer types across 193 registry fields** — including complex variable-length structures like lymph-node groups and surgical margins — and is **model-agnostic**: any local LLM can serve as the inference engine. Designed for on-premise deployment on a single 48 GB GPU, it keeps sensitive clinical text inside the institution.
+Digital Registrar transforms free-text surgical pathology reports into machine-readable registry records using a College of American Pathologists (CAP)-aligned clinical ontology, encoded as strictly-typed DSPy signatures. The system covers **10 major cancer types across 192 per-organ registry field cells (60 unique field names)** — including complex variable-length structures like lymph-node groups and surgical margins — and is **model-agnostic**: any local LLM can serve as the inference engine. Designed for on-premise deployment on a single 48 GB GPU, it keeps sensitive clinical text inside the institution.
 
 ## Highlights
 
 - **Schema-first architecture** — the clinical ontology is the durable contribution; LLMs are interchangeable engines.
-- **CAP-aligned, registry-grade** — 10 cancer types, 193 fields, validated against gold-standard human annotations.
+- **CAP-aligned, registry-grade** — 10 cancer types, 192 per-organ field cells (60 unique), validated against gold-standard human annotations.
 - **Privacy-preserving by design** — local LLMs only, single 48 GB GPU, no cloud round-trip required.
-- **Validated generalizability** — **94.3 %** mean exact-match on 893 internal reports; **92.4 %** on the external TCGA cohort of 150 reports ([preprint](https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8)).
+- **Validated generalizability** — **92.0 %** macro-mean exact-match on 893 internal reports (10 organs); **77.5 %** on the external TCGA cohort of 242 reports — **88.0 %** after excluding structurally-silent fields ([paper](https://doi.org/10.3390/diagnostics16111644)).
 
 ## Quickstart (end users)
 
@@ -112,9 +112,9 @@ The project supports three distribution paths for layman users (see [docs/releas
 
 If you use the Digital Registrar in your research, please cite:
 
-> Chow N-H, Chang H, Chen H-K, et al. *Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs.* medRxiv 2026. doi: [10.1101/2025.10.21.25338475](https://doi.org/10.1101/2025.10.21.25338475)
+> Chow N-H, Chang H, Chen H-K, et al. *Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs.* Diagnostics. 2026;16(11):1644. doi: [10.3390/diagnostics16111644](https://doi.org/10.3390/diagnostics16111644)
 
-(Preprint; the citation will be updated to the published-journal version when available. Machine-readable metadata in [CITATION.cff](CITATION.cff).)
+Machine-readable metadata in [CITATION.cff](CITATION.cff).
 
 ## License
 

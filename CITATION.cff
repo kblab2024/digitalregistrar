@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the accompanying preprint."
+message: "If you use this software, please cite the accompanying paper."
 title: "Digital Registrar"
 abstract: >
   A schema-first framework for multi-cancer, privacy-preserving pathology
   abstraction via local LLMs. Implements a CAP-aligned clinical ontology as
-  strictly-typed DSPy signatures spanning 10 cancer types and 193 registry
-  fields.
+  strictly-typed DSPy signatures spanning 10 cancer types and 192 per-organ
+  registry field cells (60 unique field names).
 type: software
 version: "0.2.0"
 date-released: "2026-05-22"
@@ -54,11 +54,16 @@ authors:
 preferred-citation:
   type: article
   title: "Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs"
-  doi: "10.1101/2025.10.21.25338475"
-  url: "https://www.medrxiv.org/content/10.1101/2025.10.21.25338475v8"
-  journal: "medRxiv"
+  doi: "10.3390/diagnostics16111644"
+  url: "https://doi.org/10.3390/diagnostics16111644"
+  journal: "Diagnostics"
+  publisher:
+    name: "MDPI"
   year: 2026
-  notes: "TODO: replace with published journal citation when available."
+  volume: 16
+  issue: "11"
+  start: 1644
+  end: 1644
   authors:
     - family-names: Chow
       given-names: Nan-Haw
