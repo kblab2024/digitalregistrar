@@ -8,7 +8,6 @@ from __future__ import annotations
 import pytest
 
 from digital_registrar import runner
-from digital_registrar.models import common
 from digital_registrar.models.common import (
     MODEL_PROFILES,
     PAPER_NUM_CTX,
@@ -190,27 +189,37 @@ def test_load_model_compat_server_requires_api_base(monkeypatch):
         load_model("openai/local-model")
 
 
-# --- load_model: hosted OpenAI alias (unchanged path) ------------------------
+# --- load_model: hosted OpenAI alias ----------------------------------------
 
-def test_load_model_openai_alias_strips_ollama_keys(monkeypatch):
-    # Record kwargs instead of building a real LM: newer dspy rejects
-    # temperature != 1.0 for gpt-5 family ids at construction time.
-    captured = {}
+@pytest.fixture
+def _fake_openai_key(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr("digital_registrar.util.secrets.load_openai_key", lambda: "sk-test")
 
-    def fake_lm(**kwargs):
-        captured.update(kwargs)
-        return kwargs
 
-    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+@pytest.mark.usefixtures("_fake_openai_key")
+def test_load_model_openai_alias_builds_real_lm(monkeypatch):
+    # dspy >= 3.4 refuses temperature != 1.0 / max_tokens < 16000 for gpt-5
+    # ids at construction; the profile values must still land in lm.kwargs.
     monkeypatch.setenv("DIGITAL_REGISTRAR_OLLAMA_HOST", "gpu-box")
-    monkeypatch.setattr(common.dspy, "LM", fake_lm)
-    load_model("gpt5_4_mini", overrides={"num_ctx": 8192, "think": False})
-    assert captured["model"] == "openai/gpt-5.4-mini"
-    assert captured["api_key"] == "sk-test"
-    assert "api_base" not in captured
-    assert not set(_OLLAMA_ONLY) & set(captured)
-    assert captured["max_completion_tokens"] == 4096
-    assert "max_tokens" not in captured
+    lm = load_model("gpt5_4_mini", overrides={"num_ctx": 8192, "think": False})
+    profile = MODEL_PROFILES["openai/gpt-5.4-mini"]
+    assert lm.model == "openai/gpt-5.4-mini"
+    assert lm.kwargs["api_key"] == "sk-test"
+    assert "api_base" not in lm.kwargs
+    assert not set(_OLLAMA_ONLY) & set(lm.kwargs)
+    assert lm.kwargs["temperature"] == profile["temperature"]
+    assert lm.kwargs["top_p"] == profile["top_p"]
+    assert lm.kwargs["max_completion_tokens"] == profile["max_tokens"]
+    assert lm.kwargs.get("max_tokens") is None
+
+
+@pytest.mark.usefixtures("_fake_openai_key")
+def test_load_model_openai_alias_sampler_overrides():
+    lm = load_model("gpt5_4_mini", overrides={"temperature": 0.7, "max_tokens": 2048})
+    assert lm.kwargs["temperature"] == 0.7
+    assert lm.kwargs["max_completion_tokens"] == 2048
+    assert lm.kwargs.get("max_tokens") is None
 
 
 # --- runner flags --------------------------------------------------------------

@@ -104,6 +104,10 @@ MODEL_PROFILES: dict[str, dict] = {
     # OpenAI: stochastic profile mirrors the gpt-oss shape so K-run
     # reliability metrics (ICC, flip-rate, paired bootstrap) are meaningful.
     # No top_k / num_ctx (not supported by the chat-completions API).
+    # temperature 0.3 is what the rebuttal runs sent. OpenAI accepts it only
+    # while reasoning_effort is "none" (this model's default), so do not add
+    # reasoning_effort here. load_model sets temperature and the token cap
+    # after building the LM (see _OPENAI_POST_INIT_KEYS).
     "openai/gpt-5.4-mini":       {"temperature": 0.3,  "top_p": 1.0,  "max_tokens": 4096},
 }
 _DEFAULT_PROFILE = {"temperature": 0.2, "top_p": 0.95, "top_k": 64, "num_ctx": 16384, "max_tokens": 4096}
@@ -118,6 +122,16 @@ _OLLAMA_ONLY_KEYS = ("top_k", "num_ctx", "repeat_penalty", "keep_alive", "think"
 # OpenAI model families that reject ``max_tokens`` and require
 # ``max_completion_tokens`` instead (gpt-5.x + reasoning o-series).
 _OPENAI_COMPLETION_TOKENS_PREFIXES = ("gpt-5", "gpt5", "o1", "o3", "o4")
+
+# For the families above, these kwargs are set on ``lm.kwargs`` after
+# ``dspy.LM`` is built instead of being passed to it. dspy >= 3.4 treats every
+# ``openai/gpt-5*`` id (dotted ones like gpt-5.4-mini included) as a reasoning
+# model and refuses temperature != 1.0 or a token cap below 16000 at
+# construction; a pre-renamed ``max_completion_tokens`` raises TypeError
+# there. gpt-5.1+ accept both when reasoning_effort is "none", their default
+# (LiteLLM's model map agrees), and dspy merges ``lm.kwargs`` into every
+# request, so the profile values still reach the API.
+_OPENAI_POST_INIT_KEYS = ("temperature", "max_completion_tokens")
 
 
 def _needs_max_completion_tokens(model_id: str) -> bool:
@@ -244,16 +258,20 @@ def load_model(model_name: str, overrides: dict | None = None):
         from digital_registrar.util.secrets import load_openai_key
         api_key = load_openai_key()
         api_kwargs = {k: v for k, v in kwargs.items() if k not in _OLLAMA_ONLY_KEYS}
-        if _needs_max_completion_tokens(model_id) and "max_tokens" in api_kwargs:
-            api_kwargs["max_completion_tokens"] = api_kwargs.pop("max_tokens")
+        post_init = {}
+        if _needs_max_completion_tokens(model_id):
+            if "max_tokens" in api_kwargs:
+                api_kwargs["max_completion_tokens"] = api_kwargs.pop("max_tokens")
+            post_init = {k: api_kwargs.pop(k) for k in _OPENAI_POST_INIT_KEYS if k in api_kwargs}
         lm = dspy.LM(
             model=model_id,
             api_key=api_key,
             model_type="chat",
             **api_kwargs,
         )
+        lm.kwargs.update(post_init)
         # Print the redacted kwargs (api_key never logged).
-        print(f"Loaded model: {model_name} (openai) with {api_kwargs}")
+        print(f"Loaded model: {model_name} (openai) with {api_kwargs | post_init}")
         return lm
 
     if model_id.startswith("ollama_chat/"):
