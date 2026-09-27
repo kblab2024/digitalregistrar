@@ -72,6 +72,22 @@ def _select_runner(engine: str, decomposition: str, jsonize_enabled: bool):
     return _run
 
 
+def _lm_overrides(args: argparse.Namespace) -> dict | None:
+    """Collect the LM overrides given on the command line (None = not set).
+
+    Forwarded to ``setup_pipeline`` / ``setup_pipeline_v2`` →
+    ``models.common.load_model``; unset flags fall back to the model's
+    profile and, for ``api_base``, the Ollama env vars.
+    """
+    overrides = {
+        "api_base": args.api_base,
+        "num_ctx": args.num_ctx,
+        "think": args.think,
+    }
+    overrides = {k: v for k, v in overrides.items() if v is not None}
+    return overrides or None
+
+
 def run_folder(
     input_folder: str,
     output_folder: str,
@@ -116,7 +132,7 @@ def run_random_report(
         spamwriter.writerow([example_filename, output["cancer_excision_report"], elapsed_time])
 
 
-def main():
+def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Run cancer-extraction pipeline over a folder of pathology reports."
     )
@@ -131,7 +147,40 @@ def main():
         "--model",
         type=str,
         default="gpt",
-        help="Model name from models/common.model_list (default: gpt).",
+        help="Model name from models/common.model_list (default: gpt), or a raw "
+        "LiteLLM id: ollama_chat/<tag> for any Ollama model, or "
+        "hosted_vllm/<name> / openai/<name> for an OpenAI-compatible server "
+        "(vLLM, llama.cpp) together with --api-base.",
+    )
+    parser.add_argument(
+        "--api-base",
+        type=str,
+        default=None,
+        help="LLM server URL. For Ollama models: host, host:port or full URL "
+        "(default: $DIGITAL_REGISTRAR_OLLAMA_HOST, then $OLLAMA_HOST, then "
+        "http://localhost:11434). For hosted_vllm/ or openai/ ids: the "
+        "OpenAI-compatible base URL, e.g. http://gpu-box:8000/v1 (required).",
+    )
+    parser.add_argument(
+        "--num-ctx",
+        type=int,
+        default=None,
+        help="Ollama context window in tokens (default: per-model profile, "
+        "16384 or 12288 for gemma4). Use 8192 to reproduce the paper. "
+        "Ignored by non-Ollama backends.",
+    )
+    parser.add_argument(
+        "--think",
+        dest="think",
+        action="store_true",
+        default=None,
+        help="Turn Ollama thinking mode on (default: the model's own default).",
+    )
+    parser.add_argument(
+        "--no-think",
+        dest="think",
+        action="store_false",
+        help="Turn Ollama thinking mode off.",
     )
     parser.add_argument(
         "--engine",
@@ -160,13 +209,18 @@ def main():
         help="Disable ReportJsonize (default for factory engine).",
     )
     parser.set_defaults(jsonize=False)
-    args = parser.parse_args()
+    return parser
+
+
+def main():
+    args = _build_parser().parse_args()
 
     # Configure DSPy for the chosen engine.
+    overrides = _lm_overrides(args)
     if args.engine == "factory":
-        setup_pipeline_v2(args.model)
+        setup_pipeline_v2(args.model, overrides=overrides)
     else:
-        setup_pipeline(args.model)
+        setup_pipeline(args.model, overrides=overrides)
 
     runner = _select_runner(args.engine, args.decomposition, args.jsonize)
 
@@ -183,9 +237,9 @@ def main():
     )
     logger = setup_logger(name="runner_logger", level=logging.DEBUG, log_file=log_file, json_format=False)
     logger.info(
-        "Run started at %s (engine=%s, model=%s, decomposition=%s, jsonize=%s)",
+        "Run started at %s (engine=%s, model=%s, decomposition=%s, jsonize=%s, lm_overrides=%s)",
         datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        args.engine, args.model, args.decomposition, args.jsonize,
+        args.engine, args.model, args.decomposition, args.jsonize, overrides,
     )
 
     if args.input:

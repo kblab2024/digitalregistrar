@@ -7,7 +7,23 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+### Added
+- Configurable LLM endpoint ([src/digital_registrar/models/common.py](src/digital_registrar/models/common.py)): the Ollama base URL is resolved per call from `overrides["api_base"]` → `$DIGITAL_REGISTRAR_OLLAMA_HOST` → `$OLLAMA_HOST` → `http://localhost:11434`. It accepts `host` / `host:port` without a scheme and maps `0.0.0.0` to `localhost`. New helpers: `resolve_ollama_api_base`, `resolve_model_id`.
+- Raw LiteLLM model ids: `ollama_chat/<tag>` for any Ollama model, and `hosted_vllm/<name>` / `openai/<name>` for vLLM, llama.cpp or other OpenAI-compatible servers. The latter require `api_base`; their key comes from `$DIGITAL_REGISTRAR_API_KEY` (default `EMPTY`), and `OPENAI_API_KEY` is never forwarded to them.
+- `registrar-pipeline` flags: `--api-base`, `--num-ctx`, `--think` / `--no-think`.
+- `ollama_chat/qwen3:30b` decoding profile (the sampler values it previously inherited from the default profile).
+- Optional `think` profile/override key, forwarded as Ollama's top-level `think` flag and stripped for non-Ollama backends. No shipped profile sets it.
+- [docs/llm_backends.md](docs/llm_backends.md): backend, endpoint, context-window and thinking-mode guide.
+
+### Changed
+- Default Ollama `num_ctx` raised from 8192 to 16384 (12288 for `gemma4:*`), per [docs/architecture/dspy_ollama_model_compatibility.md](docs/architecture/dspy_ollama_model_compatibility.md) §5.2. Pass `--num-ctx 8192` (`PAPER_NUM_CTX`) to reproduce the paper.
+- `registrar-eval --scope` now takes `cascade` (default) or `fair` instead of the unused `all|attempted|applicable`. The per-case table is written as CSV (`atomic.csv`), so evaluation no longer needs `pyarrow`.
+- `digital_registrar.eval.pairwise_compare` now provides `compare_runs()`. The retired `main()` stub is gone.
+- Rewrote `docs/eval/` to document `registrar-eval`: [index](docs/eval/index.md), [recipes](docs/eval/recipes.md), [comparing runs](docs/eval/comparing_runs.md) and [reading outputs](docs/eval/reading_outputs.md). It no longer refers to the retired `python -m scripts.eval.cli`.
+
 ### Fixed
+- `load_model(..., overrides={"api_base": ...})` no longer raises `TypeError: got multiple values for keyword argument 'api_base'`.
+- `load_model("gpt5_4_mini")` works on dspy ≥ 3.4. dspy 3.4 treats dotted `gpt-5.x` ids as reasoning models: it rejected the profile's `temperature: 0.3` with `LMConfigurationError`, and the pre-renamed `max_completion_tokens` with a `TypeError`. For gpt-5 / o-series ids, both values are now set on `lm.kwargs` after `dspy.LM` is built. The request still carries temperature 0.3 and a 4096-token cap, the values the rebuttal runs used on dspy 3.2.1.
 - `registrar-eval` works again. All three subcommands crashed at v0.2.0b3, and each now runs end-to-end on a folder of `registrar-pipeline` outputs against a gold folder:
   - `metrics` writes `atomic.csv` and `summary.csv`, with per-field accuracy or F1, coverage and 95% CIs.
   - `compare` writes `compare.csv`: per-field paired Δ, a paired-bootstrap CI and McNemar's test.
@@ -16,11 +32,6 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
   Files are paired by case id after stripping `_output` / `_annotation` from the stem. Both folders are searched recursively. The same code is exposed in [src/digital_registrar/eval/](src/digital_registrar/eval/) as `load_pairs`, `score_pairs`, `summarize_scores`, `compare_runs` and `completeness_atomic`.
 - Per-case F1 no longer drops to 0 when `margins` / `biomarkers` / lymph-node lists are empty on both sides. The same goes for whitelisted biomarkers that neither side lists: those cases are now skipped, since there is nothing to score.
 - `completeness.out_of_vocab_rate` no longer flags integer and boolean enum values (e.g. `grade: 2`, `perineural_invasion: true`) as out-of-vocabulary.
-
-### Changed
-- `registrar-eval --scope` now takes `cascade` (default) or `fair` instead of the unused `all|attempted|applicable`. The per-case table is written as CSV (`atomic.csv`), so evaluation no longer needs `pyarrow`.
-- `digital_registrar.eval.pairwise_compare` now provides `compare_runs()`. The retired `main()` stub is gone.
-- Rewrote `docs/eval/` to document `registrar-eval`: [index](docs/eval/index.md), [recipes](docs/eval/recipes.md), [comparing runs](docs/eval/comparing_runs.md) and [reading outputs](docs/eval/reading_outputs.md). It no longer refers to the retired `python -m scripts.eval.cli`.
 
 ## [0.2.0b3] — 2026-05-28
 

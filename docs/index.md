@@ -27,6 +27,7 @@ drr-next/
 | You want to … | Read |
 |---|---|
 | Install and try the inference GUI | [../README.md](../README.md) (Quickstart) |
+| Point at a remote Ollama / vLLM / llama.cpp server, tune the context window | [llm_backends.md](llm_backends.md) |
 | Understand the public Python API | [api.md](api.md) |
 | Understand the v1 / v2 pipeline | [architecture/pipeline.md](architecture/pipeline.md) |
 | Understand the 3-layer schema | [architecture/schemas.md](architecture/schemas.md) |

@@ -24,6 +24,8 @@ The GUI is BYO-LLM. You need **either**:
 
 - **OpenAI**: `export OPENAI_API_KEY=sk-...`, then pick `gpt5_4_mini` in the GUI's model dropdown.
 
+Ollama on another machine or outside the GUI's container: set `DIGITAL_REGISTRAR_OLLAMA_HOST` (or `OLLAMA_HOST`), e.g. `DIGITAL_REGISTRAR_OLLAMA_HOST=192.168.1.20:11434 registrar-infer-gui`. See [LLM backends](https://github.com/kblab2024/digitalregistrar/blob/main/docs/llm_backends.md).
+
 See the [main repo](https://github.com/kblab2024/digitalregistrar) for the full pipeline docs and four-package overview.
 
 ## What it does
