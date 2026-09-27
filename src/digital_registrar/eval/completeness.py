@@ -27,7 +27,7 @@ from collections.abc import Iterable, Sequence
 
 import pandas as pd
 
-from .ci import wilson_ci
+from .ci import mcnemar_test, wilson_ci
 from .metrics import normalize
 from .scope import get_allowed_values, get_field_value
 
@@ -124,24 +124,17 @@ def method_pair_deltas(
     both methods on the SAME case set. Returns a long-form DataFrame
     suitable for the modularity-advantage table.
 
-    The McNemar tests are batched: per-cell Python ``mcnemar_test`` calls
-    (which can run thousands of times for a typical eval grid) are
-    replaced with a single :func:`ci_gpu.mcnemar_batch` call after the
-    (b, c) counts are accumulated. Per-cell p-values match the original
-    one-at-a-time path bit-for-bit (same closed-form arithmetic / scipy
-    CDFs). ``device`` is plumbed for API symmetry with the other stats
-    functions.
+    Each cell's McNemar test is :func:`ci.mcnemar_test` on its (b, c)
+    counts. ``device`` is accepted for API compatibility but ignored;
+    everything runs on CPU.
     """
-    from . import ci_gpu
+    del device  # API compatibility only; see docstring.
 
     methods = sorted(atomic["method"].dropna().unique().tolist())
     if len(methods) < 2:
         return pd.DataFrame()
 
     rows: list[dict] = []
-    bp_list: list[int] = []
-    cp_list: list[int] = []
-    # First pass: build all per-cell rows + flat (b, c) arrays.
     for i, m_a in enumerate(methods):
         for m_b in methods[i + 1:]:
             for keys, sub in atomic.groupby(list(by), dropna=False):
@@ -156,6 +149,7 @@ def method_pair_deltas(
                 b_arr = b.loc[shared].astype(int).to_numpy()
                 bp = int(((a_arr == 1) & (b_arr == 0)).sum())
                 cp = int(((a_arr == 0) & (b_arr == 1)).sum())
+                mc = mcnemar_test(bp, cp)
 
                 row = (dict(zip(by, keys, strict=True))
                        if isinstance(keys, tuple) else {by[0]: keys})
@@ -166,20 +160,14 @@ def method_pair_deltas(
                     "attempted_rate_b": float(b_arr.mean()),
                     "delta_attempted_rate": float(a_arr.mean() - b_arr.mean()),
                     "mcnemar_b": bp, "mcnemar_c": cp,
+                    "mcnemar_statistic": float(mc["statistic"]),
+                    "mcnemar_p_value": float(mc["p_value"]),
+                    "mcnemar_method": str(mc["method"]),
                 })
                 rows.append(row)
-                bp_list.append(bp)
-                cp_list.append(cp)
 
     if not rows:
         return pd.DataFrame()
-
-    # Second pass: one batched McNemar call across every cell.
-    mc = ci_gpu.mcnemar_batch(bp_list, cp_list, device=device)
-    for idx, row in enumerate(rows):
-        row["mcnemar_statistic"] = float(mc["statistic"][idx])
-        row["mcnemar_p_value"] = float(mc["p_value"][idx])
-        row["mcnemar_method"] = str(mc["method"][idx])
     return pd.DataFrame(rows)
 
 
