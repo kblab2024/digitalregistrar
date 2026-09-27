@@ -11,6 +11,8 @@ Core primitives:
     match_nested_list(g, p, k)  — bipartite greedy match of list-of-dicts fields
     score_case(gold, pred)      — returns {field: bool/None} across fair scope
     aggregate_cases_to_df(cases, method_to_preds, scope) — long-form correctness DataFrame
+    score_pairs(pairs, method, scope) — long-form table from ``folders.load_pairs``
+    summarize_scores(atomic)    — per-field accuracy / F1 with 95% CIs
 
 Coverage rule
 -------------
@@ -25,8 +27,10 @@ import json
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
+from .ci import bootstrap_ci, wilson_ci
 from .scope import (
     # `X as X` flags these as deliberate public re-exports for downstream
     # callers (ablations/, tests/) and stops ruff F401 from pruning them.
@@ -41,6 +45,7 @@ from .scope import (
     biomarkers_for_organ,
     get_field_value,
     get_list_of_literals_fields,
+    get_nested_list_fields,
     get_organ_scoreable_fields,
 )
 
@@ -565,4 +570,137 @@ def summary_table(df: pd.DataFrame, by: list[str] | None = None) -> pd.DataFrame
             "accuracy_attempted": acc,
         })
 
-    return df.groupby(by).apply(_agg).reset_index()
+    return df.groupby(by).apply(_agg, include_groups=False).reset_index()
+
+
+# --- Folder-level scoring (registrar-eval) ----------------------------------
+
+_RESULT_META_KEYS = frozenset({
+    "_nested", "stage_a", "stage_b", "stage_c_eligible", "others_disposition",
+})
+
+# (row name, score_lymph_nodes key) for the case-level lymph-node checks.
+_LN_ACCURACY_ROWS = (
+    ("regional_lymph_node.examined_total", "ln_examined_total_correct_tol"),
+    ("regional_lymph_node.involved_total", "ln_involved_total_correct_tol"),
+    ("regional_lymph_node.any_positive", "ln_any_positive_correct"),
+)
+
+
+def _field_stage(field: str) -> str:
+    if field == "cancer_excision_report":
+        return "A"
+    if field == "cancer_category":
+        return "B"
+    return "C"
+
+
+def _f1(tp: float, fp: float, fn: float) -> float:
+    denom = 2 * tp + fp + fn
+    return 2 * tp / denom if denom else 0.0
+
+
+def score_pairs(pairs: Iterable, *, method: str = "pred",
+                scope: ScopeArg = None) -> pd.DataFrame:
+    """Score gold/prediction pairs into a long-form table.
+
+    ``pairs`` are :class:`folders.CasePair` objects (anything with
+    ``case_id``, ``dataset``, ``gold`` and ``pred`` attributes). A missing
+    or unreadable prediction (``pred is None``) is scored as ``{}``, i.e.
+    nothing attempted.
+
+    ``scope=None`` runs the full cascade (see :func:`score_case`) and adds
+    nested-list F1 rows (margins, biomarkers) plus lymph-node rows from
+    :func:`nested_metrics.score_lymph_nodes`. An explicit field list runs
+    the flat legacy scorer over just those fields.
+
+    Output columns: ``method, dataset, organ, case_id, stage, field,
+    metric, correct, attempted``. ``stage`` is A (eligibility), B (organ)
+    or C (cancer_data fields). ``metric`` is ``accuracy`` (``correct`` is
+    True/False, or None when not attempted) or ``f1`` (``correct`` is the
+    per-case F1). Nested lists that are empty on both sides, and
+    whitelisted biomarkers absent on both sides, are skipped — there is
+    nothing to score.
+    """
+    # nested_metrics imports this module, so import lazily.
+    from .nested_metrics import score_lymph_nodes
+
+    rows: list[dict] = []
+    for pair in pairs:
+        gold = pair.gold
+        pred = pair.pred if pair.pred is not None else {}
+        organ = normalize(gold.get("cancer_category"))
+        base = {"method": method, "dataset": pair.dataset, "organ": organ,
+                "case_id": pair.case_id}
+
+        def _add(field, metric, correct, attempted, base=base):
+            rows.append({**base, "stage": _field_stage(field), "field": field,
+                         "metric": metric, "correct": correct,
+                         "attempted": attempted})
+
+        result = score_case(gold, pred, scope=scope)
+        gold_biomarkers = {
+            f"biomarker_{normalize(b.get('biomarker_category'))}"
+            for b in (get_field_value(gold, "biomarkers") or [])
+            if isinstance(b, dict)
+        }
+        for field, correct in result.items():
+            if field in _RESULT_META_KEYS:
+                continue
+            if (correct is None and field.startswith("biomarker_")
+                    and field not in gold_biomarkers):
+                continue
+            _add(field, "accuracy",
+                 bool(correct) if correct is not None else None,
+                 correct is not None)
+        for field, f1d in result["_nested"].items():
+            if f1d["tp"] + f1d["fp"] + f1d["fn"] == 0:
+                continue
+            _add(field, "f1", float(f1d["f1"]), True)
+
+        if (result.get("stage_c_eligible")
+                and "regional_lymph_node" in get_nested_list_fields(organ)
+                and is_attempted(pred, "regional_lymph_node")):
+            ln = score_lymph_nodes(gold, pred)
+            for name, key in _LN_ACCURACY_ROWS:
+                _add(name, "accuracy", bool(ln[key]), True)
+            tp, fp, fn = ln["ln_station_tp"], ln["ln_station_fp"], ln["ln_station_fn"]
+            if tp + fp + fn:
+                _add("regional_lymph_node.group_f1", "f1", _f1(tp, fp, fn), True)
+
+    columns = ["method", "dataset", "organ", "case_id", "stage", "field",
+               "metric", "correct", "attempted"]
+    return pd.DataFrame(rows, columns=columns)
+
+
+def summarize_scores(atomic: pd.DataFrame, *, n_boot: int = 2000,
+                     alpha: float = 0.05) -> pd.DataFrame:
+    """Per (method, stage, field, metric) summary of a :func:`score_pairs` table.
+
+    Columns from :func:`summary_table` (``attempted``, ``total``,
+    ``coverage``, ``accuracy_attempted``) plus ``ci_lo`` / ``ci_hi``:
+    a Wilson interval for ``accuracy`` rows and a percentile bootstrap of
+    the mean for ``f1`` rows. For ``f1`` rows ``accuracy_attempted`` is
+    the mean per-case F1.
+    """
+    by = ["method", "stage", "field", "metric"]
+    if atomic.empty:
+        return pd.DataFrame(columns=[*by, "attempted", "total", "coverage",
+                                     "accuracy_attempted", "ci_lo", "ci_hi"])
+    summary = summary_table(atomic, by=by)
+    cis: dict[tuple, tuple[float, float]] = {}
+    for key, group in atomic.groupby(by):
+        values = pd.to_numeric(group.loc[group["attempted"], "correct"],
+                               errors="coerce").dropna().astype(float)
+        if key[3] == "accuracy":
+            cis[key] = wilson_ci(int(values.sum()), int(values.size), alpha)
+        else:
+            res = bootstrap_ci(values.tolist(), np.mean, n_boot=n_boot,
+                               alpha=alpha, method="percentile")
+            cis[key] = (res.lo, res.hi)
+    keys = list(summary[by].itertuples(index=False, name=None))
+    summary["ci_lo"] = [cis[k][0] for k in keys]
+    summary["ci_hi"] = [cis[k][1] for k in keys]
+    summary["attempted"] = summary["attempted"].astype(int)
+    summary["total"] = summary["total"].astype(int)
+    return summary

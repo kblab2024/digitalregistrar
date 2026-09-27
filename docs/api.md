@@ -71,17 +71,18 @@ from digital_registrar import (
     score_case, score_lymph_nodes, score_margins,  # functions
 )
 
-per_case = score_case(gold_dict, pred_dict, scope="all")
+per_case = score_case(gold_dict, pred_dict)  # cascade scoring; see docstring for scope=
 ```
 
-- `field_metrics` — alias for `digital_registrar.eval.metrics` (P/R/F1, exact-match).
+- `field_metrics` — alias for `digital_registrar.eval.metrics` (exact-match accuracy, nested-list F1, folder scoring via `score_pairs` / `summarize_scores`).
 - `nested_field_metrics` — alias for `digital_registrar.eval.nested_metrics` (LN, margins).
-- `pairwise_compare` — submodule for two-run comparison + paired bootstrap.
-- `completeness` — submodule for missingness / out-of-vocab analysis.
-- `score_case(gold, pred, scope)` → `dict` — per-case scoring.
+- `pairwise_compare` — two-run comparison: `compare_runs(atomic, method_a, method_b)` → per-field Δ, paired bootstrap CI, McNemar.
+- `completeness` — missingness / refusal / out-of-vocab analysis (`completeness_atomic`, `aggregate_missingness`, `out_of_vocab_table`).
+- `score_case(gold, pred, scope=None)` → `dict` — per-case scoring. `scope=None` runs the eligibility → organ → fields cascade; pass a field list for flat scoring.
+- `digital_registrar.eval.load_pairs(pred_dir, gold_dir)` → `(pairs, stats)` — pairs `<case>_output.json` with `<case>_annotation.json` / `<case>.json`.
 - `score_lymph_nodes(gold, pred)`, `score_margins(gold, pred)` → `dict` — nested-field scoring.
 
-CLI access: `registrar-eval {metrics,compare,completeness}` — see `registrar-eval --help`.
+CLI access: `registrar-eval {metrics,compare,completeness}` — see `registrar-eval --help` and [eval/index.md](eval/index.md).
 
 ## Paths
 

@@ -7,6 +7,21 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+### Fixed
+- `registrar-eval` works again. All three subcommands crashed at v0.2.0b3, and each now runs end-to-end on a folder of `registrar-pipeline` outputs against a gold folder:
+  - `metrics` writes `atomic.csv` and `summary.csv`, with per-field accuracy or F1, coverage and 95% CIs.
+  - `compare` writes `compare.csv`: per-field paired Δ, a paired-bootstrap CI and McNemar's test.
+  - `completeness` writes `completeness.csv`, `refusal_calibration.csv` and `out_of_vocab.csv`.
+
+  Files are paired by case id after stripping `_output` / `_annotation` from the stem. Both folders are searched recursively. The same code is exposed in [src/digital_registrar/eval/](src/digital_registrar/eval/) as `load_pairs`, `score_pairs`, `summarize_scores`, `compare_runs` and `completeness_atomic`.
+- Per-case F1 no longer drops to 0 when `margins` / `biomarkers` / lymph-node lists are empty on both sides. The same goes for whitelisted biomarkers that neither side lists: those cases are now skipped, since there is nothing to score.
+- `completeness.out_of_vocab_rate` no longer flags integer and boolean enum values (e.g. `grade: 2`, `perineural_invasion: true`) as out-of-vocabulary.
+
+### Changed
+- `registrar-eval --scope` now takes `cascade` (default) or `fair` instead of the unused `all|attempted|applicable`. The per-case table is written as CSV (`atomic.csv`), so evaluation no longer needs `pyarrow`.
+- `digital_registrar.eval.pairwise_compare` now provides `compare_runs()`. The retired `main()` stub is gone.
+- Rewrote `docs/eval/` to document `registrar-eval`: [index](docs/eval/index.md), [recipes](docs/eval/recipes.md), [comparing runs](docs/eval/comparing_runs.md) and [reading outputs](docs/eval/reading_outputs.md). It no longer refers to the retired `python -m scripts.eval.cli`.
+
 ## [0.2.0b3] — 2026-05-28
 
 **Hotfix beta** for end users routing through `openai/gpt-5.4-mini` (and any future OpenAI gpt-5.x / o-series reasoning model). The default decoding profile passed a `max_tokens` cap that the new OpenAI Chat Completions surface rejects with `BadRequestError: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.`, breaking the GUI inference path the moment a registrar pointed it at OpenAI instead of Ollama.

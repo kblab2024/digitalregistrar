@@ -17,7 +17,7 @@ Single source of truth: `drr_attic.benchmarks.eval.iaa.classify_field(field, org
 
 ## Per-organ scoreable fields
 
-For the `non_nested` subcommand, the atomic table iterates every per-organ scoreable field — not the (much smaller) `FAIR_SCOPE`. Field counts per organ in the canonical schemas (as of 2026-04):
+Under cascade scoring (`registrar-eval --scope cascade`, the default), Stage C iterates every per-organ scoreable field — not the (much smaller) `FAIR_SCOPE`. Field counts per organ in the canonical schemas (as of 2026-04):
 
 | Organ | Categorical | Boolean | Continuous | List-of-literals | Total |
 |---|---:|---:|---:|---:|---:|
@@ -32,7 +32,7 @@ For the `non_nested` subcommand, the atomic table iterates every per-organ score
 | pancreas | 13 | 4 | 1 | 0 | 18 |
 | thyroid | 17 | 4 | 1 | 0 | 22 |
 
-The two top-level fields (`cancer_category`, `cancer_excision_report`) plus the three breast biomarker synthetic fields (`biomarker_er`, `biomarker_pr`, `biomarker_her2`) are added on top per organ as appropriate. Cross-organ union: ~69 distinct fields.
+The two top-level gate fields (`cancer_excision_report`, `cancer_category`) are scored as Stages A and B. `biomarker_<name>` rows are added for each whitelisted biomarker (`BIOMARKER_WHITELIST`: breast `er`/`pr`/`her2`/`ki67`, colorectal `mlh1`/`msh2`/`msh6`/`pms2`). `ajcc_version` and `treatment_effect` are never scored (`EVAL_EXCLUDED_FIELDS`). Cross-organ union: ~69 distinct fields.
 
 ## Sections (`classify_section`)
 
@@ -46,30 +46,36 @@ The two top-level fields (`cancer_category`, `cancer_excision_report`) plus the 
 | `biomarker` | `biomarker_er`, `biomarker_pr`, `biomarker_her2` |
 | `other` | everything else |
 
-Used in `non_nested/section_rollup.csv` to aggregate field-level metrics into clinically-meaningful sections.
+Used in the paper pipeline's `non_nested/section_rollup.csv` to aggregate field-level metrics into clinically-meaningful sections.
 
 ## Outcome flags (three-way model)
 
-See [completeness.md](completeness.md). Quick reference:
+These are the columns `registrar-eval completeness` builds (`completeness.completeness_atomic`). Background: [completeness.md](../../attic/docs/eval/completeness.md).
 
 | Flag | Definition |
 |---|---|
-| `gold_present` | Gold has the field non-null. |
-| `attempted` | Model produced a value. |
+| `gold_present` | Gold has the field non-null (and not `[]`). |
+| `attempted` | Model produced a non-null value. |
 | `correct` | `attempted AND value matches gold`. |
 | `wrong` | `attempted AND not correct`. |
-| `field_missing` | Case loaded but this field absent. |
-| `parse_error` | Whole-case load failed. |
+| `field_missing` | Case loaded but this field absent / null. |
+| `parse_error` | Prediction file missing or not a JSON object. |
+
+`registrar-eval metrics` uses a looser **attempted**: the prediction has the key, even with a `null` value. So "said null when gold is null" scores as correct there.
 
 ## Scope terms
 
 - **`FAIR_SCOPE`** — fields all four method families (DSPy, GPT-4, ClinicalBERT, rules) can produce. The head-to-head comparison set.
 - **`NESTED_LIST_FIELDS`** — list-of-dict fields (margins, biomarkers, regional_lymph_node, plus organ-specific extras).
-- **`BREAST_BIOMARKERS`** — `er`, `pr`, `her2`. Scored conditionally when `cancer_category == "breast"`.
+- **`BIOMARKER_WHITELIST`** — per-organ biomarkers scored under the cascade: breast `er`/`pr`/`her2`/`ki67`, colorectal `mlh1`/`msh2`/`msh6`/`pms2`. Other entries are dropped from both sides.
 - **`ORDINAL_FIELDS`** — fields with natural ranking (grade, T/N/M categories, stage groups).
 - **`SPAN_FIELDS`** — integer span fields (the ClinicalBERT-QA head's domain).
 
-Defined in `src/digital_registrar/benchmarks/eval/scope.py` and `scope_organs.py`.
+Defined in `src/digital_registrar/eval/scope.py` and `scope_organs.py`.
+
+## Paper-pipeline terms
+
+The sections below (annotators, run IDs, multi-primary, endpoint tiers) describe the paper's research pipeline in [`attic/eval_scripts/`](../../attic/eval_scripts/). They are not used by `registrar-eval`.
 
 ## Annotators
 
@@ -108,7 +114,7 @@ Defined in `configs/eval_endpoints.yaml`:
 - **Primary** (12 fields) — Holm-Bonferroni p-value adjustment. Headline claims.
 - **Secondary** (the rest) — Benjamini-Hochberg FDR adjustment. Exploratory.
 
-See [multiple_comparisons.md](multiple_comparisons.md).
+See [multiple_comparisons.md](../../attic/docs/eval/multiple_comparisons.md).
 
 ## Time conventions
 
@@ -118,11 +124,6 @@ Heuristic per-case duration estimation (in `iaa/preann/edit_distance__*.csv`): o
 
 ## File extensions
 
-| Extension | When |
-|---|---|
-| `.parquet` | Atomic tables (`correctness_table.parquet`, `nested_atomic.parquet`, `missingness_atomic.parquet`). Compact, typed. |
-| `.csv` | Aggregated reduce outputs. Human-readable, spreadsheet-friendly. |
-| `.json` | Manifests, ensemble predictions. |
-| `.yaml` | Endpoint pre-registration. |
+`registrar-eval` writes only `.csv`. The long-form `atomic.csv` is the source table, and `summary.csv` / `compare.csv` / `completeness.csv` are reductions of it. To re-aggregate differently (e.g. by `dataset` or `organ`), load `atomic.csv` and call `digital_registrar.eval.summary_table(df, by=[...])`. There's no need to re-score.
 
-The parquet → CSV split: every CSV is a deterministic *reduce* from a parquet. Re-running with new parameters (different bootstrap n, etc.) doesn't require re-scoring — just re-aggregate.
+The retired paper pipeline also wrote `.parquet` atomic tables, `.json` manifests and a `.yaml` endpoint pre-registration.

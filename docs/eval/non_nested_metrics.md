@@ -1,6 +1,10 @@
 # Non-nested (scalar) field metrics
 
-> **Cascade-redesign note (2026-05).** The standalone `non_nested` subcommand was removed; scalar-field accuracy is now produced by the `cascade` subcommand and lives under `chapter3_field_extraction/`. Output filenames in this doc that reference `non_nested/` should be read as `chapter3_field_extraction/`. The metric definitions below are unchanged. See [CHANGELOG.md](CHANGELOG.md) and [../reference/stat_methods.md](../reference/stat_methods.md).
+> **What `registrar-eval` reports.**
+> - `registrar-eval metrics` gives per-field **attempted accuracy** with a Wilson 95% CI, and **coverage** (effective accuracy = accuracy × coverage). Stage C is scored over every per-organ scoreable field, and list-of-literals fields are scored by set equality ([reading_outputs.md](reading_outputs.md#summarycsv)).
+> - `registrar-eval completeness` adds attempted / effective accuracy, schema conformance and refusal calibration ([reading_outputs.md](reading_outputs.md#completeness)).
+>
+> The rest of this page covers the paper's evaluation: κ, MCC, balanced accuracy, confusion matrices, top-k ordinal accuracy, subgroup and section roll-ups, and multi-run consistency. Those were produced by the retired research pipeline in [`attic/eval_scripts/`](../../attic/eval_scripts/), and the `**Output:**` lines name that pipeline's files. The metric definitions stand either way.
 
 For single-value fields (categorical, boolean, ordinal, continuous numeric) **plus list-of-literals fields** (set-valued enums like `tumor_extent`, `vascular_invasion`, `involved_margin_list`). Reported per-field, per-organ, and per-subgroup (single vs multi-primary). For nested-list (list-of-dicts) fields see [nested_metrics.md](nested_metrics.md).
 
@@ -18,7 +22,7 @@ For set-valued enum fields (e.g. `tumor_extent: ["hepatic_vein", "small_vessel"]
 - **Partial-credit scoring** (separate output): item-level TP / FP / FN with set-F1, analogous to nested-list scoring but on plain string items.
 - **Empty list vs null**: an empty list (`[]`) is a definite "no items present" answer, distinct from `null` (not assessed). Both score paths handle this distinction.
 
-**Implementation:** `scripts/eval/_common/outcome.py:list_of_literals_match` (set equality) and `list_of_literals_set_metrics` (TP/FP/FN/F1).
+**Implementation:** `registrar-eval` scores set equality in `digital_registrar.eval.metrics.field_correct`. The paper pipeline's partial-credit set-F1 is `attic/eval_scripts/_common/outcome.py:list_of_literals_set_metrics`.
 **Reference:** Set-F1 follows standard IR practice. See van Rijsbergen (1979).
 
 The `list_of_literals` field type is **organ-aware** — the same field name can be a list-of-literals in one organ and a regular categorical in another. `tumor_extent` is `list_of_literals` for liver but `nominal` for esophagus and stomach. The classifier dispatches by `(field, organ)`. Registry: `scope_organs.ORGAN_LIST_OF_LITERALS`.
@@ -39,7 +43,7 @@ For every (field, organ):
 - **Attempted accuracy** = correct / attempted. Quality on what the model tried.
 - **Effective accuracy** = correct / eligible. Quality across the full cohort, treating missing as wrong.
 
-Both flavors are reported with multiple CIs side by side. The gap is the **completeness penalty** — see [completeness.md](completeness.md).
+Both flavors are reported with multiple CIs side by side. The gap is the **completeness penalty** — see [completeness.md](../../attic/docs/eval/completeness.md).
 
 **Wilson 95% CI** on both via `statsmodels.stats.proportion.proportion_confint(method="wilson")` (Pedregosa et al., 2011 documents the equivalent in scikit-learn; we use statsmodels). Reference: Wilson, E. B. (1927). "Probable inference, the law of succession, and statistical inference." *JASA* 22 (158): 209–212.
 
@@ -47,7 +51,7 @@ Both flavors are reported with multiple CIs side by side. The gap is the **compl
 
 **Student-t CI on the run-level mean** (when ≥ 2 runs) via `scipy.stats.t.interval`. Reference: Student (1908). "The probable error of a mean." *Biometrika* 6 (1): 1–25.
 
-**Output:** `non_nested/per_field_overall.csv`, `non_nested/per_field_by_organ.csv`.
+**Output:** `registrar-eval metrics` → `summary.csv` (`accuracy_attempted`, `coverage`, Wilson `ci_lo`/`ci_hi`); `registrar-eval completeness` → `completeness.csv` (`attempted_accuracy`, `effective_accuracy`). Paper pipeline: `non_nested/per_field_overall.csv`, `non_nested/per_field_by_organ.csv`.
 
 ## Cohen's κ — agreement beyond chance
 
@@ -86,7 +90,7 @@ Per (field, organ), the confusion matrix is written to `non_nested/confusion/<fi
 
 ## Confusion pairs / semantic neighbors
 
-Top-N most-frequent confusion pairs per (field, organ), with a curated `is_semantic_neighbor` flag for known clinically-equivalent pairs (anatomic vs pathologic stage, t1 vs t1a substages, m0 vs mx, sentinel vs axillary level I, etc.). See [confusion_pairs.md](confusion_pairs.md) for the curated list.
+Top-N most-frequent confusion pairs per (field, organ), with a curated `is_semantic_neighbor` flag for known clinically-equivalent pairs (anatomic vs pathologic stage, t1 vs t1a substages, m0 vs mx, sentinel vs axillary level I, etc.). See [confusion_pairs.md](../../attic/docs/eval/confusion_pairs.md) for the curated list.
 
 `accuracy_collapsing_neighbors` re-computes accuracy treating curated neighbor errors as correct. Useful for the writeup paragraph that quantifies clinically-equivalent confusions (anatomic vs pathologic staging, T-substages within the same major stage).
 
@@ -100,7 +104,7 @@ For ordinal fields, an "off-by-one" error is materially less bad than "off-by-th
 - `top-k accuracy` = `|rank(pred) − rank(gold)| ≤ k`.
 - Mean rank distance of wrong predictions, plus a histogram of rank distances.
 
-**Implementation:** in-house — `scripts/eval/_common/stats_extra.top_k_ordinal_accuracy` and `rank_distance_distribution`. (`sklearn.metrics.top_k_accuracy_score` requires probability scores we don't have.)
+**Implementation:** in-house (paper pipeline) — `attic/eval_scripts/_common/stats_extra.py:top_k_ordinal_accuracy` and `rank_distance_distribution`. (`sklearn.metrics.top_k_accuracy_score` requires probability scores we don't have.)
 **Output:** `non_nested/top_k_ordinal.csv`, `non_nested/rank_distance.csv`.
 
 ## Multi-primary subgroup column
@@ -111,11 +115,11 @@ Every metric is also broken down by `subgroup ∈ {single_primary, multi_primary
 
 ## Schema-conformance / out-of-vocabulary rate
 
-Categorical predictions outside the allowed enum aren't "wrong" in the usual sense — they're not even valid options. See [completeness.md](completeness.md) for full treatment. Output: `non_nested/schema_conformance.csv`.
+Categorical predictions outside the allowed enum aren't "wrong" in the usual sense — they're not even valid options. See [completeness.md](../../attic/docs/eval/completeness.md) for full treatment. Output: `registrar-eval completeness` → `out_of_vocab.csv` (paper pipeline: `non_nested/schema_conformance.csv`).
 
 ## Refusal calibration
 
-When pred is null, is gold also null? Distinguishes correct refusal from lazy missingness. See [completeness.md](completeness.md). Output: `non_nested/refusal_calibration.csv`.
+When pred is null, is gold also null? Distinguishes correct refusal from lazy missingness. See [completeness.md](../../attic/docs/eval/completeness.md). Output: `registrar-eval completeness` → `refusal_calibration.csv` (paper pipeline: `non_nested/refusal_calibration.csv`).
 
 ## Run consistency (multi-run only)
 
@@ -127,7 +131,7 @@ When ≥ 2 runs exist, we additionally report:
 - Stability accuracy (accuracy on cases where all runs agreed).
 - Brittle case rate (cases where ≥ 1 run wrong AND ≥ 1 run right).
 
-See [multirun.md](multirun.md) for full treatment. Output: `non_nested/run_consistency.csv`.
+See [multirun.md](../../attic/docs/eval/multirun.md) for full treatment. Output: `non_nested/run_consistency.csv`.
 
 ## Section rollup
 

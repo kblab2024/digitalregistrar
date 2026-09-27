@@ -5,7 +5,15 @@
 > 1. **Lymph nodes are no longer scored by bipartite matching on `station_name`.** The free-text `station_name` is unstable across annotators (e.g. `"nonsentinel #1"`, `"nonsentinel #2"`), so `examined`/`involved` are now summed per `(lymph_node_side, lymph_node_category)` group on each side and groups are matched by the deterministic key. New columns: `ln_group_recall`, `ln_group_precision`, `ln_n_groups_gold`, `ln_n_groups_pred`. The legacy `ln_station_*` keys still exist and now refer to GROUPS (not per-list rows).
 > 2. **Biomarker scoring is restricted to a per-organ whitelist.** Only `{er, pr, her2, ki67}` are scored for breast and `{msh2, msh6, pms2, mlh1}` for colorectal. Other biomarker entries (e.g. colon `her2`, `p53`) are filtered from gold and prediction before bipartite matching. The `description` inner key on margins is also stripped before matching.
 >
-> Output paths: `nested/...` → `chapter3_field_extraction/nested_*.csv`. See [CHANGELOG.md](CHANGELOG.md) and [../reference/stat_methods.md](../reference/stat_methods.md) §1.
+> **What `registrar-eval` reports.** `registrar-eval metrics` gives one row per case for each of these (columns in [reading_outputs.md](reading_outputs.md#atomiccsv)):
+> - **`margins` and `biomarkers`:** F1 over items matched on category. The biomarker whitelist and inner-key exclusions above apply. Cases where both lists are empty are skipped.
+> - **Lymph nodes** (from `nested_metrics.score_lymph_nodes`):
+>   - examined total within ±1
+>   - involved total within ±1
+>   - any-positive agreement
+>   - F1 over (side, category) groups
+>
+> The other tables on this page came from the retired research pipeline in [`attic/eval_scripts/`](../../attic/eval_scripts/): per-attribute accuracy, hallucination / miss rates, count MAE, four-level missingness, and multi-run consistency. The `**Output:**` lines name that pipeline's files.
 
 For list-of-dict fields where each case has 0–N items (e.g. multiple lymph node stations or margin measurements). Scoring uses **bipartite matching** between gold and predicted items, then per-attribute accuracy on matched pairs.
 
@@ -50,7 +58,7 @@ Reported in two flavors:
 - **Attempted F1** — F1 on cases where the model produced the field. Quality on what it tried.
 - **Effective F1** — F1 across all eligible cases, treating missing-field cases as F1 = 0. Quality at deployment.
 
-The gap is the **completeness penalty for nested fields** — see [completeness.md](completeness.md).
+The gap is the **completeness penalty for nested fields** — see [completeness.md](../../attic/docs/eval/completeness.md).
 
 **BCa bootstrap CI** on macro F1 (mean per-case F1 across attempted cases) via case-stratified resampling. Reference: Efron, B. (1987). "Better bootstrap confidence intervals." *JASA* 82 (397): 171–185.
 
@@ -120,7 +128,7 @@ When ≥ 2 runs exist:
 - Per-case F1 SD across runs (mean and max — high values flag brittle cases).
 - Missing-flip rate: fraction of cases where ≥ 1 run had the field absent AND ≥ 1 run produced it.
 
-**Implementation:** `nested/run_nested.py:_multirun_consistency`.
+**Implementation:** retired paper pipeline (not shipped).
 **Output:** `nested/multirun_consistency.csv`.
 
 ## Per-organ stratification
@@ -132,12 +140,12 @@ Mandatory: schemas differ across organs (margins for prostate has different sub-
 - **High `hallucination_rate` but reasonable F1:** model is producing extra items that don't exist in gold. Could be over-reading the report. Inspect a few cases manually.
 - **High `miss_rate` but reasonable F1:** model is undercounting. Check whether the missed items are systematically the *low-prevalence* sub-categories.
 - **High `count_mae` with low `count_correlation`:** the model is *both* miscounting absolutely *and* not even ordering correctly. Likely a prompt issue (model isn't told what to count).
-- **High `field_key_absent_rate`:** model is dropping the field entirely. This is missingness — see [completeness.md](completeness.md).
+- **High `field_key_absent_rate`:** model is dropping the field entirely. This is missingness — see [completeness.md](../../attic/docs/eval/completeness.md).
 - **Per-attribute accuracy on `station_name` ≪ on `lymph_node_category`:** the model is getting the right *type* of node but the wrong *name* — often means the report's terminology doesn't match the schema enum. Could be a mapping issue.
 
 ## References
 
-Foundational citations are in [methods_citations.md](methods_citations.md). Most directly relevant:
+Foundational citations are in [methods_citations.md](../../attic/docs/eval/methods_citations.md). Most directly relevant:
 
 - Bipartite matching (greedy approximation): Kuhn, H. W. (1955). "The Hungarian method for the assignment problem." *Naval Research Logistics Quarterly* 2 (1–2): 83–97.
 - Jaccard similarity: Jaccard, P. (1912). "The distribution of the flora in the alpine zone." *New Phytologist* 11 (2): 37–50.

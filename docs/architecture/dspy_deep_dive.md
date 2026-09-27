@@ -302,7 +302,7 @@ ex = dspy.Example(
 
 ### 2.4 `dspy.Evaluate` and metric-driven optimization
 
-The cascade three-chapter eval (`scripts/eval/cascade/compare_runs.py`) is *already* a metric — it produces per-case verdicts. The work to turn it into something a teleprompter can optimize against is small:
+The cascade scorer (`digital_registrar.eval.score_case`, which backs `registrar-eval`) is *already* a metric — it produces per-case verdicts. The work to turn it into something a teleprompter can optimize against is small:
 
 ```python
 from digital_registrar.eval.metrics import field_correct

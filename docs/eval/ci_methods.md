@@ -2,6 +2,13 @@
 
 Why we report CIs the way we do, when each variant is appropriate, and where they live in the code.
 
+**In `registrar-eval`:**
+- **Wilson** for accuracy and rate columns (`summary.csv`, `completeness.csv`, `out_of_vocab.csv`).
+- **Percentile bootstrap** for mean-F1 rows.
+- **Paired percentile bootstrap + McNemar** for `compare.csv`.
+
+Every bootstrap uses 2000 resamples and seed 0. The GLMM, two-source, Student-t and Fisher-z intervals below were used for the paper's multi-run and IAA analyses, which live in `attic/`.
+
 ## ELI5
 
 A point estimate ("accuracy = 0.83") tells you nothing about how reliable that number is. A confidence interval ("accuracy = 0.83, 95% CI [0.78, 0.87]") tells you the range of plausible true values consistent with what you observed. Different statistics need different CI methods because the underlying sampling distribution is different.
@@ -65,7 +72,7 @@ The fitted intercept (after inverse-logit) is the marginal accuracy; ± 1.96 · 
 
 **Use when:** you have ≥ 3 runs, ≥ 30 cases, and the outcome isn't all 0 or all 1 (the model needs variance to fit).
 
-**Implementation:** `multirun._glmm_marginal_accuracy` via `statsmodels.genmod.bayes_mixed_glm.BinomialBayesMixedGLM` with variational inference. Falls back to two-source bootstrap on convergence failures.
+**Implementation:** `drr_attic.benchmarks.eval.multirun._glmm_marginal_accuracy` (attic package) via `statsmodels.genmod.bayes_mixed_glm.BinomialBayesMixedGLM` with variational inference. Falls back to two-source bootstrap on convergence failures.
 **Reference:** Laird, N. M., & Ware, J. H. (1982). "Random-effects models for longitudinal data." *Biometrics* 38 (4): 963–974.
 
 ## Student-t CI — for the run-level mean
@@ -115,4 +122,4 @@ The total CI is the headline. The other two are decomposition that helps you **d
 
 ## Determinism
 
-All CI methods accept a `random_state` (default 0) so reruns are bit-identical. The manifest captures the seed alongside `n_boot` so paper claims are reproducible.
+All CI methods accept a `random_state` (default 0) so reruns are bit-identical. `registrar-eval` always uses seed 0; `--n-boot` (compare) sets the resample count.
