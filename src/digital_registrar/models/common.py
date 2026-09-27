@@ -11,7 +11,9 @@ __author__ = ["Hong-Kai (Walther) Chen", "Po-Yen Tzeng", "Kai-Po Chang"]
 __copyright__ = "Copyright 2025, Med NLP Lab, China Medical University"
 __license__ = "MIT"
 
+import os
 from typing import Literal
+from urllib.parse import urlsplit
 
 import dspy
 
@@ -45,32 +47,73 @@ model_list = {
     "gpt5_4_mini":    "openai/gpt-5.4-mini",
 }
 
+# Fallback Ollama endpoint. Kept as a module constant for backward
+# compatibility (attic runners import it); the endpoint load_model actually
+# uses is resolved per call by resolve_ollama_api_base(), which honours
+# --api-base / overrides["api_base"] and the env vars below.
 localaddr = "http://localhost:11434"
+_OLLAMA_DEFAULT_PORT = 11434
+
+# Env vars consulted, in order, for the Ollama endpoint. OLLAMA_HOST is the
+# variable the Ollama CLI itself reads, so a shell already set up for
+# `ollama run` against a remote server works unchanged.
+OLLAMA_HOST_ENV_VARS = ("DIGITAL_REGISTRAR_OLLAMA_HOST", "OLLAMA_HOST")
+
+# API key sent to a custom OpenAI-compatible server (vLLM, llama.cpp, ...).
+# OPENAI_API_KEY is deliberately never forwarded to a user-supplied endpoint.
+API_KEY_ENV_VAR = "DIGITAL_REGISTRAR_API_KEY"
+
+# LiteLLM provider prefixes accepted as raw model ids (anything that is not a
+# model_list alias): any pulled Ollama tag, or a model served by vLLM /
+# llama.cpp / another OpenAI-compatible server reached via api_base.
+_RAW_MODEL_PREFIXES = ("ollama_chat/", "hosted_vllm/", "openai/")
+
+# Bind-all addresses: valid for a server to listen on (OLLAMA_HOST=0.0.0.0 is
+# a common server-side setting) but not for a client to connect to.
+_UNSPECIFIED_HOSTS = ("", "0.0.0.0", "::")
+
+# num_ctx used for the published results (Diagnostics 2026;16(11):1644). The
+# profile defaults below are larger, per
+# docs/architecture/dspy_ollama_model_compatibility.md §5.2; pass
+# ``--num-ctx 8192`` (``overrides={"num_ctx": PAPER_NUM_CTX}``) to reproduce
+# the paper's runs.
+PAPER_NUM_CTX = 8192
 
 # Per-model decoding profiles. Tuned for deterministic structured-JSON
 # extraction on Ollama. Seed / cache are in _BASE_KWARGS so profiles stay
 # focused on sampler choices.
+#
+# num_ctx: Ollama silently drops the *start* of any prompt longer than
+# num_ctx, so default to 16384; gemma4 gets 12288 (VRAM blow-up above ~16k on
+# consumer GPUs, audit §5.2).
+#
+# An optional ``"think": bool`` key is forwarded as Ollama's top-level think
+# flag. No profile sets it, so each model keeps its own default; see audit
+# §5.3 for the gemma4 / qwen3 structured-output caveats before pinning it.
 MODEL_PROFILES: dict[str, dict] = {
-    "ollama_chat/gpt-oss:20b":   {"temperature": 0.3,  "top_p": 1.0,  "top_k": 40, "num_ctx": 8192, "max_tokens": 4096},
-    "ollama_chat/gemma3:27b":    {"temperature": 0.15, "top_p": 0.95, "top_k": 64, "num_ctx": 8192, "max_tokens": 4096},
-    "ollama_chat/gemma4:26b":    {"temperature": 0.1,  "top_p": 0.95, "top_k": 64, "num_ctx": 8192, "max_tokens": 4096},
-    "ollama_chat/gemma4:e2b":    {"temperature": 0.1,  "top_p": 0.95, "top_k": 64, "num_ctx": 8192, "max_tokens": 4096},
-    "ollama_chat/qwen3.5:27b":   {"temperature": 0.15, "top_p": 0.9,  "top_k": 40, "num_ctx": 8192, "max_tokens": 4096},
-    "ollama_chat/medgemma:27b":  {"temperature": 0.15, "top_p": 0.95, "top_k": 64, "num_ctx": 8192, "max_tokens": 4096},
-    "ollama_chat/medgemma:4b":   {"temperature": 0.2,  "top_p": 0.95, "top_k": 64, "num_ctx": 8192, "max_tokens": 4096},
+    "ollama_chat/gpt-oss:20b":   {"temperature": 0.3,  "top_p": 1.0,  "top_k": 40, "num_ctx": 16384, "max_tokens": 4096},
+    "ollama_chat/gemma3:27b":    {"temperature": 0.15, "top_p": 0.95, "top_k": 64, "num_ctx": 16384, "max_tokens": 4096},
+    "ollama_chat/gemma4:26b":    {"temperature": 0.1,  "top_p": 0.95, "top_k": 64, "num_ctx": 12288, "max_tokens": 4096},
+    "ollama_chat/gemma4:e2b":    {"temperature": 0.1,  "top_p": 0.95, "top_k": 64, "num_ctx": 12288, "max_tokens": 4096},
+    "ollama_chat/qwen3.5:27b":   {"temperature": 0.15, "top_p": 0.9,  "top_k": 40, "num_ctx": 16384, "max_tokens": 4096},
+    # Sampler values are the _DEFAULT_PROFILE ones qwen3:30b fell back to
+    # before it had a profile, so only num_ctx differs from the paper runs.
+    "ollama_chat/qwen3:30b":     {"temperature": 0.2,  "top_p": 0.95, "top_k": 64, "num_ctx": 16384, "max_tokens": 4096},
+    "ollama_chat/medgemma:27b":  {"temperature": 0.15, "top_p": 0.95, "top_k": 64, "num_ctx": 16384, "max_tokens": 4096},
+    "ollama_chat/medgemma:4b":   {"temperature": 0.2,  "top_p": 0.95, "top_k": 64, "num_ctx": 16384, "max_tokens": 4096},
     # OpenAI: stochastic profile mirrors the gpt-oss shape so K-run
     # reliability metrics (ICC, flip-rate, paired bootstrap) are meaningful.
     # No top_k / num_ctx (not supported by the chat-completions API).
     "openai/gpt-5.4-mini":       {"temperature": 0.3,  "top_p": 1.0,  "max_tokens": 4096},
 }
-_DEFAULT_PROFILE = {"temperature": 0.2, "top_p": 0.95, "top_k": 64, "num_ctx": 8192, "max_tokens": 4096}
+_DEFAULT_PROFILE = {"temperature": 0.2, "top_p": 0.95, "top_k": 64, "num_ctx": 16384, "max_tokens": 4096}
 _BASE_KWARGS = {"repeat_penalty": 1.05, "keep_alive": "30m", "cache": False, "seed": 10}
 
 # Sampler / runtime kwargs that only make sense for the local Ollama backend.
 # When a model_id is dispatched through a non-Ollama provider (e.g. ``openai/``)
 # these are stripped from the kwargs passed to ``dspy.LM`` so LiteLLM does not
 # forward them to the upstream API (which would 400).
-_OLLAMA_ONLY_KEYS = ("top_k", "num_ctx", "repeat_penalty", "keep_alive")
+_OLLAMA_ONLY_KEYS = ("top_k", "num_ctx", "repeat_penalty", "keep_alive", "think")
 
 # OpenAI model families that reject ``max_tokens`` and require
 # ``max_completion_tokens`` instead (gpt-5.x + reasoning o-series).
@@ -84,6 +127,77 @@ def _needs_max_completion_tokens(model_id: str) -> bool:
     return bare.startswith(_OPENAI_COMPLETION_TOKENS_PREFIXES)
 
 
+def _normalize_base_url(raw: str, *, default_port: int | None = None, source: str = "api_base") -> str:
+    """Turn a user-supplied host or URL into a base URL LiteLLM can call.
+
+    ``host`` / ``host:port`` without a scheme get ``http://``, plus
+    *default_port* when no port is given (mirrors the Ollama CLI's own
+    ``OLLAMA_HOST`` parsing). Bind-all hosts (``0.0.0.0``, ``::``, empty as
+    in ``:11434``) become ``localhost``. A URL with an explicit scheme keeps
+    its port and path as given; trailing slashes are dropped.
+    """
+    value = raw.strip().rstrip("/")
+    has_scheme = "://" in value
+    if not has_scheme:
+        value = f"http://{value}"
+    parts = urlsplit(value)
+    try:
+        port = parts.port
+    except ValueError as e:
+        raise ValueError(f"Invalid {source} {raw!r}: {e}") from None
+    host = parts.hostname or ""
+    if host in _UNSPECIFIED_HOSTS:
+        host = "localhost"
+    if ":" in host:  # IPv6 literal
+        host = f"[{host}]"
+    if port is None and not has_scheme and default_port is not None:
+        port = default_port
+    userinfo = parts.netloc.rpartition("@")[0]
+    netloc = (f"{userinfo}@" if userinfo else "") + (host if port is None else f"{host}:{port}")
+    return f"{parts.scheme}://{netloc}{parts.path}".rstrip("/")
+
+
+def resolve_ollama_api_base(override: str | None = None) -> str:
+    """Return the Ollama base URL to call, resolved at call time.
+
+    Precedence (first non-empty wins): *override* (``--api-base`` /
+    ``overrides["api_base"]``), ``$DIGITAL_REGISTRAR_OLLAMA_HOST``,
+    ``$OLLAMA_HOST``, then :data:`localaddr`. Values may be a bare
+    ``host`` / ``host:port`` (see :func:`_normalize_base_url`).
+    """
+    candidates = [("api_base", override)] + [(var, os.environ.get(var)) for var in OLLAMA_HOST_ENV_VARS]
+    for source, value in candidates:
+        if value is not None and str(value).strip():
+            return _normalize_base_url(str(value), default_port=_OLLAMA_DEFAULT_PORT, source=source)
+    return localaddr
+
+
+def _redact_url(url: str) -> str:
+    """Hide ``user:password@`` in a URL before it is printed."""
+    scheme, sep, rest = url.partition("://")
+    netloc, slash, path = rest.partition("/")
+    if "@" in netloc:
+        netloc = "***@" + netloc.rpartition("@")[2]
+    return f"{scheme}{sep}{netloc}{slash}{path}"
+
+
+def resolve_model_id(model_name: str) -> str:
+    """Map a ``model_list`` alias, or a raw LiteLLM id, to the LiteLLM model id.
+
+    Raw ids are accepted for the providers in ``_RAW_MODEL_PREFIXES``:
+    ``ollama_chat/<tag>`` for any pulled Ollama model, and
+    ``hosted_vllm/<name>`` / ``openai/<name>`` for an OpenAI-compatible
+    server (vLLM, llama.cpp, ...) whose URL is passed as ``api_base``.
+    """
+    if model_name in model_list:
+        return model_list[model_name]
+    if model_name.startswith(_RAW_MODEL_PREFIXES) and model_name.split("/", 1)[1]:
+        return model_name
+    raise ValueError(
+        f"Model {model_name} not found. Available models: {list(model_list.keys())}, "
+        f"or a raw LiteLLM id starting with one of {list(_RAW_MODEL_PREFIXES)}.")
+
+
 def compute_lm_kwargs(model_name: str, overrides: dict | None = None) -> dict:
     """Resolve the final dspy.LM kwargs for *model_name*.
 
@@ -95,11 +209,13 @@ def compute_lm_kwargs(model_name: str, overrides: dict | None = None) -> dict:
     directly. Provider-incompatible keys are not stripped here — that
     happens in :func:`load_model` only when the LM is actually built,
     so the manifest still records the intended sampler config.
+
+    Besides sampler keys, overrides may carry ``api_base`` (server URL;
+    consumed by :func:`load_model`) and ``think`` (Ollama thinking mode).
+    *model_name* is a ``model_list`` alias or a raw id (see
+    :func:`resolve_model_id`).
     """
-    if model_name not in model_list:
-        raise ValueError(
-            f"Model {model_name} not found. Available models: {list(model_list.keys())}")
-    model_id = model_list[model_name]
+    model_id = resolve_model_id(model_name)
     kwargs = {**_BASE_KWARGS, **MODEL_PROFILES.get(model_id, _DEFAULT_PROFILE)}
     if overrides:
         kwargs.update({k: v for k, v in overrides.items() if v is not None})
@@ -107,13 +223,24 @@ def compute_lm_kwargs(model_name: str, overrides: dict | None = None) -> dict:
 
 
 def load_model(model_name: str, overrides: dict | None = None):
-    model_id = model_list[model_name] if model_name in model_list else None
-    if model_id is None:
-        raise ValueError(f"Model {model_name} not found. Available models: {list(model_list.keys())}")
+    """Build the ``dspy.LM`` for *model_name* (alias or raw LiteLLM id).
 
+    Three routes:
+
+    * hosted OpenAI alias (``gpt5_4_mini``): key from
+      :func:`~digital_registrar.util.secrets.load_openai_key`;
+    * ``ollama_chat/...``: endpoint from :func:`resolve_ollama_api_base`
+      (``overrides["api_base"]`` > env vars > localhost);
+    * raw ``hosted_vllm/...`` / ``openai/...``: an OpenAI-compatible server
+      at ``overrides["api_base"]`` (required), key from
+      ``$DIGITAL_REGISTRAR_API_KEY`` or ``"EMPTY"``.
+
+    Ollama-only kwargs are stripped on both OpenAI-style routes.
+    """
+    model_id = resolve_model_id(model_name)
     kwargs = compute_lm_kwargs(model_name, overrides=overrides)
 
-    if model_id.startswith("openai/"):
+    if model_name in model_list and model_id.startswith("openai/"):
         from digital_registrar.util.secrets import load_openai_key
         api_key = load_openai_key()
         api_kwargs = {k: v for k, v in kwargs.items() if k not in _OLLAMA_ONLY_KEYS}
@@ -129,14 +256,38 @@ def load_model(model_name: str, overrides: dict | None = None):
         print(f"Loaded model: {model_name} (openai) with {api_kwargs}")
         return lm
 
+    if model_id.startswith("ollama_chat/"):
+        api_base = resolve_ollama_api_base(kwargs.pop("api_base", None))
+        lm = dspy.LM(
+            model=model_id,
+            api_base=api_base,
+            api_key="",
+            model_type="chat",
+            **kwargs,
+        )
+        print(f"Loaded model: {model_name} at {_redact_url(api_base)} with {kwargs}")
+        return lm
+
+    # Raw hosted_vllm/ or openai/ id: an OpenAI-compatible server. The Ollama
+    # env vars are not consulted here; the URL must be given explicitly.
+    raw_base = kwargs.pop("api_base", None)
+    if not raw_base or not str(raw_base).strip():
+        raise ValueError(
+            f"Model {model_name} needs the URL of an OpenAI-compatible server: pass "
+            "--api-base (e.g. http://gpu-box:8000/v1) or overrides={'api_base': ...}. "
+            "For hosted OpenAI use the 'gpt5_4_mini' alias.")
+    api_base = _normalize_base_url(str(raw_base))
+    api_key = os.environ.get(API_KEY_ENV_VAR, "").strip() or "EMPTY"
+    api_kwargs = {k: v for k, v in kwargs.items() if k not in _OLLAMA_ONLY_KEYS}
     lm = dspy.LM(
         model=model_id,
-        api_base=localaddr,
-        api_key="",
+        api_base=api_base,
+        api_key=api_key,
         model_type="chat",
-        **kwargs,
+        **api_kwargs,
     )
-    print(f"Loaded model: {model_name} with {kwargs}")
+    # Print the redacted kwargs (api_key never logged).
+    print(f"Loaded model: {model_name} at {_redact_url(api_base)} with {api_kwargs}")
     return lm
 
 # 2 . define classes and set up Signatures

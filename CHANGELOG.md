@@ -7,6 +7,20 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+### Added
+- Configurable LLM endpoint ([src/digital_registrar/models/common.py](src/digital_registrar/models/common.py)): the Ollama base URL is resolved per call from `overrides["api_base"]` → `$DIGITAL_REGISTRAR_OLLAMA_HOST` → `$OLLAMA_HOST` → `http://localhost:11434`. It accepts `host` / `host:port` without a scheme and maps `0.0.0.0` to `localhost`. New helpers: `resolve_ollama_api_base`, `resolve_model_id`.
+- Raw LiteLLM model ids: `ollama_chat/<tag>` for any Ollama model, and `hosted_vllm/<name>` / `openai/<name>` for vLLM, llama.cpp or other OpenAI-compatible servers. The latter require `api_base`; their key comes from `$DIGITAL_REGISTRAR_API_KEY` (default `EMPTY`), and `OPENAI_API_KEY` is never forwarded to them.
+- `registrar-pipeline` flags: `--api-base`, `--num-ctx`, `--think` / `--no-think`.
+- `ollama_chat/qwen3:30b` decoding profile (the sampler values it previously inherited from the default profile).
+- Optional `think` profile/override key, forwarded as Ollama's top-level `think` flag and stripped for non-Ollama backends. No shipped profile sets it.
+- [docs/llm_backends.md](docs/llm_backends.md): backend, endpoint, context-window and thinking-mode guide.
+
+### Changed
+- Default Ollama `num_ctx` raised from 8192 to 16384 (12288 for `gemma4:*`), per [docs/architecture/dspy_ollama_model_compatibility.md](docs/architecture/dspy_ollama_model_compatibility.md) §5.2. Pass `--num-ctx 8192` (`PAPER_NUM_CTX`) to reproduce the paper.
+
+### Fixed
+- `load_model(..., overrides={"api_base": ...})` no longer raises `TypeError: got multiple values for keyword argument 'api_base'`.
+
 ## [0.2.0b3] — 2026-05-28
 
 **Hotfix beta** for end users routing through `openai/gpt-5.4-mini` (and any future OpenAI gpt-5.x / o-series reasoning model). The default decoding profile passed a `max_tokens` cap that the new OpenAI Chat Completions surface rejects with `BadRequestError: Unsupported parameter: 'max_tokens' is not supported with this model. Use 'max_completion_tokens' instead.`, breaking the GUI inference path the moment a registrar pointed it at OpenAI instead of Ollama.

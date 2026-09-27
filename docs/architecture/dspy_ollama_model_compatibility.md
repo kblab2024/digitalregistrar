@@ -387,6 +387,12 @@ your repo's own comments. Treat them as starting points; validate with §4.
 
 ### 5.2 Context parameters (this is the most important table)
 
+> **Status (2026-09-27): implemented.** `MODEL_PROFILES` / `_DEFAULT_PROFILE` in
+> `models/common.py` now default `num_ctx` to 16384 (12288 for gemma4), and
+> `qwen3:30b` has its own profile. The paper's 8192 is kept as `PAPER_NUM_CTX`
+> (`--num-ctx 8192` to reproduce). `max_tokens` is unchanged. See
+> [../llm_backends.md](../llm_backends.md).
+
 | Parameter | Current | Recommended for long signatures | Why |
 |---|---|---|---|
 | `num_ctx` | 8192 | **16384** for gpt-oss, gemma3, qwen3.5; **12288** for gemma4 | Gemma 3 and 4 officially support 128k; Qwen 3.5 supports 128k; gpt-oss supports 131k. 8192 is leaving 75%+ of the context on the table. 16k is cheap on a 27b at Q4_K_M and covers every TCGA report in your dummy data. **Gemma 4 has a known VRAM blow-up at >16k on consumer GPUs; 12k is the safe point.** |

@@ -31,6 +31,16 @@ The toolkit is BYO-LLM. You need **either**:
 
 - **OpenAI**: set `OPENAI_API_KEY` in your env (or in `~/.config/digital-registrar/.env`), then pick `gpt5_4_mini` in the GUI's model dropdown.
 
+**Ollama on another machine, in Docker, or a vLLM / llama.cpp server?** Point the toolkit at it:
+
+```bash
+export DIGITAL_REGISTRAR_OLLAMA_HOST=192.168.1.20:11434      # remote Ollama (GUI + CLI); OLLAMA_HOST also works
+registrar-pipeline --input reports/ --model gpt --api-base 192.168.1.20:11434
+registrar-pipeline --input reports/ --model hosted_vllm/Qwen/Qwen3-30B-A3B --api-base http://gpu-box:8000/v1
+```
+
+Ollama models now default to a 16384-token context window (12288 for gemma4); pass `--num-ctx 8192` to reproduce the paper's setting. Full details are in [docs/llm_backends.md](docs/llm_backends.md).
+
 ### Run the GUI in 30 seconds
 
 ```bash
@@ -123,6 +133,7 @@ See [docs/api.md](docs/api.md) for the full reference.
 
 | Topic | Where |
 |---|---|
+| LLM backends: remote / Docker Ollama, vLLM, llama.cpp, context window | [docs/llm_backends.md](docs/llm_backends.md) |
 | Pipeline architecture (v1 legacy, v2 factory) | [docs/architecture/pipeline.md](docs/architecture/pipeline.md) |
 | Three-layer schema architecture | [docs/architecture/schemas.md](docs/architecture/schemas.md) |
 | AJCC TNM staging via `tnmhelper` | [docs/architecture/staging.md](docs/architecture/staging.md) |

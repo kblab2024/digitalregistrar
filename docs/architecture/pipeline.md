@@ -142,7 +142,18 @@ registrar-pipeline --input data/tcga_dataset_20251117/tcga1 --model gpt
 registrar-pipeline --engine factory \
     --input data/tcga_dataset_20251117/tcga1 \
     --model gpt --decomposition auto --no-jsonize
+
+# Ollama on another host, paper's 8192-token context
+registrar-pipeline --input data/tcga_dataset_20251117/tcga1 --model gpt \
+    --api-base 192.168.1.20:11434 --num-ctx 8192
+
+# vLLM (OpenAI-compatible) server
+registrar-pipeline --engine factory --input data/tcga_dataset_20251117/tcga1 \
+    --model hosted_vllm/Qwen/Qwen3-30B-A3B --api-base http://gpu-box:8000/v1
 ```
+
+Endpoint, context-window and thinking-mode options are documented in
+[../llm_backends.md](../llm_backends.md).
 
 Interactively (single report or folder, with sidebar controls for engine /
 model / decomposition):

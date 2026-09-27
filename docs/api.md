@@ -102,12 +102,15 @@ Filesystem details (`REPO_ROOT`, `DATA_ROOT`, `RUNS_ROOT`, etc.) are available f
 |---|---|
 | `DIGITAL_REGISTRAR_WORKSPACE` | Override the workspace dir name (default: `workspace`). |
 | `DIGITAL_REGISTRAR_DATA_ROOT` | Override the data root if your dataset lives outside the workspace tree. |
+| `DIGITAL_REGISTRAR_OLLAMA_HOST` | Ollama endpoint (`host`, `host:port` or URL). Beats `OLLAMA_HOST`; default `http://localhost:11434`. See [llm_backends.md](llm_backends.md). |
+| `OLLAMA_HOST` | Ollama endpoint fallback (same variable the `ollama` CLI reads). |
+| `DIGITAL_REGISTRAR_API_KEY` | API key for `hosted_vllm/` / `openai/<name>` OpenAI-compatible servers (default `EMPTY`). |
 
 ## Console scripts
 
 | Script | Provided by | What it does |
 |---|---|---|
-| `registrar-pipeline` | digital-registrar | Batch extraction CLI. |
+| `registrar-pipeline` | digital-registrar | Batch extraction CLI. Backend flags (`--api-base`, `--num-ctx`, `--think`): [llm_backends.md](llm_backends.md). |
 | `registrar-schemas` | digital-registrar | Regenerate `schemas/data/*.json`; `--check` for CI drift. |
 | `registrar-eval` | digital-registrar | Prediction-vs-annotation eval CLI. |
 | `registrar-infer-gui` | digital-registrar-gui | Streamlit inference GUI. |
