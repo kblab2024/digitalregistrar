@@ -1,10 +1,10 @@
 """Completeness / missingness aggregations.
 
-Builds on ``scripts/eval/_common/outcome.classify_outcome`` (the
-three-way correct/wrong/missing classifier) to produce per-method
-missingness rates with CI and method-pair Δ tables. Lives in
-``src/.../eval/`` rather than ``scripts/`` so the aggregation logic can
-be unit-tested independently of the CLI harness.
+Backs ``registrar-eval completeness``. :func:`completeness_atomic` turns
+gold/prediction pairs (:func:`folders.load_pairs`) into a per
+(case, field) outcome table — correct / wrong / field missing / parse
+error — and the aggregators below reduce it to per-method missingness
+rates with CIs, refusal calibration and method-pair Δ tables.
 
 Headline metrics:
     parse_error_rate      — whole-case load failures
@@ -17,8 +17,7 @@ Headline metrics:
     lazy_missing_rate     — pred=null AND gold non-null (gave up)
 
 All metrics are per (method, field, organ) and overall. Each row
-carries Wilson 95% CI (``statsmodels.stats.proportion.proportion_confint
-(method="wilson")``).
+carries a Wilson 95% CI (:func:`ci.wilson_ci`).
 """
 from __future__ import annotations
 
@@ -28,13 +27,96 @@ from collections.abc import Iterable, Sequence
 import pandas as pd
 
 from .ci import mcnemar_test, wilson_ci
-from .metrics import normalize
-from .scope import get_allowed_values, get_field_value
+from .metrics import ScopeArg, field_correct, normalize
+from .scope import (
+    EVAL_EXCLUDED_FIELDS,
+    IMPLEMENTED_ORGANS,
+    get_allowed_values,
+    get_categorical_fields,
+    get_field_value,
+    get_organ_scoreable_fields,
+)
 
 logger = logging.getLogger(__name__)
 
+GATE_FIELDS = ("cancer_excision_report", "cancer_category")
+
+
+# --- Atomic outcome table ---------------------------------------------------
+
+
+def _has_value(v) -> bool:
+    """A field counts as filled unless it is None or an empty list."""
+    return v is not None and v != []
+
+
+def _completeness_fields(gold: dict, scope: ScopeArg) -> list[str]:
+    if scope is not None:
+        return list(scope(gold.get("cancer_category")) if callable(scope) else scope)
+    fields = list(GATE_FIELDS)
+    organ = normalize(gold.get("cancer_category"))
+    if gold.get("cancer_excision_report") and organ in IMPLEMENTED_ORGANS:
+        fields += [f for f in get_organ_scoreable_fields(organ)
+                   if f not in GATE_FIELDS and f not in EVAL_EXCLUDED_FIELDS]
+    return fields
+
+
+def completeness_atomic(
+    pairs: Iterable,
+    *,
+    method: str = "pred",
+    scope: ScopeArg = None,
+) -> pd.DataFrame:
+    """One row per (case, field) with the outcome flags
+    :func:`aggregate_missingness` and :func:`refusal_calibration` need.
+
+    ``pairs`` are :class:`folders.CasePair` objects. Fields come from the
+    GOLD record: the two gate fields (``cancer_excision_report``,
+    ``cancer_category``) for every case, plus every scalar /
+    list-of-literals field of the gold organ's schema when the gold case
+    is an eligible cancer report. Pass an explicit field list as
+    ``scope`` to override (e.g. :data:`scope.FAIR_SCOPE`).
+
+    Flags per row (a value counts as present unless None or ``[]``):
+        parse_error    prediction file missing or not a JSON object
+        field_missing  prediction loaded but the field is absent / null
+        attempted      prediction has a value for the field
+        correct/wrong  attempted and :func:`metrics.field_correct` is
+                       True / False — scored without cascade gating
+        gold_present   gold has a value for the field
+    """
+    rows: list[dict] = []
+    for pair in pairs:
+        gold, pred = pair.gold, pair.pred
+        organ = normalize(gold.get("cancer_category"))
+        for field in _completeness_fields(gold, scope):
+            parse_error = pred is None
+            attempted = not parse_error and _has_value(get_field_value(pred, field))
+            correct = attempted and bool(field_correct(gold, pred, field, organ=organ))
+            rows.append({
+                "method": method, "case_id": pair.case_id, "organ": organ,
+                "field": field,
+                "gold_present": _has_value(get_field_value(gold, field)),
+                "parse_error": parse_error,
+                "field_missing": not parse_error and not attempted,
+                "attempted": attempted,
+                "correct": correct,
+                "wrong": attempted and not correct,
+            })
+    columns = ["method", "case_id", "organ", "field", "gold_present",
+               "parse_error", "field_missing", "attempted", "correct", "wrong"]
+    return pd.DataFrame(rows, columns=columns)
+
 
 # --- Outcome decomposition table --------------------------------------------
+
+
+def _counts_as_int(df: pd.DataFrame) -> pd.DataFrame:
+    """groupby-apply upcasts the ``n_*`` counts to float; cast them back."""
+    for col in df.columns:
+        if col.startswith("n_"):
+            df[col] = df[col].astype(int)
+    return df
 
 
 def aggregate_missingness(
@@ -104,7 +186,7 @@ def aggregate_missingness(
         .apply(_agg, include_groups=False)
         .reset_index()
     )
-    return grouped
+    return _counts_as_int(grouped)
 
 
 # --- Method-pair Δ on missingness -------------------------------------------
@@ -174,6 +256,17 @@ def method_pair_deltas(
 # --- Schema-conformance / out-of-vocab --------------------------------------
 
 
+def _vocab_key(v) -> str:
+    """Normalise a value for enum membership.
+
+    Allowed-value lists are stringified (grade ``1,2,3`` → ``"1","2","3"``;
+    bools → ``"true","false"``) but :func:`metrics.normalize` keeps ints
+    and bools as-is, so stringify them here.
+    """
+    n = normalize(v)
+    return n if isinstance(n, str) else str(n).lower()
+
+
 def out_of_vocab_rate(
     pred_records: Iterable[dict],
     *,
@@ -194,7 +287,7 @@ def out_of_vocab_rate(
     if not allowed:
         return {"n_attempted": 0, "n_oov": 0, "oov_rate": float("nan"),
                 "ci_lo": float("nan"), "ci_hi": float("nan")}
-    allowed_norm = {normalize(v) for v in allowed}
+    allowed_norm = {_vocab_key(v) for v in allowed}
     n_attempted = 0
     n_oov = 0
     for pred in pred_records:
@@ -202,7 +295,7 @@ def out_of_vocab_rate(
         if v is None:
             continue
         n_attempted += 1
-        if normalize(v) not in allowed_norm:
+        if _vocab_key(v) not in allowed_norm:
             n_oov += 1
     if n_attempted == 0:
         return {"n_attempted": 0, "n_oov": 0, "oov_rate": float("nan"),
@@ -213,6 +306,32 @@ def out_of_vocab_rate(
         "n_attempted": n_attempted, "n_oov": n_oov,
         "oov_rate": rate, "ci_lo": lo, "ci_hi": hi,
     }
+
+
+def out_of_vocab_table(pairs: Iterable, *, method: str = "pred") -> pd.DataFrame:
+    """:func:`out_of_vocab_rate` for every categorical field of every organ
+    the predictions chose.
+
+    Predictions are grouped by their OWN ``cancer_category`` (the schema
+    the model filled in), not the gold organ. Unreadable predictions and
+    fields with no non-null prediction are skipped.
+    """
+    by_organ: dict[str, list[dict]] = {}
+    for pair in pairs:
+        if pair.pred is None:
+            continue
+        organ = normalize(pair.pred.get("cancer_category"))
+        if organ in IMPLEMENTED_ORGANS:
+            by_organ.setdefault(organ, []).append(pair.pred)
+    rows: list[dict] = []
+    for organ, preds in sorted(by_organ.items()):
+        for field in get_categorical_fields(organ):
+            res = out_of_vocab_rate(preds, field=field, organ=organ)
+            if res["n_attempted"]:
+                rows.append({"method": method, "organ": organ, "field": field, **res})
+    columns = ["method", "organ", "field", "n_attempted", "n_oov", "oov_rate",
+               "ci_lo", "ci_hi"]
+    return pd.DataFrame(rows, columns=columns)
 
 
 # --- Refusal calibration ----------------------------------------------------
@@ -265,7 +384,7 @@ def refusal_calibration(atomic: pd.DataFrame,
         .apply(_agg, include_groups=False)
         .reset_index()
     )
-    return grouped
+    return _counts_as_int(grouped)
 
 
 # --- Position-in-schema correlation -----------------------------------------
@@ -314,6 +433,8 @@ def position_in_schema_correlation(
 
 
 __all__ = [
+    "completeness_atomic",
+    "out_of_vocab_table",
     "aggregate_missingness",
     "method_pair_deltas",
     "out_of_vocab_rate",

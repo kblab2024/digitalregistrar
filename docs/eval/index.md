@@ -1,74 +1,101 @@
 # Evaluation documentation
 
-ELI5-style explanations of every metric the `scripts/eval/` pipeline produces, plus paper-ready citations.
+How to score `registrar-pipeline` output against gold annotations with the `registrar-eval` CLI (installed with the core `digital-registrar` package), and what each metric means.
 
-> **Cascade redesign (2026-05).** The `non_nested` and `nested` subcommands have been replaced by a single `cascade` subcommand that gates evaluation as three sequential stages. Output paths have moved into `chapter1_eligibility/`, `chapter2_organ_classification/`, `chapter3_field_extraction/`. See [CHANGELOG.md](CHANGELOG.md) for the migration map and [../reference/stat_methods.md](../reference/stat_methods.md) for the new statistical-methods inventory.
+## Quickstart
 
-## Decision tree — which doc do I read?
+```bash
+# 1. Run the pipeline over a folder of reports → runs/model_x/<stem>_output.json
+registrar-pipeline --input reports/ --output runs/model_x --model gpt
+
+# 2. Score it against the gold folder → eval_out/model_x/{atomic,summary}.csv
+registrar-eval metrics --pred runs/model_x --gold gold/ --out eval_out/model_x
+
+# 3. Compare two runs on the same gold
+registrar-eval compare --pred-a runs/model_x --pred-b runs/model_y \
+    --gold gold/ --out eval_out/x_vs_y
+
+# 4. Missingness / refusal / out-of-vocab report
+registrar-eval completeness --pred runs/model_x --gold gold/ --out eval_out/model_x_completeness
+```
+
+Run `registrar-eval --help` or `registrar-eval <subcommand> --help` for every flag.
+
+## How files are paired
+
+Predictions and gold are paired by **case id**. The case id is the file stem with one trailing `_output` or `_annotation` removed, plus a leftover `.txt` if there is one:
+
+| File | Case id |
+|---|---|
+| `runs/model_x/tcga4_1_output.json` (registrar-pipeline) | `tcga4_1` |
+| `runs/model_x/tcga4_1.txt_output.json` (pipeline random-report mode) | `tcga4_1` |
+| `gold/tcga4_1_annotation.json` | `tcga4_1` |
+| `gold/tcga4_1.json` | `tcga4_1` |
+
+- Both folders are searched **recursively**. The per-dataset subfolders the pipeline writes when run without `--input` (`<run>/<dataset>/<stem>_output.json`) work as-is. The gold file's subfolder is reported in the `dataset` column.
+- Case ids must be unique within each folder. A duplicate is an error.
+- Every gold file is a case:
+  - A gold case with no prediction file, or with an unreadable one, counts as *not attempted*.
+  - Predictions with no gold file are ignored. The CLI prints how many.
+- Each prediction and gold file is one case record, shaped like `registrar-pipeline` output: top-level `cancer_excision_report`, `cancer_category`, `cancer_data`.
+
+## Outputs
+
+| Subcommand | File | What it is | Doc |
+|---|---|---|---|
+| `metrics` | `atomic.csv` | one row per (case, field): `correct`, `attempted`, `stage`, `metric` | [reading_outputs.md](reading_outputs.md#atomiccsv) |
+| `metrics` | `summary.csv` | per-field accuracy (or mean F1), coverage, 95% CI | [reading_outputs.md](reading_outputs.md#summarycsv) |
+| `compare` | `atomic.csv`, `summary.csv` | as above, for both runs (`method` column) | [reading_outputs.md](reading_outputs.md#summarycsv) |
+| `compare` | `compare.csv` | per-field paired Δ (A − B), bootstrap CI, McNemar | [comparing_runs.md](comparing_runs.md) |
+| `completeness` | `completeness.csv` | parse-error / field-missing / attempted rates with Wilson CIs | [reading_outputs.md](reading_outputs.md#completenesscsv) |
+| `completeness` | `refusal_calibration.csv` | justified vs lazy nulls | [reading_outputs.md](reading_outputs.md#refusal_calibrationcsv) |
+| `completeness` | `out_of_vocab.csv` | predicted values outside the schema enum | [reading_outputs.md](reading_outputs.md#out_of_vocabcsv) |
+
+## How scoring works (`--scope cascade`, the default)
+
+Scoring is a three-stage cascade, so a mistake early on doesn't produce a flood of meaningless field errors later:
+
+1. **Stage A: eligibility.** Checks `cancer_excision_report` against gold. If it's wrong or missing, the case stops here.
+2. **Stage B: organ.** For gold-eligible cases, checks `cancer_category`. If it's wrong, the case stops here. It also stops when both sides say `others`, since there's no schema to score.
+3. **Stage C: fields.** Scores every field of the gold organ's schema:
+   - **Scalar and categorical fields** use exact match after normalisation. Size fields allow ±2 mm; list-of-literals fields use set equality. See [non_nested_metrics.md](non_nested_metrics.md).
+   - **Whitelisted biomarkers** (`biomarker_er`, …) compare the expression value.
+   - **`margins` and `biomarkers`** are scored as per-case F1 over matched items. See [nested_metrics.md](nested_metrics.md).
+   - **Lymph nodes** are scored on examined and involved totals (±1 node), any-positive agreement, and F1 over (side, category) groups. See [nested_metrics.md](nested_metrics.md).
+   - `ajcc_version` and `treatment_effect` are never scored.
+
+Stage-C accuracy is therefore *conditional* on passing Stages A and B. Read `summary.csv`'s `total` column to see how many cases reached each field.
+
+A value counts as **attempted** when the prediction has the key, even if the value is `null`. A missing key counts as not attempted, and so does a missing prediction file. `accuracy_attempted` is computed over attempted rows only; `coverage` is attempted / total.
+
+`--scope fair` skips the cascade. It scores the fixed head-to-head field list `FAIR_SCOPE` (the gate fields, pT/pN/pM, grade, LVI, PNI and tumor size) on every case. It has no nested-list rows.
+
+## Python API
+
+The same functions the CLI uses:
+
+```python
+from digital_registrar.eval import load_pairs, score_pairs, summarize_scores, compare_runs
+
+pairs, stats = load_pairs("runs/model_x", "gold/")
+atomic = score_pairs(pairs, method="model_x")   # long-form DataFrame
+summary = summarize_scores(atomic)              # per-field accuracy + CI
+```
+
+Per case: `digital_registrar.eval.score_case(gold, pred)` and `digital_registrar.eval.score_lymph_nodes(gold, pred)`. More in [recipes.md](recipes.md).
+
+## Which doc do I read?
 
 | Question | File |
 |---|---|
+| "Show me the commands." | [recipes.md](recipes.md) |
 | "What does this CSV column mean?" | [reading_outputs.md](reading_outputs.md) |
-| "What's accuracy / κ / MCC / balanced accuracy?" | [non_nested_metrics.md](non_nested_metrics.md) |
-| "What does MAE / RMSE / Bland-Altman LoA / CCC mean?" | [continuous_metrics.md](continuous_metrics.md) |
+| "Which of two runs is better?" | [comparing_runs.md](comparing_runs.md) |
+| "How are scalar / categorical fields scored? What's κ / MCC?" | [non_nested_metrics.md](non_nested_metrics.md) |
 | "How are lymph nodes / margins / biomarkers scored?" | [nested_metrics.md](nested_metrics.md) |
-| "Why is missing field different from wrong field?" | [completeness.md](completeness.md) |
-| "What's Fleiss κ / vote calibration / ensemble Δ?" | [multirun.md](multirun.md) |
-| "Cohen κ vs Krippendorff α — when do I use which?" | [iaa_basics.md](iaa_basics.md) |
-| "I just want one overall κ for a specific annotator pair." | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |
-| "What's the anchoring index? Δκ? Convergence to preann?" | [preann_effect.md](preann_effect.md) |
-| "Wilson vs BCa vs two-source bootstrap CI?" | [ci_methods.md](ci_methods.md) |
-| "Source-of-error decomposition / difficulty tiers / worst cases?" | [diagnostics.md](diagnostics.md) |
-| "Cross-dataset Δ / KL / JS / Wasserstein?" | [cross_dataset.md](cross_dataset.md) |
-| "Holm-Bonferroni vs BH? Effect sizes?" | [multiple_comparisons.md](multiple_comparisons.md) |
-| "Anatomic vs pathologic stage / curated semantic neighbors?" | [confusion_pairs.md](confusion_pairs.md) |
-| "What does field type / section / scope mean?" | [glossary.md](glossary.md) |
-| "Show me the canonical CLI invocations." | [recipes.md](recipes.md) |
-| "How do I compare two runs / models / methodologies?" | [comparing_runs.md](comparing_runs.md) |
-| "Which run is better?" | [comparing_runs.md](comparing_runs.md) (Recipe 1) |
-| "How reproducible is this model across reruns?" | [comparing_runs.md](comparing_runs.md) (Recipe 2) |
-| "How do I run eval on GPU (CUDA / MPS)?" | [gpu_acceleration.md](gpu_acceleration.md) |
-| "How do I cite this in the paper Methods section?" | [methods_citations.md](methods_citations.md) |
-| "I want to debug eval without exposing PHI." | [../workflows/obfuscation.md](../workflows/obfuscation.md) |
+| "Wilson vs bootstrap CI?" | [ci_methods.md](ci_methods.md) |
+| "What does field type / scope / attempted mean?" | [glossary.md](glossary.md) |
 
-## CSV → metric crosswalk
+## Paper-only analyses
 
-| Output file (cascade layout) | Headline metric | Doc |
-|---|---|---|
-| `cascade_atomic.parquet` | every (run, case, field) row with `cascade_stage`, `gate_pass`, `others_disposition` | [reading_outputs.md](reading_outputs.md) |
-| `chapter1_eligibility/overall.csv` | sensitivity, specificity, MCC, Cohen's κ for `cancer_excision_report` | [non_nested_metrics.md](non_nested_metrics.md) |
-| `chapter1_eligibility/confusion.csv` | TP/FP/FN/TN for the eligibility decision | [confusion_pairs.md](confusion_pairs.md) |
-| `chapter2_organ_classification/overall.csv` | per-organ accuracy, macro-F1, Cohen's κ | [non_nested_metrics.md](non_nested_metrics.md) |
-| `chapter2_organ_classification/confusion_per_class.csv` | per-class P/R/F1/support over the 11-class organ classifier | [confusion_pairs.md](confusion_pairs.md) |
-| `chapter2_organ_classification/others/others_ledger.csv` | per-case dual-primary / out-of-scope ledger | [reading_outputs.md](reading_outputs.md) |
-| `chapter3_field_extraction/per_field_overall.csv` | accuracy, coverage, Cohen's κ per Stage-C field | [non_nested_metrics.md](non_nested_metrics.md) |
-| `chapter3_field_extraction/per_field_by_organ.csv` | same, stratified by organ | [non_nested_metrics.md](non_nested_metrics.md) |
-| `chapter3_field_extraction/per_organ_overall.csv` | mean accuracy across fields per organ | [non_nested_metrics.md](non_nested_metrics.md) |
-| `chapter3_field_extraction/cascade_funnel.csv` | n_total / n_passed / n_dropped per stage | [diagnostics.md](diagnostics.md) |
-| `chapter3_field_extraction/conditional_accuracy_grid.csv` | `P(field_correct \| stage_b ∧ stage_a)` per field | [diagnostics.md](diagnostics.md) |
-| `chapter*/multirun_consistency.csv` | ICC(2,1), ICC(3,k), Cronbach α, accuracy-flip-rate | [multirun.md](multirun.md) |
-| `model_pair_tests/*.csv` | McNemar / Cochran-Q / Stuart-Maxwell + Holm/BH adjusted p | [multiple_comparisons.md](multiple_comparisons.md), [../reference/stat_methods.md](../reference/stat_methods.md) §2.2 |
-| `iaa/pair_*.csv` | Cohen's κ (un/weighted), CCC, ICC, BA LoA, F1, Krippendorff α | [iaa_basics.md](iaa_basics.md) |
-| `iaa_pair/pair_<a>_vs_<b>/headline.csv` | overall pair κ — mean per-field κ, n-weighted mean, pooled categorical κ, agree/disagree PABAK, Krippendorff α | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |
-| `iaa_pair/pair_<a>_vs_<b>/per_section.csv` | section roll-up (top_level / scalar_pathology / nested) | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |
-| `iaa_pair/pair_<a>_vs_<b>/per_organ.csv` | per-organ κ summary (4 stats × n_organs) | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |
-| `iaa_pair/pair_<a>_vs_<b>/confusion/<field>.csv` | top-N categorical fields' confusion matrices | [confusion_pairs.md](confusion_pairs.md) |
-| `iaa_pair/pair_<a>_vs_<b>/summary.md` | human-readable headline + top-K most disagreed fields | [iaa_basics.md](iaa_basics.md#pair-focused-headline-iaa_pair) |
-| `iaa/preann/delta_kappa_per_field__*.csv` | Δκ with vs without preann + paired bootstrap CI | [preann_effect.md](preann_effect.md) |
-| `iaa/preann/anchoring_index__*.csv` | AI = P(human=preann \| with) − P(human=preann \| without) | [preann_effect.md](preann_effect.md) |
-| `completeness/modularity_advantage.csv` | sorted method-pair Δ on attempted_rate (ablation headline) | [completeness.md](completeness.md) |
-| `diagnostics/error_source_decomposition.csv` | model_error / report_ambiguity / report_silent buckets | [diagnostics.md](diagnostics.md) |
-| `diagnostics/accuracy_by_difficulty_tier.csv` | accuracy stratified by IAA-derived difficulty | [diagnostics.md](diagnostics.md) |
-| `cross_dataset/per_field_delta.csv` | CMUH vs TCGA Δ accuracy with bootstrap CI | [cross_dataset.md](cross_dataset.md) |
-| `headline/headline_forest.csv` | unified long-form for forest-plot rendering | [reading_outputs.md](reading_outputs.md) |
-
-## Conventions
-
-- **Units of analysis** are typically `(case, field, run)`; a run is one full re-execution of a model on the same case set.
-- Three-way outcome model: every model-vs-gold scoring distinguishes **correct / wrong / missing**. Missing further splits into `parse_error` (whole case failed) vs `field_missing` (case loaded, this field absent). See [completeness.md](completeness.md).
-- All accuracy is reported in two flavors: **attempted_accuracy** (correct / attempted) and **effective_accuracy** (correct / eligible). The gap is the *completeness penalty* — primary signal for the modularity ablation.
-- All proportions are reported with Wilson 95% CI by default; bootstrap CI for non-binary statistics (BCa, n_boot=2000 unless overridden).
-- Multi-run statistics use case-stratified bootstrap and / or GLMM with random intercepts for `(case_id, run_id)` (see [ci_methods.md](ci_methods.md)).
-- Endpoint pre-registration in `configs/eval_endpoints.yaml` separates **primary** (Holm-Bonferroni) from **secondary** (Benjamini-Hochberg) p-value adjustment families.
-
-Every numerical claim in the paper traces back to a column in one of these CSVs, with provenance captured in the corresponding `manifest.json` (git SHA + UTC timestamp + full args).
+The paper also reported inter-annotator agreement, the pre-annotation effect, multirun statistics, cross-dataset shift, and error-source diagnostics. Those came from research scripts that are **not** part of `registrar-eval`. Their documentation is kept for reference in [`attic/docs/eval/`](../../attic/docs/eval/), and the scripts are in [`attic/eval_scripts/`](../../attic/eval_scripts/); see [attic/README.md](../../attic/README.md). The old `python -m scripts.eval.cli …` commands no longer exist.
