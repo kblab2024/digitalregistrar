@@ -20,6 +20,7 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ### Fixed
 - `load_model(..., overrides={"api_base": ...})` no longer raises `TypeError: got multiple values for keyword argument 'api_base'`.
+- `load_model("gpt5_4_mini")` works on dspy ≥ 3.4. dspy 3.4 treats dotted `gpt-5.x` ids as reasoning models: it rejected the profile's `temperature: 0.3` with `LMConfigurationError`, and the pre-renamed `max_completion_tokens` with a `TypeError`. For gpt-5 / o-series ids, both values are now set on `lm.kwargs` after `dspy.LM` is built. The request still carries temperature 0.3 and a 4096-token cap, the values the rebuttal runs used on dspy 3.2.1.
 
 ## [0.2.0b3] — 2026-05-28
 
