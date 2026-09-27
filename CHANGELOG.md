@@ -7,6 +7,10 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+## [0.2.0b4] — 2026-09-27
+
+**Feature beta.** `registrar-eval` works again. All three subcommands now score a folder of `registrar-pipeline` outputs against a gold folder. The LLM endpoint is configurable (a remote Ollama host, vLLM, llama.cpp or any OpenAI-compatible server), the default Ollama context is 16384, and `gpt5_4_mini` works on dspy ≥ 3.4.
+
 ### Added
 - Configurable LLM endpoint ([src/digital_registrar/models/common.py](src/digital_registrar/models/common.py)): the Ollama base URL is resolved per call from `overrides["api_base"]` → `$DIGITAL_REGISTRAR_OLLAMA_HOST` → `$OLLAMA_HOST` → `http://localhost:11434`. It accepts `host` / `host:port` without a scheme and maps `0.0.0.0` to `localhost`. New helpers: `resolve_ollama_api_base`, `resolve_model_id`.
 - Raw LiteLLM model ids: `ollama_chat/<tag>` for any Ollama model, and `hosted_vllm/<name>` / `openai/<name>` for vLLM, llama.cpp or other OpenAI-compatible servers. The latter require `api_base`; their key comes from `$DIGITAL_REGISTRAR_API_KEY` (default `EMPTY`), and `OPENAI_API_KEY` is never forwarded to them.
@@ -20,8 +24,10 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 - `registrar-eval --scope` now takes `cascade` (default) or `fair` instead of the unused `all|attempted|applicable`. The per-case table is written as CSV (`atomic.csv`), so evaluation no longer needs `pyarrow`.
 - `digital_registrar.eval.pairwise_compare` now provides `compare_runs()`. The retired `main()` stub is gone.
 - Rewrote `docs/eval/` to document `registrar-eval`: [index](docs/eval/index.md), [recipes](docs/eval/recipes.md), [comparing runs](docs/eval/comparing_runs.md) and [reading outputs](docs/eval/reading_outputs.md). It no longer refers to the retired `python -m scripts.eval.cli`.
+- Bumped version pins to `0.2.0b4` in all four `pyproject.toml` files, in [packaging/hosted-demo/requirements.txt](packaging/hosted-demo/requirements.txt) and in `uv.lock`.
 
 ### Fixed
+- `completeness.method_pair_deltas` no longer raises `ImportError`: it imported `ci_gpu`, which exists only in the optional drr-attic package. Each cell now uses `ci.mcnemar_test`; output columns are unchanged.
 - `load_model(..., overrides={"api_base": ...})` no longer raises `TypeError: got multiple values for keyword argument 'api_base'`.
 - `load_model("gpt5_4_mini")` works on dspy ≥ 3.4. dspy 3.4 treats dotted `gpt-5.x` ids as reasoning models: it rejected the profile's `temperature: 0.3` with `LMConfigurationError`, and the pre-renamed `max_completion_tokens` with a `TypeError`. For gpt-5 / o-series ids, both values are now set on `lm.kwargs` after `dspy.LM` is built. The request still carries temperature 0.3 and a 4096-token cap, the values the rebuttal runs used on dspy 3.2.1.
 - `registrar-eval` works again. All three subcommands crashed at v0.2.0b3, and each now runs end-to-end on a folder of `registrar-pipeline` outputs against a gold folder:
