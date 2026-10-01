@@ -7,6 +7,9 @@ Pre-release suffixes (`b1`, `b2`, `rc1`) iterate within a target version until i
 
 ## [Unreleased]
 
+### Fixed
+- [CITATION.cff](CITATION.cff): eight of the ten author affiliations were wrong. The third author had the first author's Pathology affiliation, and from the fourth author on each one carried the previous author's (Kai-Po Chang was listed under Electrical Engineering, NCKU). All ten now match the published paper (Diagnostics 2026;16(11):1644), with every affiliation listed for authors who have more than one.
+
 ## [0.2.0b4] — 2026-09-27
 
 **Feature beta.** `registrar-eval` works again. All three subcommands now score a folder of `registrar-pipeline` outputs against a gold folder. The LLM endpoint is configurable (a remote Ollama host, vLLM, llama.cpp or any OpenAI-compatible server), the default Ollama context is 16384, and `gpt5_4_mini` works on dspy ≥ 3.4.

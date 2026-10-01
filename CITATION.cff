@@ -23,34 +23,34 @@ keywords:
 authors:
   - family-names: Chow
     given-names: Nan-Haw
-    affiliation: "Center for Precision Medicine, China Medical University Hospital"
+    affiliation: "Center for Precision Medicine, China Medical University Hospital; School of Medicine, China Medical University; Department of Pathology, China Medical University Hospital"
   - family-names: Chang
     given-names: Han
     affiliation: "School of Medicine, China Medical University"
   - family-names: Chen
     given-names: Hung-Kai
-    affiliation: "Department of Pathology, China Medical University Hospital"
+    affiliation: "School of Medicine, China Medical University"
   - family-names: Lin
     given-names: Chen-Yuan
-    affiliation: "School of Medicine, China Medical University"
+    affiliation: "Signal 1"
   - family-names: Liu
     given-names: Ying-Lung
-    affiliation: "Signal1"
+    affiliation: "Department of Computer Science and Information Engineering, National Taiwan University of Science and Technology"
   - family-names: Tseng
     given-names: Po-Yen
-    affiliation: "Department of Computer Science and Information Engineering, National Taiwan University of Science and Technology"
+    affiliation: "School of Medicine, China Medical University"
   - family-names: Shiu
     given-names: Li-Ju
-    affiliation: "School of Medicine, China Medical University"
+    affiliation: "Department of Foreign Languages and Literature, National Chi Nan University"
   - family-names: Chu
     given-names: Yen-Wei
-    affiliation: "Department of Foreign Languages and Literature, National Chi Nan University"
+    affiliation: "Graduate Institute of Genomics and Bioinformatics, National Chung Hsing University"
   - family-names: Chung
     given-names: Pau-Choo
-    affiliation: "Graduate Institute of Genomics and Bioinformatics, National Chung Hsing University"
+    affiliation: "Department of Electrical Engineering, National Cheng Kung University"
   - family-names: Chang
     given-names: Kai-Po
-    affiliation: "Department of Electrical Engineering, National Cheng Kung University"
+    affiliation: "School of Medicine, China Medical University; Department of Pathology, China Medical University Hospital"
 preferred-citation:
   type: article
   title: "Digital Registrar: A Schema-First Framework for Multi-Cancer Privacy-Preserving Pathology Abstraction via Local LLMs"
